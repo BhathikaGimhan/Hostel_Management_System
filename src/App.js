@@ -6,7 +6,7 @@ import Admin from "./pages/Admin.jsx";
 function App() {
   return (
     <div className="App">
-      <RoomReq />
+      <Admin />
     </div>
   );
 }

@@ -26,6 +26,7 @@ const ApproveRoomRequests = () => {
         studentId: doc.data().studentId,
         roomId: doc.data().roomId,
       }));
+      console.log(requestsList);
       setRequests(requestsList);
     });
 
@@ -47,27 +48,33 @@ const ApproveRoomRequests = () => {
   }, []);
 
   const handleApproveRequest = async (requestId, roomId) => {
-    const roomToUpdate = rooms[0].occupants <= rooms[0].capacity;
-    console.log(roomToUpdate);
+    // Find the room to update by roomId
+    const roomToUpdate = rooms.find((room) => room.id === roomId);
+
     if (roomToUpdate) {
-      // Increment the occupants count
-      console.log(roomToUpdate, "ss");
-      const updatedOccupants = roomToUpdate.occupants + 1;
-      console.log(updatedOccupants);
+      const occupants = Number(roomToUpdate.occupants);
+      const capacity = Number(roomToUpdate.capacity);
 
-      // Update the room occupants in Firestore
-      await updateDoc(doc(db, "rooms", roomId), {
-        occupants: updatedOccupants,
-      });
+      if (occupants < capacity) {
+        // Increment the occupants count
+        const updatedOccupants = occupants + 1;
 
-      // Update the request status to "approved"
-      await updateDoc(doc(db, "requests", requestId), {
-        request: "approved",
-      });
+        // Update the room occupants in Firestore
+        await updateDoc(doc(db, "rooms", roomId), {
+          occupants: updatedOccupants,
+        });
 
-      alert("Request approved successfully!");
+        // Update the request status to "approved"
+        await updateDoc(doc(db, "requests", requestId), {
+          request: "approved",
+        });
+
+        alert("Request approved successfully!");
+      } else {
+        alert("Room is already full!");
+      }
     } else {
-      alert("Room is already full!");
+      alert("Room not found!");
     }
   };
 

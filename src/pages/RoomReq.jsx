@@ -23,7 +23,7 @@ const RoomReq = () => {
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const availableRooms = snapshot.docs.map((doc) => ({
-        // id: doc.id,
+        id: doc.id,
         room: doc.data().room,
         capacity: doc.data().capacity,
         occupants: doc.data().occupants,
@@ -140,7 +140,7 @@ const RoomReq = () => {
             <option value="">Select Room</option>
             {rooms.map((room) => (
               <option key={room.id} value={room.id}>
-                {room.room}
+                {room.room} ({room.occupants}/{room.capacity})
               </option>
             ))}
           </select>
