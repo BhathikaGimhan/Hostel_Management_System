@@ -24,6 +24,7 @@ const RoomReq = () => {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const availableRooms = snapshot.docs.map((doc) => ({
         // id: doc.id,
+        room: doc.data().room,
         capacity: doc.data().capacity,
         occupants: doc.data().occupants,
       }));
@@ -81,7 +82,10 @@ const RoomReq = () => {
 
     const newRequest = {
       studentId: indexNumber,
+      studentName: studentName,
+      studentEmail: studentEmail,
       roomId: selectedRoomId,
+      request: "pending",
     };
 
     addDoc(collection(db, "requests"), newRequest)
@@ -136,7 +140,7 @@ const RoomReq = () => {
             <option value="">Select Room</option>
             {rooms.map((room) => (
               <option key={room.id} value={room.id}>
-                Room {room.id} ({room.occupants}/{room.capacity})
+                {room.room}
               </option>
             ))}
           </select>
@@ -157,7 +161,7 @@ const RoomReq = () => {
             ) : (
               rooms.map((room) => (
                 <li key={room.id}>
-                  Room {room.id} ({room.occupants}/{room.capacity})
+                  Room {room.room} ({room.occupants}/{room.capacity})
                 </li>
               ))
             )}

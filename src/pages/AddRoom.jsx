@@ -4,6 +4,7 @@ import db from "../firebase/firebase"; // Firestore instance
 
 const AddRoom = () => {
   const [capacity, setCapacity] = useState("");
+  const [roomName, setRoomName] = useState("");
   const [occupants, setOccupants] = useState("");
 
   const handleAddRoom = async (e) => {
@@ -15,6 +16,7 @@ const AddRoom = () => {
     }
 
     const newRoom = {
+      room: roomName,
       capacity: parseInt(capacity), // Ensure the capacity is an integer
       occupants: parseInt(occupants), // Ensure the occupants is an integer
     };
@@ -22,6 +24,7 @@ const AddRoom = () => {
     try {
       await addDoc(collection(db, "rooms"), newRoom);
       alert("Room added successfully");
+      setRoomName("");
       setCapacity("");
       setOccupants("");
     } catch (error) {
@@ -33,6 +36,15 @@ const AddRoom = () => {
     <div className="max-w-md mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Add New Room</h1>
       <form onSubmit={handleAddRoom} className="flex flex-col">
+        <label className="text-lg font-bold mb-2">Room Name:</label>
+        <input
+          type="text"
+          value={roomName}
+          onChange={(e) => setRoomName(e.target.value)}
+          className="p-2 border border-gray-400 rounded mb-4"
+          placeholder="Enter room capacity"
+        />
+
         <label className="text-lg font-bold mb-2">Capacity:</label>
         <input
           type="number"
