@@ -37,7 +37,7 @@ const StudentViewPage = ({ studentId }) => {
   }
 
   return (
-    <div className="max-w-4xl md:ml-64 max-md:top-20 absolute mx-auto p-4">
+    <div className="max-w-4xl md:ml-64 max-md:top-20 max-md:absolute mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Your Requests</h1>
 
       {requests.length === 0 ? (

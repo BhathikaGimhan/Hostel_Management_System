@@ -48,32 +48,42 @@ const GoogleLogin = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      {user ? (
-        <div className="text-center">
-          <p className="text-lg font-bold">Welcome, {user.displayName}!</p>
-          <img
-            src={user.photoURL}
-            alt={user.displayName}
-            className="rounded-full w-24 h-24 my-4"
-          />
-          <p>Email: {user.email}</p>
-          <p>User ID: {user.uid}</p>
-          <button
-            onClick={handleLogout}
-            className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
-          >
-            Log Out
-          </button>
-        </div>
-      ) : (
-        <button
-          onClick={handleGoogleLogin}
-          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
-        >
-          Sign in with Google
-        </button>
-      )}
+    <div className="flex flex-col md:ml-64 max-md:top-0 max-md:left-0 max-md:right-0 max-md:absolute items-center justify-center min-h-screen ">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-center">
+        {user ? (
+          <div>
+            <h1 className="text-2xl font-bold mb-4">
+              Welcome, {user.displayName}!
+            </h1>
+            <img
+              src={user.photoURL}
+              alt={user.displayName}
+              className="rounded-full w-24 h-24 my-4 mx-auto shadow"
+            />
+            <p className="text-gray-700 mb-2">Email: {user.email}</p>
+            <p className="text-gray-700 mb-4">User ID: {user.uid}</p>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition duration-300"
+            >
+              Log Out
+            </button>
+          </div>
+        ) : (
+          <div>
+            <h1 className="text-2xl font-bold mb-4">Sign In</h1>
+            <p className="mb-6 text-gray-600">
+              Please sign in with your Google account.
+            </p>
+            <button
+              onClick={handleGoogleLogin}
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
+            >
+              Sign in with Google
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
