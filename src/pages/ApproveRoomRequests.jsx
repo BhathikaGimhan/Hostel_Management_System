@@ -7,7 +7,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import db from "../firebase/firebase"; // Firestore instance
+import { db } from "../firebase/firebase"; // Firestore instance
 
 const ApproveRoomRequests = () => {
   const [requests, setRequests] = useState([]);

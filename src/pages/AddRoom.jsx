@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
-import db from "../firebase/firebase"; // Firestore instance
+import { db } from "../firebase/firebase"; // Firestore instance
 
 const AddRoom = () => {
   const [capacity, setCapacity] = useState("");

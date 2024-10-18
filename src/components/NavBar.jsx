@@ -1,6 +1,6 @@
-import { NavLink } from "react-router-dom"; // Import NavLink from React Router
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom"; // Import NavLink for active class
 import { FaBars, FaTimes } from "react-icons/fa"; // Icons for toggle menu
-import { useState } from "react";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,17 +10,17 @@ const NavBar = () => {
   };
 
   return (
-    <div className="flex md:absolute flex-col md:flex-row md:h-screen">
+    <div className="flex md:absolute flex-col md:flex-row h-screen">
       {/* Sidebar for Desktop */}
       <div className="hidden md:flex flex-col bg-blue-900 w-64 text-white">
-        <h1 className="text-3xl font-bold p-6">Hostel Management</h1>
+        <h1 className="text-3xl font-bold p-6">H.M.S</h1>
         <ul className="flex flex-col p-6 space-y-4">
           <li>
             <NavLink
               exact
               to="/"
               className="p-2 rounded hover:bg-blue-700"
-              activeClassName="bg-blue-700"
+              activeClassName="bg-blue-700 text-yellow-400"
             >
               Dashboard
             </NavLink>
@@ -29,36 +29,36 @@ const NavBar = () => {
             <NavLink
               to="/admin"
               className="p-2 rounded hover:bg-blue-700"
-              activeClassName="bg-blue-700"
+              activeClassName="bg-blue-700 text-yellow-400"
             >
               Admin
             </NavLink>
           </li>
           <li>
             <NavLink
-              to="/manage-rooms"
+              to="/student"
               className="p-2 rounded hover:bg-blue-700"
-              activeClassName="bg-blue-700"
+              activeClassName="bg-blue-700 text-yellow-400"
             >
-              Manage Rooms
+              student
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/students"
               className="p-2 rounded hover:bg-blue-700"
-              activeClassName="bg-blue-700"
+              activeClassName="bg-blue-700 text-yellow-400"
             >
               Students
             </NavLink>
           </li>
           <li>
             <NavLink
-              to="/reports"
+              to="/login"
               className="p-2 rounded hover:bg-blue-700"
-              activeClassName="bg-blue-700"
+              activeClassName="bg-blue-700 text-yellow-400"
             >
-              Reports
+              login
             </NavLink>
           </li>
         </ul>
@@ -76,7 +76,7 @@ const NavBar = () => {
       <div
         className={`${
           isOpen ? "block" : "hidden"
-        } bg-blue-900  text-white md:hidden transition-all`}
+        } bg-blue-900 text-white md:hidden  max-md:z-10  transition-all`}
       >
         <ul className="flex flex-col p-6 space-y-4">
           <li>
@@ -84,7 +84,7 @@ const NavBar = () => {
               exact
               to="/"
               className="p-2 rounded hover:bg-blue-700"
-              activeClassName="bg-blue-700"
+              activeClassName="bg-blue-700 text-yellow-400"
               onClick={toggleMenu}
             >
               Dashboard
@@ -94,7 +94,7 @@ const NavBar = () => {
             <NavLink
               to="/admin"
               className="p-2 rounded hover:bg-blue-700"
-              activeClassName="bg-blue-700"
+              activeClassName="bg-blue-700 text-yellow-400"
               onClick={toggleMenu}
             >
               Admin
@@ -102,19 +102,19 @@ const NavBar = () => {
           </li>
           <li>
             <NavLink
-              to="/manage-rooms"
+              to="/student"
               className="p-2 rounded hover:bg-blue-700"
-              activeClassName="bg-blue-700"
+              activeClassName="bg-blue-700 text-yellow-400"
               onClick={toggleMenu}
             >
-              Manage Rooms
+              student
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/students"
               className="p-2 rounded hover:bg-blue-700"
-              activeClassName="bg-blue-700"
+              activeClassName="bg-blue-700 text-yellow-400"
               onClick={toggleMenu}
             >
               Students
@@ -122,12 +122,12 @@ const NavBar = () => {
           </li>
           <li>
             <NavLink
-              to="/reports"
+              to="/login"
               className="p-2 rounded hover:bg-blue-700"
-              activeClassName="bg-blue-700"
+              activeClassName="bg-blue-700 text-yellow-400"
               onClick={toggleMenu}
             >
-              Reports
+              login
             </NavLink>
           </li>
         </ul>

@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  addDoc,
-} from "firebase/firestore"; // Import Firestore functions
-import db from "../firebase/firebase"; // Import the Firestore instance
+import { collection, query, onSnapshot, addDoc } from "firebase/firestore"; // Import Firestore functions
+import { db } from "../firebase/firebase"; // Import the Firestore instance
 
 const RoomReq = () => {
   const [rooms, setRooms] = useState([]);

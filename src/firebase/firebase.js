@@ -1,3 +1,4 @@
+// src/firebase/firebase.js
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
@@ -18,6 +19,7 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firestore and Auth
 const db = getFirestore(app);
-export const auth = getAuth(app);
+const auth = getAuth(app);
 
-export default db; // Export Firestore instance as default
+// Export Firestore instance and Auth instance
+export { db, auth }; // Named exports
