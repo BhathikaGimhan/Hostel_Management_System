@@ -102,7 +102,7 @@ const RoomReq = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-4xl md:ml-64 mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Hostel Management System</h1>
 
       <div className="flex flex-col md:flex-row justify-between mb-4">

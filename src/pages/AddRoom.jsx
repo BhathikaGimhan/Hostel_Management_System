@@ -33,7 +33,7 @@ const AddRoom = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-4">
+    <div className="max-w-md md:ml-64 mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Add New Room</h1>
       <form onSubmit={handleAddRoom} className="flex flex-col">
         <label className="text-lg font-bold mb-2">Room Name:</label>
