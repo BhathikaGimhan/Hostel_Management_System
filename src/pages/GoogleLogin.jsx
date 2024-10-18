@@ -1,11 +1,26 @@
 // src/pages/GoogleLogin.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth } from "../firebase/firebase"; // Correctly import auth instance
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
 
 const GoogleLogin = () => {
   const [user, setUser] = useState(null);
-  const provider = new GoogleAuthProvider(); // Move provider declaration here
+  const provider = new GoogleAuthProvider();
+
+  // Check for user authentication state on component mount
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    // Clean up the observer on component unmount
+    return () => unsubscribe();
+  }, []);
 
   const handleGoogleLogin = async () => {
     try {
@@ -13,9 +28,22 @@ const GoogleLogin = () => {
       const user = result.user;
       setUser(user);
       console.log(user);
-      console.log(user);
     } catch (error) {
       console.error("Error during Google Sign-In:", error);
+    }
+  };
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+      signOut(auth)
+        .then(() => {
+          setUser(null); // Clear the user state on logout
+          console.log("User logged out successfully.");
+        })
+        .catch((error) => {
+          console.error("Error during logout:", error);
+        });
     }
   };
 
@@ -30,7 +58,13 @@ const GoogleLogin = () => {
             className="rounded-full w-24 h-24 my-4"
           />
           <p>Email: {user.email}</p>
-          <p>Email: {user.uid}</p>
+          <p>User ID: {user.uid}</p>
+          <button
+            onClick={handleLogout}
+            className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
+          >
+            Log Out
+          </button>
         </div>
       ) : (
         <button

@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom"; // Import NavLink for active class
 import { FaBars, FaTimes } from "react-icons/fa"; // Icons for toggle menu
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase/firebase";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isUser, setUser] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log(currentUser);
+      if (currentUser) {
+        setUser(true);
+      } else {
+        setUser(false);
+      }
+    });
 
+    // Clean up the observer on component unmount
+    return () => unsubscribe();
+  }, []);
   return (
     <div className="flex md:absolute flex-col md:flex-row h-screen">
       {/* Sidebar for Desktop */}
@@ -58,7 +73,7 @@ const NavBar = () => {
               className="p-2 rounded hover:bg-blue-700"
               activeClassName="bg-blue-700 text-yellow-400"
             >
-              login
+              {isUser ? "User" : "login"}
             </NavLink>
           </li>
         </ul>
