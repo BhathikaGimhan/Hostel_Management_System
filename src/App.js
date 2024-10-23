@@ -1,25 +1,24 @@
 import logo from "./logo.svg";
 import "./App.css";
+import RoomReq from "./pages/RoomReq.jsx";
+import Admin from "./pages/Admin.jsx";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import NavBar from "./components/NavBar.jsx";
+import StudentViewPage from "./pages/StudentViewPage.jsx";
+import StudentRegistrationPage from "./pages/StudentRegistrationPage.jsx";
+import GoogleLogin from "./pages/GoogleLogin.jsx";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1> Welcome to React </h1>{" "}
-        <p>
-          Edit <code> src / App.js </code> and save to reload.{" "}
-        </p>{" "}
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React{" "}
-        </a>{" "}
-      </header>{" "}
-    </div>
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<RoomReq />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/student" element={<StudentViewPage />} />
+        <Route path="/login" element={<GoogleLogin />} />
+      </Routes>
+    </Router>
   );
 }
 
