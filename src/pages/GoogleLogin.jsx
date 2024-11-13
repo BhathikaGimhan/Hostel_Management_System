@@ -1,6 +1,6 @@
 // src/pages/GoogleLogin.jsx
 import React, { useState, useEffect } from "react";
-import { auth } from "../firebase/firebase"; // Correctly import auth instance
+import { auth } from "../firebase/firebase"; // Ensure correct path to firebase config
 import {
   signInWithPopup,
   GoogleAuthProvider,
@@ -12,10 +12,18 @@ const GoogleLogin = () => {
   const [user, setUser] = useState(null);
   const provider = new GoogleAuthProvider();
 
-  // Check for user authentication state on component mount
   useEffect(() => {
+    // Check for user authentication state on component mount
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+      if (currentUser) {
+        setUser(currentUser);
+        // Store user ID in localStorage
+        localStorage.setItem("userId", currentUser.uid);
+      } else {
+        setUser(null);
+        // Remove user ID from localStorage on logout
+        localStorage.removeItem("userId");
+      }
     });
 
     // Clean up the observer on component unmount
@@ -27,7 +35,9 @@ const GoogleLogin = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       setUser(user);
-      console.log(user);
+      // Store user ID in localStorage
+      localStorage.setItem("userId", user.uid);
+      console.log("Logged in user:", user);
     } catch (error) {
       console.error("Error during Google Sign-In:", error);
     }
@@ -39,6 +49,7 @@ const GoogleLogin = () => {
       signOut(auth)
         .then(() => {
           setUser(null); // Clear the user state on logout
+          localStorage.removeItem("userId"); // Clear localStorage
           console.log("User logged out successfully.");
         })
         .catch((error) => {
@@ -48,7 +59,7 @@ const GoogleLogin = () => {
   };
 
   return (
-    <div className="flex flex-col md:ml-64 max-md:top-0 max-md:left-0 max-md:right-0 max-md:absolute items-center justify-center min-h-screen ">
+    <div className="flex flex-col md:ml-64 max-md:top-0 max-md:left-0 max-md:right-0 max-md:absolute items-center justify-center min-h-screen">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-center">
         {user ? (
           <div>
