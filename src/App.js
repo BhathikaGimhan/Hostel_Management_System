@@ -23,50 +23,63 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setIsLoggedIn(true);
-        setCurrentUser(user);
+    const storedUserId = localStorage.getItem("userId");
 
-        // Check if the user is registered
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-          setIsRegistered(true);
+    if (storedUserId) {
+      setIsLoggedIn(true);
+      setIsRegistered(true);
+      // checkUserRegistration(storedUserId);
+    } else {
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          setIsLoggedIn(true);
+          setCurrentUser(user);
+          localStorage.setItem("userId", user.uid);
+
+          // Check if the user is registered
+          // checkUserRegistration(user.uid);
         } else {
+          setIsLoggedIn(false);
+          setCurrentUser(null);
           setIsRegistered(false);
+          localStorage.removeItem("userId");
         }
-      } else {
-        setIsLoggedIn(false);
-        setCurrentUser(null);
-        setIsRegistered(false);
-      }
-    });
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    }
   }, []);
+
+  // const checkUserRegistration = async (uid) => {
+  //   const userDoc = await getDoc(doc(db, "users", uid));
+  //   if (userDoc.exists()) {
+  //     setIsRegistered(true);
+  //   } else {
+  //     setIsRegistered(false);
+  //   }
+  // };
 
   return (
     <Router>
-      {" "}
-      {isLoggedIn && <NavBar />}{" "}
+      {isLoggedIn && <NavBar />}
       <Routes>
-        {" "}
         {isLoggedIn ? (
           isRegistered ? (
             <>
-              <Route path="/" element={<RoomReq />} />{" "}
-              <Route path="/admin" element={<Admin />} />{" "}
-              <Route path="/student" element={<StudentViewPage />} />{" "}
-              <Route path="/register" element={<Navigate to="/" replace />} />{" "}
-              <Route path="/login" element={<Navigate to="/" replace />} />{" "}
+              <Route path="/" element={<RoomReq />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/student" element={<StudentViewPage />} />
+              <Route path="/register" element={<Navigate to="/" replace />} />
+              {/* <Route path="/login" element={<Navigate to="/" replace />} /> */}
+              <Route path="/login" element={<RegistrationForm />} />
             </>
           ) : (
             <Route path="/*" element={<RegistrationForm />} />
           )
         ) : (
           <Route path="/*" element={<GoogleLogin />} />
-        )}{" "}
-      </Routes>{" "}
+        )}
+      </Routes>
     </Router>
   );
 }
