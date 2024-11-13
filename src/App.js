@@ -63,6 +63,7 @@ function App() {
                 isRegistered ? (
                   <>
                     <Route path="/" element={<AdminDashBoard />} />
+                    <Route path="/roomreq" element={<RoomReq />} />
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/student" element={<StudentViewPage />} />
                     <Route

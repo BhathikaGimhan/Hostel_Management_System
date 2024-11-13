@@ -32,16 +32,16 @@ const ManageRooms = () => {
       <table className="min-w-full border border-gray-300">
         <thead>
           <tr>
-            <th className="border px-4 py-2 text-left font-semibold text-gray-600">
+            <th className="border px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Room Name
             </th>
-            <th className="border px-4 py-2 text-left font-semibold text-gray-600">
+            <th className="border px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Capacity
             </th>
-            <th className="border px-4 py-2 text-left font-semibold text-gray-600">
+            <th className="border px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Occupants
             </th>
-            <th className="border px-4 py-2 text-left font-semibold text-gray-600">
+            <th className="border px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Actions
             </th>
           </tr>
@@ -56,10 +56,10 @@ const ManageRooms = () => {
           ) : (
             rooms.map((room) => (
               <tr key={room.id} className="border-b border-gray-200">
-                <td className="px-4 py-2">{room.room}</td>
-                <td className="px-4 py-2">{room.capacity}</td>
-                <td className="px-4 py-2">{room.occupants}</td>
-                <td className="px-4 py-2">
+                <td className="border-r px-4 py-2">{room.room}</td>
+                <td className="border-r px-4 py-2">{room.capacity}</td>
+                <td className="border-r px-4 py-2">{room.occupants}</td>
+                <td className="border-r px-4 py-2">
                   <button
                     onClick={() => handleDeleteRoom(room.id)}
                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
