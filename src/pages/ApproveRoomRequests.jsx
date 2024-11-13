@@ -25,6 +25,7 @@ const ApproveRoomRequests = () => {
         id: doc.id,
         studentId: doc.data().studentId,
         roomId: doc.data().roomId,
+        roomName: doc.data().roomName,
       }));
       console.log(requestsList);
       setRequests(requestsList);
@@ -109,7 +110,7 @@ const ApproveRoomRequests = () => {
             requests.map((request) => (
               <tr key={request.id}>
                 <td className="border px-4 py-2">{request.studentId}</td>
-                <td className="border px-4 py-2">{request.roomId}</td>
+                <td className="border px-4 py-2">{request.roomName}</td>
                 <td className="border px-4 py-2">
                   <button
                     onClick={() =>

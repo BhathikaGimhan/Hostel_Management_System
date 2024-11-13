@@ -66,6 +66,14 @@ const RoomReq = () => {
       return;
     }
 
+    // Find the selected room from the rooms array using selectedRoomId
+    const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
+    if (!selectedRoom) {
+      alert("Selected room not found.");
+      return;
+    }
+
+    // Check if there’s an existing request for this student
     const existingRequest = requests.find(
       (req) => req.studentId === indexNumber
     );
@@ -78,10 +86,12 @@ const RoomReq = () => {
       studentId: indexNumber,
       studentName: studentName,
       studentEmail: studentEmail,
-      roomId: selectedRoomId,
+      roomId: selectedRoom.id,
+      roomName: selectedRoom.room, // Use room.room for roomName
       request: "pending",
     };
 
+    // Add request to Firestore and update local state
     addDoc(collection(db, "requests"), newRequest)
       .then(() => {
         setRequests([...requests, { id: requests.length + 1, ...newRequest }]);
