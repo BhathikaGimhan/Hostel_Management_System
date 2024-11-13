@@ -95,7 +95,7 @@ const ApproveRoomRequests = () => {
         <thead>
           <tr>
             <th className="border px-4 py-2">Student ID</th>
-            <th className="border px-4 py-2">Room ID</th>
+            <th className="border px-4 py-2">Room Name</th>
             <th className="border px-4 py-2">Actions</th>
           </tr>
         </thead>
