@@ -95,7 +95,7 @@ const RoomReq = () => {
   return (
     <div className="flex">
       {/* Main Content */}
-      <div className="flex-1 max-w-5xl md:ml-64 mx-auto p-6">
+      <div className="flex-1 max-w-5xl md:ml-64 mx-auto p-6 justify-between">
         {/* Apply for Room and Right Column Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Apply for a Room Form */}

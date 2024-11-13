@@ -16,6 +16,10 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./firebase/firebase.js";
 import { doc, getDoc } from "firebase/firestore";
+import TopNavBar from "./components/TopNavBar.jsx";
+import Header from "./components/Header.jsx";
+import Sidebar from "./components/Sidebar.jsx";
+import AdminDashBoard from "./pages/AdminDashBoard.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -48,27 +52,38 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      {isLoggedIn && <NavBar />}
-      <Routes>
-        {isLoggedIn ? (
-          isRegistered ? (
-            <>
-              <Route path="/" element={<RoomReq />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/student" element={<StudentViewPage />} />
-              <Route path="/register" element={<Navigate to="/" replace />} />
-              {/* <Route path="/login" element={<Navigate to="/" replace />} /> */}
-              <Route path="/login" element={<RegistrationForm />} />
-            </>
-          ) : (
-            <Route path="/*" element={<RegistrationForm />} />
-          )
-        ) : (
-          <Route path="/*" element={<GoogleLogin />} />
-        )}
-      </Routes>
-    </Router>
+    <div className="flex min-h-screen bg-gray-50">
+      {isLoggedIn && <Sidebar />}
+
+      <div className="flex-1">
+        <Header />
+        <main className="p-6">
+          <Router>
+            <Routes>
+              {isLoggedIn ? (
+                isRegistered ? (
+                  <>
+                    <Route path="/" element={<AdminDashBoard />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/student" element={<StudentViewPage />} />
+                    <Route
+                      path="/register"
+                      element={<Navigate to="/" replace />}
+                    />
+                    {/* <Route path="/login" element={<Navigate to="/" replace />} /> */}
+                    <Route path="/login" element={<RegistrationForm />} />
+                  </>
+                ) : (
+                  <Route path="/*" element={<RegistrationForm />} />
+                )
+              ) : (
+                <Route path="/*" element={<GoogleLogin />} />
+              )}
+            </Routes>
+          </Router>
+        </main>
+      </div>
+    </div>
   );
 }
 
