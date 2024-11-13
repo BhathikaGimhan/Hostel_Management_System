@@ -96,59 +96,70 @@ const RoomReq = () => {
   };
 
   return (
-    <div className="max-w-4xl md:ml-64 mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Hostel Management System</h1>
+    <div className="max-w-4xl md:ml-64 p-4 flex flex-col md:flex-row">
+      <div className="flex flex-col md:w-1/2 bg-white p-4 rounded shadow-md mr-4">
+        <h2 className="text-2xl font-bold mb-4 text-[#03C988]">
+          Apply for a Room
+        </h2>
+        <label className="text-lg font-bold mb-2 text-gray-600">
+          Index Number:
+        </label>
+        <input
+          type="text"
+          value={indexNumber}
+          onChange={(e) => setIndexNumber(e.target.value)}
+          className="p-2 border border-gray-400 rounded mb-4 focus:outline-none focus:ring focus:ring-[#03C988]"
+        />
 
-      <div className="flex flex-col md:flex-row justify-between mb-4">
-        <div className="flex flex-col md:w-1/2">
-          <label className="text-lg font-bold mb-2">Index Number:</label>
-          <input
-            type="text"
-            value={indexNumber}
-            onChange={(e) => setIndexNumber(e.target.value)}
-            className="p-2 border border-gray-400 rounded mb-4"
-          />
+        <label className="text-lg font-bold mb-2 text-gray-600">
+          Student Name:
+        </label>
+        <input
+          type="text"
+          value={studentName}
+          onChange={(e) => setStudentName(e.target.value)}
+          className="p-2 border border-gray-400 rounded mb-4 focus:outline-none focus:ring focus:ring-[#03C988]"
+        />
 
-          <label className="text-lg font-bold mb-2">Student Name:</label>
-          <input
-            type="text"
-            value={studentName}
-            onChange={(e) => setStudentName(e.target.value)}
-            className="p-2 border border-gray-400 rounded mb-4"
-          />
+        <label className="text-lg font-bold mb-2 text-gray-600">
+          Student Email:
+        </label>
+        <input
+          type="email"
+          value={studentEmail}
+          onChange={(e) => setStudentEmail(e.target.value)}
+          className="p-2 border border-gray-400 rounded mb-4 focus:outline-none focus:ring focus:ring-[#03C988]"
+        />
 
-          <label className="text-lg font-bold mb-2">Student Email:</label>
-          <input
-            type="email"
-            value={studentEmail}
-            onChange={(e) => setStudentEmail(e.target.value)}
-            className="p-2 border border-gray-400 rounded mb-4"
-          />
+        <label className="text-lg font-bold mb-2 text-gray-600">
+          Select Room:
+        </label>
+        <select
+          value={selectedRoomId || ""}
+          onChange={(e) => setSelectedRoomId(e.target.value)}
+          className="p-2 border border-gray-400 rounded mb-4 focus:outline-none focus:ring focus:ring-[#03C988]"
+        >
+          <option value="">Select Room</option>
+          {rooms.map((room) => (
+            <option key={room.id} value={room.id}>
+              {room.room} ({room.occupants}/{room.capacity})
+            </option>
+          ))}
+        </select>
 
-          <label className="text-lg font-bold mb-2">Select Room:</label>
-          <select
-            value={selectedRoomId || ""}
-            onChange={(e) => setSelectedRoomId(e.target.value)}
-            className="p-2 border border-gray-400 rounded mb-4"
-          >
-            <option value="">Select Room</option>
-            {rooms.map((room) => (
-              <option key={room.id} value={room.id}>
-                {room.room} ({room.occupants}/{room.capacity})
-              </option>
-            ))}
-          </select>
+        <button
+          onClick={handleApplyForRoom}
+          className="bg-[#03C988] hover:bg-[#03B37A] text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-[#03C988]"
+        >
+          Apply for Room
+        </button>
+      </div>
 
-          <button
-            onClick={handleApplyForRoom}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Apply for Room
-          </button>
-        </div>
-
-        <div className="flex flex-col md:w-1/2">
-          <h2 className="text-2xl font-bold mb-4">Available Rooms:</h2>
+      <div className="flex flex-col md:w-1/2">
+        <div className="bg-white p-4 rounded shadow-md mb-4">
+          <h2 className="text-2xl font-bold mb-4 text-[#03C988]">
+            Available Rooms
+          </h2>
           <ul>
             {rooms.length === 0 ? (
               <li>No available rooms.</li>
@@ -161,17 +172,17 @@ const RoomReq = () => {
             )}
           </ul>
         </div>
-      </div>
 
-      <div className="flex flex-col">
-        <h2 className="text-2xl font-bold mb-4">Students:</h2>
-        <ul>
-          {students.map((student) => (
-            <li key={student.id}>
-              {student.name} (Room {student.roomId})
-            </li>
-          ))}
-        </ul>
+        <div className="bg-white p-4 rounded shadow-md">
+          <h2 className="text-2xl font-bold mb-4 text-[#03C988]">Students</h2>
+          <ul>
+            {students.map((student) => (
+              <li key={student.id}>
+                {student.name} (Room {student.roomId})
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
