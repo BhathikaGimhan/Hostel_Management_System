@@ -12,7 +12,7 @@ export default function Admin() {
   };
 
   return (
-    <div className="flex flex-1 max-w-5xl md:ml-64 mx-auto p-6">
+    <div className="flex flex-1 p-6">
       <div className="w-full">
         {/* Tab Navigation */}
         <div className="flex border-b border-gray-200 mb-6">
@@ -20,8 +20,8 @@ export default function Admin() {
             onClick={() => handleTabClick("approve")}
             className={`flex-1 py-3 text-center font-semibold ${
               activeTab === "approve"
-                ? "border-b-2 border-[#31a831] text-[#31a831]"
-                : "text-gray-600 hover:text-[#31a831]"
+                ? "border-b-2 border-[#003366] text-[#003366]"
+                : "text-gray-600 hover:text-[#2c5093]"
             }`}
           >
             Approve Rooms
@@ -30,8 +30,8 @@ export default function Admin() {
             onClick={() => handleTabClick("add")}
             className={`flex-1 py-3 text-center font-semibold ${
               activeTab === "add"
-                ? "border-b-2 border-[#31a831] text-[#31a831]"
-                : "text-gray-600 hover:text-[#31a831]"
+                ? "border-b-2 border-[#003366] text-[#003366]"
+                : "text-gray-600 hover:text-[#2c5093]"
             }`}
           >
             Add Room
@@ -40,8 +40,8 @@ export default function Admin() {
             onClick={() => handleTabClick("manage")}
             className={`flex-1 py-3 text-center font-semibold ${
               activeTab === "manage"
-                ? "border-b-2 border-[#31a831] text-[#31a831]"
-                : "text-gray-600 hover:text-[#31a831]"
+                ? "border-b-2 border-[#003366] text-[#003366]"
+                : "text-gray-600 hover:text-[#2c5093]"
             }`}
           >
             Manage Rooms

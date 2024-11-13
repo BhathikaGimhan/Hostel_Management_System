@@ -28,7 +28,7 @@ const ManageRooms = () => {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-3xl font-bold text-[#31a831] mb-6">Manage Rooms</h2>
+      <h2 className="text-3xl font-bold text-[#003366] mb-6">Manage Rooms</h2>
       <table className="min-w-full border border-gray-300">
         <thead>
           <tr>

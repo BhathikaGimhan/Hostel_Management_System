@@ -69,58 +69,60 @@ const ApproveRoomRequests = () => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-3xl font-bold text-[#31a831] mb-6">
-        Approve Room Requests
-      </h2>
-      <table className="min-w-full border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2 text-left font-semibold text-gray-600">
-              Student ID
-            </th>
-            <th className="border px-4 py-2 text-left font-semibold text-gray-600">
-              Room Name
-            </th>
-            <th className="border px-4 py-2 text-left font-semibold text-gray-600">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {requests.length === 0 ? (
+    <>
+      <div className="bg-white shadow-md rounded-lg p-6">
+        <h2 className="text-3xl font-bold text-[#003366] mb-6">
+          Approve Room Requests
+        </h2>
+        <table className="min-w-full border border-gray-300">
+          <thead>
             <tr>
-              <td colSpan="3" className="text-center p-4 text-gray-600">
-                No pending requests
-              </td>
+              <th className="border px-4 py-2 text-left font-semibold text-gray-600">
+                Student ID
+              </th>
+              <th className="border px-4 py-2 text-left font-semibold text-gray-600">
+                Room Name
+              </th>
+              <th className="border px-4 py-2 text-left font-semibold text-gray-600">
+                Actions
+              </th>
             </tr>
-          ) : (
-            requests.map((request) => (
-              <tr key={request.id} className="border-b border-gray-200">
-                <td className="px-4 py-2">{request.studentId}</td>
-                <td className="px-4 py-2">{request.roomName}</td>
-                <td className="px-4 py-2">
-                  <button
-                    onClick={() =>
-                      handleApproveRequest(request.id, request.roomId)
-                    }
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleNotApproveRequest(request.id)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                  >
-                    Not Approve
-                  </button>
+          </thead>
+          <tbody>
+            {requests.length === 0 ? (
+              <tr>
+                <td colSpan="3" className="text-center p-4 text-gray-600">
+                  No pending requests
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </div>
+            ) : (
+              requests.map((request) => (
+                <tr key={request.id} className="border-b border-gray-200">
+                  <td className="px-4 py-2">{request.studentId}</td>
+                  <td className="px-4 py-2">{request.roomName}</td>
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() =>
+                        handleApproveRequest(request.id, request.roomId)
+                      }
+                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleNotApproveRequest(request.id)}
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                    >
+                      Not Approve
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 
