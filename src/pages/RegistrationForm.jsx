@@ -13,6 +13,7 @@ const RegistrationForm = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
+  const [load, setloading] = useState(false);
   const [additionalInfo, setAdditionalInfo] = useState({
     phone: "",
     indexNumber: "",
@@ -35,13 +36,17 @@ const RegistrationForm = () => {
 
   const checkRegistration = async (uid) => {
     try {
+      setloading(true);
+      console.log(load);
       const userQuery = query(collection(db, "users"), where("uid", "==", uid));
       const querySnapshot = await getDocs(userQuery);
       if (!querySnapshot.empty) {
         setIsRegistered(true);
         localStorage.setItem("userId", uid);
+        setloading(false);
       } else {
         setIsRegistered(false);
+        setloading(false);
       }
     } catch (error) {
       console.error("Error checking registration:", error);
@@ -116,52 +121,70 @@ const RegistrationForm = () => {
             <p className="text-gray-700 mb-2">Email: {user.email}</p>
             <p className="text-gray-700 mb-4">User ID: {user.uid}</p>
 
-            {!isRegistered && (
-              <div className="my-4 text-left">
-                <label className="block mb-2">Phone Number:</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={additionalInfo.phone}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border border-gray-300 rounded mb-4"
-                  placeholder="Enter your phone number"
-                  required
-                />
-                <label className="block mb-2">Index Number:</label>
-                <input
-                  type="text"
-                  name="indexNumber"
-                  value={additionalInfo.indexNumber}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border border-gray-300 rounded mb-4"
-                  placeholder="Enter your index number"
-                  required
-                />
-                <label className="block mb-2">Other Details:</label>
-                <input
-                  type="text"
-                  name="otherDetail"
-                  value={additionalInfo.otherDetail}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border border-gray-300 rounded mb-4"
-                  placeholder="Enter additional details"
-                />
-              </div>
-            )}
+            {!load ? (
+              <>
+                {!isRegistered && (
+                  <div className="my-4 text-left">
+                    <label className="block mb-2">Phone Number:</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={additionalInfo.phone}
+                      onChange={handleInputChange}
+                      className="w-full p-2 border border-gray-300 rounded mb-4"
+                      placeholder="Enter your phone number"
+                      required
+                    />
+                    <label className="block mb-2">Index Number:</label>
+                    <input
+                      type="text"
+                      name="indexNumber"
+                      value={additionalInfo.indexNumber}
+                      onChange={handleInputChange}
+                      className="w-full p-2 border border-gray-300 rounded mb-4"
+                      placeholder="Enter your index number"
+                      required
+                    />
+                    <label className="block mb-2">Other Details:</label>
+                    <input
+                      type="text"
+                      name="otherDetail"
+                      value={additionalInfo.otherDetail}
+                      onChange={handleInputChange}
+                      className="w-full p-2 border border-gray-300 rounded mb-4"
+                      placeholder="Enter additional details"
+                    />
+                  </div>
+                )}
 
-            {!isRegistered && (
-              <button
-                onClick={handleRegistration}
-                disabled={loading}
-                className={`w-full p-3 text-white font-bold rounded-lg ${
-                  loading
-                    ? "bg-blue-300 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                }`}
-              >
-                {loading ? "Registering..." : "Complete Registration"}
-              </button>
+                {!isRegistered && (
+                  <button
+                    onClick={handleRegistration}
+                    disabled={loading}
+                    className={`w-full p-3 text-white font-bold rounded-lg ${
+                      loading
+                        ? "bg-blue-300 cursor-not-allowed"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                  >
+                    {loading ? (
+                      <div className="flex justify-center items-center">
+                        <div className="w-6 h-6 border-4 border-transparent text-blue-400 text-2xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full"></div>
+                      </div>
+                    ) : (
+                      "Complete Registration"
+                    )}
+                  </button>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="flex-col gap-4 w-full flex items-center justify-center">
+                  <div className="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full">
+                    <div className="w-16 h-16 border-4 border-transparent text-red-400 text-2xl animate-spin flex items-center justify-center border-t-red-400 rounded-full" />
+                  </div>
+                </div>
+              </>
             )}
 
             <button

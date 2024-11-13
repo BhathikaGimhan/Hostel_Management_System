@@ -47,15 +47,6 @@ function App() {
     }
   }, []);
 
-  // const checkUserRegistration = async (uid) => {
-  //   const userDoc = await getDoc(doc(db, "users", uid));
-  //   if (userDoc.exists()) {
-  //     setIsRegistered(true);
-  //   } else {
-  //     setIsRegistered(false);
-  //   }
-  // };
-
   return (
     <Router>
       {isLoggedIn && <NavBar />}

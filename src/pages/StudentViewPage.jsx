@@ -5,7 +5,6 @@ import { db } from "../firebase/firebase"; // Firestore instance
 const StudentViewPage = ({ studentId }) => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchRequests = async () => {
       try {
