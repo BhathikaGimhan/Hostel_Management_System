@@ -35,9 +35,6 @@ function App() {
           setIsLoggedIn(true);
           setCurrentUser(user);
           localStorage.setItem("userId", user.uid);
-
-          // Check if the user is registered
-          // checkUserRegistration(user.uid);
         } else {
           setIsLoggedIn(false);
           setCurrentUser(null);
