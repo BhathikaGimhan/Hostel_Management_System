@@ -16,7 +16,6 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./firebase/firebase.js";
 import { doc, getDoc } from "firebase/firestore";
-import TopNavBar from "./components/TopNavBar.jsx";
 import Header from "./components/Header.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import AdminDashBoard from "./pages/AdminDashBoard.jsx";

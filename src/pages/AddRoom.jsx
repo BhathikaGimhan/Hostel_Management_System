@@ -34,7 +34,7 @@ const AddRoom = () => {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-8 mb-6">
-      <h2 className="text-3xl font-bold text-[#31a831] mb-6">Add New Room</h2>
+      <h2 className="text-3xl font-bold text-[#003366] mb-6">Add New Room</h2>
       <form onSubmit={handleAddRoom} className="space-y-6">
         <div>
           <label className="text-lg font-semibold text-gray-600">
@@ -44,7 +44,7 @@ const AddRoom = () => {
             type="text"
             value={roomName}
             onChange={(e) => setRoomName(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#31a831]"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
             placeholder="Enter room name"
           />
         </div>
@@ -56,7 +56,7 @@ const AddRoom = () => {
             type="number"
             value={capacity}
             onChange={(e) => setCapacity(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#31a831]"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
             placeholder="Enter room capacity"
           />
         </div>
@@ -68,13 +68,13 @@ const AddRoom = () => {
             type="number"
             value={occupants}
             onChange={(e) => setOccupants(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#31a831]"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
             placeholder="Enter current number of occupants"
           />
         </div>
         <button
           type="submit"
-          className="w-full bg-[#31a831] hover:bg-[#228c22] text-white py-3 rounded-lg font-bold text-lg focus:outline-none focus:ring-2 focus:ring-[#31a831]"
+          className="w-full bg-[#003366] hover:bg-[#2c5093] text-white py-3 rounded-lg font-bold text-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
         >
           Add Room
         </button>
