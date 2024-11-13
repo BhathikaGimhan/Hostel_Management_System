@@ -170,17 +170,39 @@ const RoomReq = () => {
               <h2 className="text-2xl font-bold text-[#31a831] mb-4">
                 Available Rooms
               </h2>
-              <ul>
-                {rooms.length === 0 ? (
-                  <li className="text-gray-600">No available rooms.</li>
-                ) : (
-                  rooms.map((room) => (
-                    <li key={room.id} className="p-2 border-b border-gray-200">
-                      Room {room.room} ({room.occupants}/{room.capacity})
-                    </li>
-                  ))
-                )}
-              </ul>
+              <table className="min-w-full table-auto">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2 text-left text-lg font-semibold text-gray-700">
+                      Room Name
+                    </th>
+                    <th className="px-4 py-2 text-left text-lg font-semibold text-gray-700">
+                      Availability
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rooms.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="2"
+                        className="text-center py-2 text-gray-600"
+                      >
+                        No available rooms.
+                      </td>
+                    </tr>
+                  ) : (
+                    rooms.map((room) => (
+                      <tr key={room.id} className="border-b border-gray-200">
+                        <td className="px-4 py-2">{room.room}</td>
+                        <td className="px-4 py-2">
+                          {room.occupants}/{room.capacity}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
 
             {/* Students */}
