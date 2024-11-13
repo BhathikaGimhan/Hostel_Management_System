@@ -95,12 +95,12 @@ const RoomReq = () => {
   return (
     <div className="flex">
       {/* Main Content */}
-      <div className="flex-1 max-w-5xl mx-auto p-6">
+      <div className="flex-1 max-w-5xl md:ml-64 mx-auto p-6">
         {/* Apply for Room and Right Column Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Apply for a Room Form */}
           <div className="bg-white shadow-md rounded-lg p-8">
-            <h2 className="text-3xl font-bold text-[#03C988] mb-6">
+            <h2 className="text-3xl font-bold text-[#31a831] mb-6">
               Apply for a Room
             </h2>
             <form className="space-y-6">
@@ -112,7 +112,7 @@ const RoomReq = () => {
                   type="text"
                   value={indexNumber}
                   onChange={(e) => setIndexNumber(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#03C988]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#31a831]"
                 />
               </div>
               <div>
@@ -123,7 +123,7 @@ const RoomReq = () => {
                   type="text"
                   value={studentName}
                   onChange={(e) => setStudentName(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#03C988]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#31a831]"
                 />
               </div>
               <div>
@@ -134,7 +134,7 @@ const RoomReq = () => {
                   type="email"
                   value={studentEmail}
                   onChange={(e) => setStudentEmail(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#03C988]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#31a831]"
                 />
               </div>
               <div>
@@ -144,7 +144,7 @@ const RoomReq = () => {
                 <select
                   value={selectedRoomId || ""}
                   onChange={(e) => setSelectedRoomId(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#03C988]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#31a831]"
                 >
                   <option value="">Select Room</option>
                   {rooms.map((room) => (
@@ -156,7 +156,7 @@ const RoomReq = () => {
               </div>
               <button
                 onClick={handleApplyForRoom}
-                className="w-full bg-[#03C988] hover:bg-[#028E68] text-white py-3 rounded-lg font-bold text-lg focus:outline-none focus:ring-2 focus:ring-[#03C988]"
+                className="w-full bg-[#31a831] hover:bg-[#228c22] text-white py-3 rounded-lg font-bold text-lg focus:outline-none focus:ring-2 focus:ring-[#31a831]"
               >
                 Apply for Room
               </button>
@@ -167,7 +167,7 @@ const RoomReq = () => {
           <div className="flex flex-col space-y-6">
             {/* Available Rooms */}
             <div className="bg-white shadow-md rounded-lg p-6">
-              <h2 className="text-2xl font-bold text-[#03C988] mb-4">
+              <h2 className="text-2xl font-bold text-[#31a831] mb-4">
                 Available Rooms
               </h2>
               <ul>
@@ -185,7 +185,7 @@ const RoomReq = () => {
 
             {/* Students */}
             <div className="bg-white shadow-md rounded-lg p-6">
-              <h2 className="text-2xl font-bold text-[#03C988] mb-4">
+              <h2 className="text-2xl font-bold text-[#31a831] mb-4">
                 Students
               </h2>
               <ul>
