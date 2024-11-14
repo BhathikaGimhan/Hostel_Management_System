@@ -17,6 +17,7 @@ const menuItems = [
   { icon: Users, text: "Students", path: "/students" },
   { icon: Wrench, text: "Maintenance", path: "/maintenance" },
   { icon: School, text: "Book Room", path: "/roomreq" },
+  { icon: Wrench, text: "Request Maintenace", path: "/requestmaintenace" },
 ];
 
 export default function Sidebar() {

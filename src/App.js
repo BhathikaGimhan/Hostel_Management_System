@@ -21,6 +21,7 @@ import AdminDashBoard from "./pages/AdminDashBoard.jsx";
 import EntryExit from "./pages/EntryExit.jsx";
 import Students from "./pages/Students.jsx";
 import Maintenance from "./pages/Maintenance.jsx";
+import RequestMaintenace from "./pages/RequestMaintenace.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -74,6 +75,10 @@ function App() {
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/entry-exit" element={<EntryExit />} />
                     <Route path="/maintenance" element={<Maintenance />} />
+                    <Route
+                      path="/requestmaintenace"
+                      element={<RequestMaintenace />}
+                    />
                     <Route
                       path="/register"
                       element={<Navigate to="/" replace />}
