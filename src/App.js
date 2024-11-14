@@ -27,10 +27,9 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const storedUserId = localStorage.getItem("userId");
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-
     if (storedUserId) {
       setIsLoggedIn(true);
       setIsRegistered(true);
@@ -76,7 +75,6 @@ function App() {
                       path="/register"
                       element={<Navigate to="/" replace />}
                     />
-                    {/* <Route path="/login" element={<Navigate to="/" replace />} /> */}
                     <Route path="/login" element={<RegistrationForm />} />
                   </>
                 ) : (
