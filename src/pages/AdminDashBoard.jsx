@@ -7,6 +7,8 @@ function AdminDashBoard() {
   const [maintenanceCount, setMaintenanceCount] = useState(0);
   const [repairingCount, setRepairingCount] = useState(0);
   const [roomRequestsCount, setRoomRequestsCount] = useState(0);
+  const [roomAvailableCount, setRoomAvailableCount] = useState(0);
+  const [beds, setBeds] = useState(0);
 
   // Fetch maintenance requests count from Firestore
   useEffect(() => {
@@ -47,10 +49,21 @@ function AdminDashBoard() {
       }
     };
 
+    const fetchRoomAvailable = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "rooms"));
+        setRoomAvailableCount(querySnapshot.size); // Assuming each document is a request
+        setBeds(querySnapshot.size * 4);
+      } catch (error) {
+        console.error("Error fetching room requests: ", error);
+      }
+    };
+
     // Call the functions to fetch data
     fetchMaintenanceRequests();
     fetchRepairingRequests();
     fetchRoomRequests();
+    fetchRoomAvailable();
   }, []);
 
   return (
@@ -62,8 +75,8 @@ function AdminDashBoard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
           <StatCard
             title="Available Rooms"
-            value={10}
-            subtitle="40 Beds"
+            value={roomAvailableCount}
+            subtitle={`${beds} Beds`}
             className="bg-purple-50"
           />
           <StatCard
