@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   BedDouble,
@@ -11,22 +10,21 @@ import {
   Menu as MenuIcon,
 } from "lucide-react";
 
-export default function Sidebar() {
-  const menuItems = [
-    { icon: LayoutDashboard, text: "Dashboard", path: "/" },
-    { icon: BedDouble, text: "Room Requests", path: "/admin" },
-    { icon: DoorOpen, text: "Entry/Exit", path: "/entry-exit" },
-    { icon: Users, text: "Students", path: "/students" },
-    { icon: Wrench, text: "Maintenance", path: "/login" },
-  ];
+const menuItems = [
+  { icon: LayoutDashboard, text: "Dashboard", path: "/" },
+  { icon: BedDouble, text: "Room Requests", path: "/admin" },
+  { icon: DoorOpen, text: "Entry/Exit", path: "/entry-exit" },
+  { icon: Users, text: "Students", path: "/students" },
+  { icon: Wrench, text: "Maintenance", path: "/maintenance" },
+  { icon: School, text: "Book Room", path: "/roomreq" },
+];
 
-  const location = useLocation();
-  const currentPath = location.pathname;
+export default function Sidebar() {
+  const currentPath = window.location.pathname;
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
-    // Redirect to login page
-    window.location.href = "/login";
+    window.location.href = "/login"; // Redirect to login page
   };
 
   return (
@@ -38,12 +36,12 @@ export default function Sidebar() {
         } md:translate-x-0 md:relative`}
       >
         <div className="p-6">
-          <h1 className="justify-center text-center text-5xl font-bold text-black mt-6">
+          <h1 className="justify-center text-center text-4xl font-bold text-black mt-6 ">
             HMS
           </h1>
         </div>
 
-        {/* Main content of the sidebar */}
+        {/* Main content of the sidebar with flex-grow to push the logout button to the bottom */}
         <div className="flex-1 flex flex-col">
           <div className="overflow-y-auto">
             <p className="px-6 py-2 text-xs font-medium text-gray-400 uppercase">
@@ -51,9 +49,9 @@ export default function Sidebar() {
             </p>
             <nav className="mt-2">
               {menuItems.map((item, index) => (
-                <Link
+                <a
                   key={index}
-                  to={item.path}
+                  href={item.path}
                   className={`flex items-center px-6 py-3 text-sm ${
                     currentPath === item.path
                       ? "text-blue-600 bg-blue-50"
@@ -62,7 +60,7 @@ export default function Sidebar() {
                 >
                   <item.icon className="w-5 h-5 mr-3" />
                   {item.text}
-                </Link>
+                </a>
               ))}
             </nav>
           </div>
