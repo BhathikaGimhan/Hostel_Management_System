@@ -24,6 +24,7 @@ const ApproveRoomRequests = () => {
     const unsubscribeRequests = onSnapshot(requestsQuery, (snapshot) => {
       const requestsList = snapshot.docs.map((doc) => ({
         id: doc.id,
+        studentName: doc.data().studentName,
         studentId: doc.data().studentId,
         roomId: doc.data().roomId,
         roomName: doc.data().roomName,
@@ -87,6 +88,9 @@ const ApproveRoomRequests = () => {
         <thead>
           <tr>
             <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+              Student Name
+            </th>
+            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Student ID
             </th>
             <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
@@ -110,6 +114,9 @@ const ApproveRoomRequests = () => {
                 key={request.id}
                 className="border-b bg-[#E6EBF0] border-[#E1E1E1]"
               >
+                <td className="px-4 py-2 text-center border-gray-300">
+                  {request.studentName}
+                </td>
                 <td className="px-4 py-2 text-center border-gray-300">
                   {request.studentId}
                 </td>
