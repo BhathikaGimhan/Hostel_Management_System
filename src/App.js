@@ -8,7 +8,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import NavBar from "./components/NavBar.jsx";
+import Loading from "./components/Loading.jsx";
 import StudentViewPage from "./pages/StudentViewPage.jsx";
 import GoogleLogin from "./pages/GoogleLogin.jsx";
 import RegistrationForm from "./pages/RegistrationForm.jsx";
@@ -25,12 +25,15 @@ import Maintenance from "./pages/Maintenance.jsx";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
-  const storedUserId = localStorage.getItem("userId") || null;
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+
     if (storedUserId) {
       setIsLoggedIn(true);
       setIsRegistered(true);
+      setIsLoading(false);
     } else {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -41,11 +44,17 @@ function App() {
           setIsRegistered(false);
           localStorage.removeItem("userId");
         }
+        setIsLoading(false); // Finish loading once auth state is determined
       });
 
       return () => unsubscribe();
     }
   }, []);
+
+  // Display loading spinner while checking authentication status
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <Router>
@@ -75,7 +84,7 @@ function App() {
                   <Route path="/*" element={<RegistrationForm />} />
                 )
               ) : (
-                <Route path="/*" element={<GoogleLogin />} />
+                <Route path="/*" element={<RegistrationForm />} />
               )}
             </Routes>
           </main>

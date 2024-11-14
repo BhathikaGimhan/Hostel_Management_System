@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import Loading from "../components/Loading";
 
 const RegistrationForm = () => {
   const [user, setUser] = useState(null);
@@ -22,11 +23,14 @@ const RegistrationForm = () => {
   const provider = new GoogleAuthProvider();
 
   useEffect(() => {
+    setloading(true);
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+
         await checkRegistration(currentUser.uid);
         console.log("zzz");
+        setloading(false);
       } else {
         setUser(null);
         localStorage.removeItem("userId");
@@ -76,6 +80,7 @@ const RegistrationForm = () => {
           setUser(null);
           localStorage.removeItem("userId");
           setIsRegistered(false);
+          window.location.reload();
         })
         .catch((error) => console.error("Error during logout:", error));
     }
@@ -101,6 +106,7 @@ const RegistrationForm = () => {
       alert("Registration successful");
       localStorage.setItem("userId", user.uid);
       setIsRegistered(true);
+      window.location.reload();
     } catch (error) {
       console.error("Error registering user:", error);
       alert("Registration failed, please try again.");
@@ -183,11 +189,7 @@ const RegistrationForm = () => {
               </>
             ) : (
               <>
-                <div className="flex-col gap-4 w-full flex items-center justify-center">
-                  <div className="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full">
-                    <div className="w-16 h-16 border-4 border-transparent text-red-400 text-2xl animate-spin flex items-center justify-center border-t-red-400 rounded-full" />
-                  </div>
-                </div>
+                <Loading />
               </>
             )}
 
@@ -198,6 +200,8 @@ const RegistrationForm = () => {
               Log Out
             </button>
           </div>
+        ) : load ? (
+          <Loading />
         ) : (
           <div>
             <h1 className="text-2xl font-bold mb-4">Sign In</h1>

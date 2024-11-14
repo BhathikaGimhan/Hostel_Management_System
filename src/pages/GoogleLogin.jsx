@@ -1,5 +1,6 @@
 // src/pages/GoogleLogin.jsx
 import React, { useState, useEffect } from "react";
+import Loading from "../components/Loading";
 import { auth } from "../firebase/firebase"; // Ensure correct path to firebase config
 import {
   signInWithPopup,
@@ -11,13 +12,16 @@ import {
 const GoogleLogin = () => {
   const [user, setUser] = useState(null);
   const provider = new GoogleAuthProvider();
+  const [loading, isLoading] = useState(false);
 
   useEffect(() => {
     // Check for user authentication state on component mount
+    isLoading(true);
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
         // Store user ID in localStorage
+        isLoading(true);
         localStorage.setItem("userId", currentUser.uid);
       } else {
         setUser(null);
@@ -38,6 +42,7 @@ const GoogleLogin = () => {
       // Store user ID in localStorage
       localStorage.setItem("userId", user.uid);
       console.log("Logged in user:", user);
+      window.location.reload();
     } catch (error) {
       console.error("Error during Google Sign-In:", error);
     }
@@ -51,6 +56,7 @@ const GoogleLogin = () => {
           setUser(null); // Clear the user state on logout
           localStorage.removeItem("userId"); // Clear localStorage
           console.log("User logged out successfully.");
+          window.location.reload();
         })
         .catch((error) => {
           console.error("Error during logout:", error);
@@ -80,6 +86,8 @@ const GoogleLogin = () => {
               Log Out
             </button>
           </div>
+        ) : loading ? (
+          <Loading />
         ) : (
           <div>
             <h1 className="text-2xl font-bold mb-4">Sign In</h1>
