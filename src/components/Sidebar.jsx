@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   BedDouble,
@@ -18,11 +19,14 @@ export default function Sidebar() {
     { icon: Users, text: "Students", path: "/students" },
     { icon: Wrench, text: "Maintenance", path: "/login" },
   ];
-  const currentPath = window.location.pathname;
+
+  const location = useLocation();
+  const currentPath = location.pathname;
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
-    window.location.href = "/login"; // Redirect to login page
+    // Redirect to login page
+    window.location.href = "/login";
   };
 
   return (
@@ -39,7 +43,7 @@ export default function Sidebar() {
           </h1>
         </div>
 
-        {/* Main content of the sidebar with flex-grow to push the logout button to the bottom */}
+        {/* Main content of the sidebar */}
         <div className="flex-1 flex flex-col">
           <div className="overflow-y-auto">
             <p className="px-6 py-2 text-xs font-medium text-gray-400 uppercase">
@@ -47,9 +51,9 @@ export default function Sidebar() {
             </p>
             <nav className="mt-2">
               {menuItems.map((item, index) => (
-                <a
+                <Link
                   key={index}
-                  href={item.path}
+                  to={item.path}
                   className={`flex items-center px-6 py-3 text-sm ${
                     currentPath === item.path
                       ? "text-blue-600 bg-blue-50"
@@ -58,7 +62,7 @@ export default function Sidebar() {
                 >
                   <item.icon className="w-5 h-5 mr-3" />
                   {item.text}
-                </a>
+                </Link>
               ))}
             </nav>
           </div>

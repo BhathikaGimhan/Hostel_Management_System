@@ -14,8 +14,7 @@ import GoogleLogin from "./pages/GoogleLogin.jsx";
 import RegistrationForm from "./pages/RegistrationForm.jsx";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "./firebase/firebase.js";
-import { doc, getDoc } from "firebase/firestore";
+import { auth } from "./firebase/firebase.js";
 import Header from "./components/Header.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import AdminDashBoard from "./pages/AdminDashBoard.jsx";
@@ -26,23 +25,19 @@ import Maintenance from "./pages/Maintenance.jsx";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
-  const storedUserId = localStorage.getItem("userId");
+  const storedUserId = localStorage.getItem("userId") || null;
 
   useEffect(() => {
     if (storedUserId) {
       setIsLoggedIn(true);
       setIsRegistered(true);
-      // checkUserRegistration(storedUserId);
     } else {
-      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user) {
           setIsLoggedIn(true);
-          setCurrentUser(user);
-          localStorage.setItem("userId", user.uid);
+          setIsRegistered(false);
         } else {
           setIsLoggedIn(false);
-          setCurrentUser(null);
           setIsRegistered(false);
           localStorage.removeItem("userId");
         }
@@ -53,13 +48,12 @@ function App() {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {isLoggedIn && <Sidebar />}
-
-      <div className="flex-1">
-        <Header />
-        <main className="p-6">
-          <Router>
+    <Router>
+      <div className="flex min-h-screen bg-gray-50">
+        {isLoggedIn && <Sidebar />}
+        <div className="flex-1">
+          {isLoggedIn && <Header />}
+          <main className="p-6">
             <Routes>
               {isLoggedIn ? (
                 isRegistered ? (
@@ -84,10 +78,10 @@ function App() {
                 <Route path="/*" element={<GoogleLogin />} />
               )}
             </Routes>
-          </Router>
-        </main>
+          </main>
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }
 
