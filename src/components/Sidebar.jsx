@@ -36,7 +36,7 @@ export default function Sidebar() {
         } md:translate-x-0 md:relative`}
       >
         <div className="p-6">
-          <h1 className="justify-center text-5xl font-bold text-gray-800">
+          <h1 className="justify-center text-center text-4xl font-bold text-black mt-6 ">
             HMS
           </h1>
         </div>
