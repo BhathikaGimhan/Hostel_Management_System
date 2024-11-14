@@ -6,7 +6,6 @@ import {
   DoorOpen,
   Wrench,
   LogOut,
-  School,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -15,8 +14,7 @@ export default function Sidebar() {
     { icon: BedDouble, text: "Room Requests", path: "/admin" },
     { icon: DoorOpen, text: "Entry/Exit", path: "/entry-exit" },
     { icon: Users, text: "Students", path: "/students" },
-    { icon: Wrench, text: "Maintenance", path: "/maintenance" },
-    { icon: School, text: "Book Room", path: "/roomreq" },
+    { icon: Wrench, text: "Maintenance", path: "/login" },
   ];
   const currentPath = window.location.pathname;
 
