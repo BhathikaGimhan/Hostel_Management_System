@@ -19,6 +19,9 @@ import { doc, getDoc } from "firebase/firestore";
 import Header from "./components/Header.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import AdminDashBoard from "./pages/AdminDashBoard.jsx";
+import EntryExit from "./pages/EntryExit.jsx";
+import Students from "./pages/Students.jsx";
+import Maintenance from "./pages/Maintenance.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -62,8 +65,12 @@ function App() {
                 isRegistered ? (
                   <>
                     <Route path="/" element={<AdminDashBoard />} />
-                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/roomreq" element={<RoomReq />} />
                     <Route path="/student" element={<StudentViewPage />} />
+                    <Route path="/students" element={<Students />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/entry-exit" element={<EntryExit />} />
+                    <Route path="/maintenance" element={<Maintenance />} />
                     <Route
                       path="/register"
                       element={<Navigate to="/" replace />}

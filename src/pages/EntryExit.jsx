@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
-const ApproveRoomRequests = () => {
+const EntryExit = () => {
   const [requests, setRequests] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -80,27 +80,31 @@ const ApproveRoomRequests = () => {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-3xl font-bold text-[#003366] mb-6">
-        Approve Room Requests
-      </h2>
-      <table className="min-w-full  border-gray-300">
+      <h2 className="text-2xl font-bold text-[#000] mb-6">Entry/Exits</h2>
+      <table className="min-w-full border-gray-300">
         <thead>
           <tr>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Student ID
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+              Student Name
             </th>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Room Name
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+              NIC
             </th>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Actions
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+              Entry/Exit
+            </th>
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+              Date
+            </th>
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+              Time
             </th>
           </tr>
         </thead>
         <tbody>
           {currentRequests.length === 0 ? (
             <tr>
-              <td colSpan="3" className="text-center p-4 text-gray-600">
+              <td colSpan="5" className="text-center p-4 text-gray-600">
                 No pending requests
               </td>
             </tr>
@@ -110,28 +114,15 @@ const ApproveRoomRequests = () => {
                 key={request.id}
                 className="border-b bg-[#E6EBF0] border-[#E1E1E1]"
               >
-                <td className="px-4 py-2 text-center border-gray-300">
+                <td className="px-4 py-2 text-center  border-gray-300">
                   {request.studentId}
                 </td>
-                <td className="px-4 py-2 text-center border-gray-300">
+                <td className="px-4 py-2 text-center  border-gray-300">
                   {request.roomName}
                 </td>
-                <td className="px-4 py-2 text-center">
-                  <button
-                    onClick={() =>
-                      handleApproveRequest(request.id, request.roomId)
-                    }
-                    className="bg-green-700 hover:bg-green-900 text-white font-bold py-1 px-2 rounded mr-2"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleNotApproveRequest(request.id)}
-                    className="bg-red-700 hover:bg-red-900 text-white font-bold py-1 px-2 rounded"
-                  >
-                    Not Approve
-                  </button>
-                </td>
+                <td className="px-4 py-2 text-center  border-gray-300"></td>
+                <td className="px-4 py-2 text-center  border-gray-300"></td>
+                <td className="px-4 py-2"></td>
               </tr>
             ))
           )}
@@ -176,4 +167,4 @@ const ApproveRoomRequests = () => {
   );
 };
 
-export default ApproveRoomRequests;
+export default EntryExit;
