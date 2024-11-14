@@ -26,6 +26,7 @@ const RegistrationForm = () => {
       if (currentUser) {
         setUser(currentUser);
         await checkRegistration(currentUser.uid);
+        console.log("zzz");
       } else {
         setUser(null);
         localStorage.removeItem("userId");
@@ -37,16 +38,19 @@ const RegistrationForm = () => {
   const checkRegistration = async (uid) => {
     try {
       setloading(true);
-      console.log(load);
       const userQuery = query(collection(db, "users"), where("uid", "==", uid));
       const querySnapshot = await getDocs(userQuery);
+      console.log(querySnapshot.empty);
       if (!querySnapshot.empty) {
         setIsRegistered(true);
         localStorage.setItem("userId", uid);
+        console.log("dddd");
         setloading(false);
       } else {
         setIsRegistered(false);
         setloading(false);
+        console.log("ttt");
+        localStorage.removeItem("userId");
       }
     } catch (error) {
       console.error("Error checking registration:", error);
