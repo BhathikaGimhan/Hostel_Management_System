@@ -1,7 +1,58 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import StatCard from "../components/StatCard.tsx";
+import { db } from "../firebase/firebase"; // Assuming db is your Firestore instance
+import { collection, getDocs } from "firebase/firestore";
 
 function AdminDashBoard() {
+  const [maintenanceCount, setMaintenanceCount] = useState(0);
+  const [repairingCount, setRepairingCount] = useState(0);
+  const [roomRequestsCount, setRoomRequestsCount] = useState(0);
+
+  // Fetch maintenance requests count from Firestore
+  useEffect(() => {
+    const fetchMaintenanceRequests = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          collection(db, "maintenanceRequests")
+        );
+        const maintenanceRequests = querySnapshot.docs.filter(
+          (doc) => doc.data().status === "Pending"
+        );
+        setMaintenanceCount(maintenanceRequests.length);
+      } catch (error) {
+        console.error("Error fetching maintenance requests: ", error);
+      }
+    };
+
+    const fetchRepairingRequests = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          collection(db, "maintenanceRequests")
+        );
+        const repairingRequests = querySnapshot.docs.filter(
+          (doc) => doc.data().status === "Approved"
+        );
+        setRepairingCount(repairingRequests.length);
+      } catch (error) {
+        console.error("Error fetching repairing requests: ", error);
+      }
+    };
+
+    const fetchRoomRequests = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "requests"));
+        setRoomRequestsCount(querySnapshot.size); // Assuming each document is a request
+      } catch (error) {
+        console.error("Error fetching room requests: ", error);
+      }
+    };
+
+    // Call the functions to fetch data
+    fetchMaintenanceRequests();
+    fetchRepairingRequests();
+    fetchRoomRequests();
+  }, []);
+
   return (
     <>
       <div className="bg-white shadow-md rounded-lg p-6">
@@ -17,20 +68,20 @@ function AdminDashBoard() {
           />
           <StatCard
             title="Room Requests"
-            value={10}
-            subtitle="10 Students"
+            value={roomRequestsCount}
+            subtitle="Requests"
             className="bg-blue-50"
           />
           <StatCard
             title="Maintenance Requests"
-            value={24}
-            subtitle="From 2 floors"
+            value={maintenanceCount}
+            subtitle="Pending"
             className="bg-pink-50"
           />
           <StatCard
             title="Repairings"
-            value={24}
-            subtitle="From 3 floors"
+            value={repairingCount}
+            subtitle="Pending"
             className="bg-red-50"
           />
         </div>
