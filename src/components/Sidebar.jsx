@@ -9,6 +9,7 @@ import {
   School,
   Menu as MenuIcon,
 } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const menuItems = [
   { icon: LayoutDashboard, text: "Dashboard", path: "/" },
@@ -17,15 +18,17 @@ const menuItems = [
   { icon: Users, text: "Students", path: "/students" },
   { icon: Wrench, text: "Maintenance", path: "/maintenance" },
   { icon: School, text: "Request Room", path: "/roomreq" },
-  { icon: Wrench, text: "Request Maintenace", path: "/requestmaintenace" },
+  { icon: Wrench, text: "Request Maintenance", path: "/requestmaintenace" },
 ];
 
 export default function Sidebar() {
-  const currentPath = window.location.pathname;
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
-    window.location.href = "/login"; // Redirect to login page
+    // Redirect to login page
+    navigate("/login");
   };
 
   return (
@@ -50,18 +53,19 @@ export default function Sidebar() {
             </p>
             <nav className="mt-2">
               {menuItems.map((item, index) => (
-                <a
+                <Link
                   key={index}
-                  href={item.path}
+                  to={item.path}
                   className={`flex items-center px-6 py-3 text-sm ${
-                    currentPath === item.path
+                    location.pathname === item.path
                       ? "text-blue-600 bg-blue-50"
                       : "text-gray-600 hover:bg-gray-50"
                   }`}
+                  onClick={() => setIsSidebarOpen(false)} // Close sidebar on navigation
                 >
                   <item.icon className="w-5 h-5 mr-3" />
                   {item.text}
-                </a>
+                </Link>
               ))}
             </nav>
           </div>
