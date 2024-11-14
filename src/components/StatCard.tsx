@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface StatCardProps {
   title: string;
@@ -7,7 +7,12 @@ interface StatCardProps {
   className?: string;
 }
 
-export default function StatCard({ title, value, subtitle, className = '' }: StatCardProps) {
+export default function StatCard({
+  title,
+  value,
+  subtitle,
+  className = "",
+}: StatCardProps) {
   return (
     <div className={`p-6 rounded-xl ${className}`}>
       <h3 className="text-sm font-medium mb-4">{title}</h3>
