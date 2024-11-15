@@ -60,11 +60,11 @@ function App() {
 
   return (
     <Router>
-      <div className="flex max-w-full min-h-screen bg-gray-50">
+      <div className="flex w-full  min-h-screen bg-gray-50">
         {isLoggedIn && <Sidebar />}
         <div className="flex-1">
           {isLoggedIn && <Header />}
-          <main className="p-6">
+          <main className="p-6 ">
             <Routes>
               {isLoggedIn ? (
                 isRegistered ? (
