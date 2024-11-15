@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Clock, ArrowRight, User } from "lucide-react";
+import { Clock, ArrowRight, User, Fingerprint } from "lucide-react";
 import { db } from "../firebase/firebase";
 import {
   collection,
@@ -60,11 +60,14 @@ function EntryExitForm() {
   };
 
   return (
-    <div className="flex flex-col justify-center">
+    <div className="flex flex-col md:flex-row justify-center md:space-x-4 space-y-4 md:space-y-0 relative">
       {loading && <Loading />}
-      <div className="bg-white rounded-lg shadow-lg p-8 w-1/2 md:w-1/3 lg:w-1/4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold">Fingerprint Entry/Exit</h2>
+
+      {/* Input Section */}
+      <div className="bg-white rounded-lg shadow-lg p-8 w-full md:w-1/2 flex flex-col items-center">
+        <Fingerprint className="w-24 h-24 text-gray-600 mx-auto mb-4" />
+        <div className="flex items-center justify-center mb-4 w-full">
+          <h2 className="text-lg font-bold">Fingerprint Entry/Exit </h2>
           <Clock className="text-gray-600" />
         </div>
 
@@ -83,29 +86,6 @@ function EntryExitForm() {
             Check User
           </button>
         </div>
-
-        {userData && (
-          <div className="bg-gray-100 rounded-lg p-4 mt-4">
-            <div className="flex items-center mb-2">
-              <User className="text-gray-600 mr-2" />
-              <span className="text-lg font-bold">{userData.name}</span>
-            </div>
-            <div className="mb-1">
-              <span className="font-semibold">Email:</span> {userData.email}
-            </div>
-            <div className="mb-1">
-              <span className="font-semibold">Phone:</span> {userData.phone}
-            </div>
-            <div className="mb-1">
-              <span className="font-semibold">Index Number:</span>{" "}
-              {userData.indexNumber}
-            </div>
-            <div className="mb-1">
-              <span className="font-semibold">Other Details:</span>{" "}
-              {userData.otherDetail}
-            </div>
-          </div>
-        )}
 
         {userData && (
           <div className="mt-4">
@@ -142,6 +122,30 @@ function EntryExitForm() {
           </div>
         )}
       </div>
+
+      {/* User Details Section */}
+      {userData && (
+        <div className="bg-white text-center rounded-lg p-4 shadow-lg w-full md:w-1/3">
+          <div className="flex items-center mb-2">
+            <User className="text-gray-600 mr-2" />
+            <span className="text-lg font-bold">{userData.name}</span>
+          </div>
+          <div className="mb-1">
+            <span className="font-semibold">Email:</span> {userData.email}
+          </div>
+          <div className="mb-1">
+            <span className="font-semibold">Phone:</span> {userData.phone}
+          </div>
+          <div className="mb-1">
+            <span className="font-semibold">Index Number:</span>{" "}
+            {userData.indexNumber}
+          </div>
+          <div className="mb-1">
+            <span className="font-semibold">Other Details:</span>{" "}
+            {userData.otherDetail}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
