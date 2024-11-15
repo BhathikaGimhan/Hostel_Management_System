@@ -21,6 +21,7 @@ const MaintenanceRequestForm = () => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const user = localStorage.getItem("userId");
   const [errors, setErrors] = useState({
     email: "",
     phone: "",
@@ -69,6 +70,7 @@ const MaintenanceRequestForm = () => {
     setLoading(true);
     try {
       await addDoc(collection(db, "maintenanceRequests"), {
+        user,
         name,
         email,
         indexNumber,
