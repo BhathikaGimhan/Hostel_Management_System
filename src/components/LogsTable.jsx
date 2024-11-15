@@ -77,7 +77,7 @@ const LogsTable = () => {
   };
 
   return (
-    <div className="container mx-auto px-4">
+    <div className=" mx-auto px-4">
       {loading && <Loading />}
 
       <div className="flex mb-4">
@@ -91,8 +91,8 @@ const LogsTable = () => {
       </div>
 
       {/* Table Container */}
-      <div className="overflow-x-auto max-w-full">
-        <table className="min-w-full min-h-full bg-white rounded-lg">
+      <div className="w-10">
+        <table className="table-auto w-full overflow-x-auto min-h-full bg-white rounded-lg">
           <thead>
             <tr>
               <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
