@@ -91,8 +91,8 @@ const LogsTable = () => {
       </div>
 
       {/* Table Container */}
-      <div className="max-w-full">
-        <table className="min-w-full overflow-x-auto min-h-full bg-white rounded-lg">
+      <div className="overflow-x-auto max-w-full">
+        <table className="min-w-full min-h-full bg-white rounded-lg">
           <thead>
             <tr>
               <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">

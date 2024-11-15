@@ -13,7 +13,29 @@ const ApproveRoomRequests = () => {
   const [requests, setRequests] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10; // Number of rows per page
+  const [rowsPerPage, setRowsPerPage] = useState(10); // Default rows per page
+
+  useEffect(() => {
+    // Adjust rows per page based on window height
+    const updateRowsPerPage = () => {
+      const height = window.innerHeight;
+      if (height < 600) {
+        setRowsPerPage(4); // Fewer rows for smaller screens
+      } else if (height < 800) {
+        setRowsPerPage(6); // Medium rows for medium screens
+      } else {
+        setRowsPerPage(10); // Default to more rows for larger screens
+      }
+    };
+
+    // Run on component mount and whenever the window is resized
+    updateRowsPerPage();
+    window.addEventListener("resize", updateRowsPerPage);
+
+    return () => {
+      window.removeEventListener("resize", updateRowsPerPage);
+    };
+  }, []);
 
   useEffect(() => {
     const requestsQuery = query(
@@ -79,24 +101,34 @@ const ApproveRoomRequests = () => {
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Calculate total pages
+  const totalPages = Math.ceil(requests.length / rowsPerPage);
+
+  // Go to specific page
+  const goToPage = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-3xl font-bold text-[#003366] mb-6">
+      <h2 className="text-2xl font-bold text-[#003366] mb-3">
         Approve Room Requests
       </h2>
-      <table className="min-w-full  border-gray-300">
+      <table className="min-w-full border-gray-300">
         <thead>
           <tr>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Student Name
             </th>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Student ID
             </th>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Room Name
             </th>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Actions
             </th>
           </tr>
@@ -104,7 +136,7 @@ const ApproveRoomRequests = () => {
         <tbody>
           {currentRequests.length === 0 ? (
             <tr>
-              <td colSpan="3" className="text-center p-4 text-gray-600">
+              <td colSpan="4" className="text-center p-4 text-gray-600">
                 No pending requests
               </td>
             </tr>
@@ -145,39 +177,33 @@ const ApproveRoomRequests = () => {
         </tbody>
       </table>
 
-      {/* Pagination */}
-      <div className="flex justify-end mt-4">
-        <div className="flex items-center space-x-2">
-          {/* Left Arrow */}
+      {/* Pagination Controls */}
+      <div className="flex justify-end items-center mt-4">
+        <button
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
+        >
+          &lt;
+        </button>
+        {Array.from({ length: totalPages }, (_, i) => (
           <button
-            onClick={() => paginate(Math.max(currentPage - 1, 1))}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-1 px-3 rounded-l transition-colors duration-200"
-            disabled={currentPage === 1}
+            key={i + 1}
+            onClick={() => goToPage(i + 1)}
+            className={`px-3 py-1 mx-1 ${
+              i + 1 === currentPage ? "bg-blue-500 text-white" : "bg-gray-300"
+            } rounded`}
           >
-            &larr;
+            {i + 1}
           </button>
-
-          {/* Page Info */}
-          <span className="px-4 py-2 bg-gray-100 text-gray-800 font-semibold rounded">
-            Page {currentPage} of {Math.ceil(requests.length / rowsPerPage)}
-          </span>
-
-          {/* Right Arrow */}
-          <button
-            onClick={() =>
-              paginate(
-                Math.min(
-                  currentPage + 1,
-                  Math.ceil(requests.length / rowsPerPage)
-                )
-              )
-            }
-            className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-1 px-3 rounded-r transition-colors duration-200"
-            disabled={currentPage === Math.ceil(requests.length / rowsPerPage)}
-          >
-            &rarr;
-          </button>
-        </div>
+        ))}
+        <button
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
+        >
+          &gt;
+        </button>
       </div>
     </div>
   );
