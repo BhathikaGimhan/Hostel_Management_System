@@ -27,25 +27,23 @@ export default function Sidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
-    // Redirect to login page
     navigate("/login");
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Sidebar for desktop and mobile */}
+    <div className="flex h-screen">
+      {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 flex flex-col h-screen transition-transform transform ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:relative`}
+        className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 flex flex-col h-screen transition-transform transform
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0 md:relative`}
       >
         <div className="p-6">
-          <h1 className="justify-center text-center text-4xl font-bold text-black mt-6 ">
+          <h1 className="justify-center text-center text-4xl font-bold text-black mt-6">
             HMS
           </h1>
         </div>
 
-        {/* Main content of the sidebar with flex-grow to push the logout button to the bottom */}
         <div className="flex-1 flex flex-col">
           <div className="overflow-y-auto">
             <p className="px-6 py-2 text-xs font-medium text-gray-400 uppercase">
@@ -61,7 +59,7 @@ export default function Sidebar() {
                       ? "text-blue-600 bg-blue-50"
                       : "text-gray-600 hover:bg-gray-50"
                   }`}
-                  onClick={() => setIsSidebarOpen(false)} // Close sidebar on navigation
+                  onClick={() => setIsSidebarOpen(false)}
                 >
                   <item.icon className="w-5 h-5 mr-3" />
                   {item.text}
@@ -70,7 +68,6 @@ export default function Sidebar() {
             </nav>
           </div>
 
-          {/* Logout button at the bottom */}
           <div className="p-6 border-t border-gray-200 mt-auto">
             <button
               onClick={handleLogout}
@@ -83,7 +80,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Main content area and mobile menu toggle button */}
+      {/* Content Area */}
       <div className="flex-1">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -91,7 +88,6 @@ export default function Sidebar() {
         >
           <MenuIcon className="w-6 h-6" />
         </button>
-        {/* Main content goes here */}
       </div>
     </div>
   );

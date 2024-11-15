@@ -49,7 +49,6 @@ const LogsTable = () => {
     }
   };
 
-  // Adjust rows per page based on screen height
   useEffect(() => {
     const updateRowsPerPage = () => {
       const height = window.innerHeight;
@@ -67,34 +66,33 @@ const LogsTable = () => {
     return () => window.removeEventListener("resize", updateRowsPerPage);
   }, []);
 
-  // Calculate the current page data
   const indexOfLastLog = currentPage * rowsPerPage;
   const indexOfFirstLog = indexOfLastLog - rowsPerPage;
   const currentLogs = filteredLogs.slice(indexOfFirstLog, indexOfLastLog);
 
-  // Calculate total pages
   const totalPages = Math.ceil(filteredLogs.length / rowsPerPage);
 
-  // Handle page change
   const goToPage = (page) => {
     setCurrentPage(page);
   };
 
   return (
-    <div>
+    <div className="container mx-auto px-4">
       {loading && <Loading />}
+
       <div className="flex mb-4">
         <input
           type="text"
           value={searchEmail}
           onChange={handleSearch}
           placeholder="Search by user email..."
-          className="p-2 border border-gray-300 rounded-lg w-full max-w-md"
+          className="p-2 border border-gray-300 rounded-lg w-full"
         />
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white rounded-lg">
+      {/* Table Container */}
+      <div className="max-w-full">
+        <table className="min-w-full overflow-x-auto min-h-full bg-white rounded-lg">
           <thead>
             <tr>
               <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
