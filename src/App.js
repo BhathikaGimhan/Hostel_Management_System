@@ -22,6 +22,7 @@ import EntryExit from "./pages/EntryExit.jsx";
 import Students from "./pages/Students.jsx";
 import Maintenance from "./pages/Maintenance.jsx";
 import RequestMaintenace from "./pages/RequestMaintenace.jsx";
+import UserDashBoard from "./pages/UserDashBoard.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,6 +70,7 @@ function App() {
                 isRegistered ? (
                   <>
                     <Route path="/" element={<AdminDashBoard />} />
+                    <Route path="/userdashboard" element={<UserDashBoard />} />
                     <Route path="/roomreq" element={<RoomReq />} />
                     <Route path="/student" element={<StudentViewPage />} />
                     <Route path="/students" element={<Students />} />
