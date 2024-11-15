@@ -37,7 +37,6 @@ function EntryExit() {
           </button>
         </div>
 
-        {/* Tab Content */}
         <div className="w-[100%] overflow-x-auto">
           {activeTab === "logs" && <EntryExitForm />}
           {activeTab === "add" && <LogsTable />}
