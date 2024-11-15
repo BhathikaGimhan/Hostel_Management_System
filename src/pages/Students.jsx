@@ -8,12 +8,18 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import UserDetailsModal from "../components/UserDetailsModal"; // Import UserDetailsModal
+import ConfirmationModal from "../components/ConfirmationModal"; // Import ConfirmationModal
 
 const Students = () => {
   const [requests, setRequests] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10; // Number of rows per page
+  const [selectedRequest, setSelectedRequest] = useState(null); // Store selected request for details
+  const [showUserDetails, setShowUserDetails] = useState(false); // Control UserDetailsModal visibility
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false); // Control ConfirmationModal visibility
+  const [action, setAction] = useState(""); // Store the action (Approve/Remove)
+  const rowsPerPage = 10;
 
   useEffect(() => {
     const requestsQuery = query(
@@ -27,6 +33,9 @@ const Students = () => {
         studentId: doc.data().studentId,
         roomId: doc.data().roomId,
         roomName: doc.data().roomName,
+        phone: doc.data().phone, // Assuming phone is stored in the request
+        email: doc.data().email, // Assuming email is stored in the request
+        status: doc.data().request, // Adding request status
       }));
       setRequests(requestsList);
     });
@@ -63,19 +72,35 @@ const Students = () => {
     }
   };
 
-  const handleNotApproveRequest = async (requestId) => {
-    await updateDoc(doc(db, "requests", requestId), {
-      request: "not approved",
-    });
-    alert("Request not approved!");
+  const handleNotApproveRequest = (requestId) => {
+    setAction("remove"); // Set action as "remove"
+    setSelectedRequest(requestId);
+    setShowConfirmationModal(true); // Show the confirmation modal
   };
 
-  // Calculate the requests to display for the current page
+  const handleViewRequest = (request) => {
+    setSelectedRequest(request); // Store selected request details
+    setShowUserDetails(true); // Show UserDetailsModal
+  };
+
+  const handleConfirmAction = async () => {
+    if (action === "remove") {
+      await updateDoc(doc(db, "requests", selectedRequest), {
+        request: "not approved",
+      });
+      alert("Request removed!");
+    }
+    setShowConfirmationModal(false); // Hide confirmation modal after action
+  };
+
+  const handleCancelAction = () => {
+    setShowConfirmationModal(false); // Hide the modal if user cancels
+  };
+
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRequests = requests.slice(indexOfFirstRow, indexOfLastRow);
 
-  // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -86,19 +111,19 @@ const Students = () => {
       <table className="min-w-full border-gray-300">
         <thead>
           <tr>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Student Name
             </th>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               NIC
             </th>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Phone Number
             </th>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Email
             </th>
-            <th className=" px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Action
             </th>
           </tr>
@@ -119,26 +144,32 @@ const Students = () => {
                 <td className="px-4 py-2 text-center border-gray-300">
                   {request.studentId}
                 </td>
-                <td className="px-4 py-2 text-center  border-gray-300">
+                <td className="px-4 py-2 text-center border-gray-300">
                   {request.roomName}
                 </td>
-                <td className="px-4 py-2 text-center  border-gray-300"></td>
-                <td className="px-4 py-2 text-center  border-gray-300"> </td>
-                <td className="px-4 py-2 text-center items-center justify-between">
+                <td className="px-4 py-2 text-center border-gray-300">
+                  {request.phone}
+                </td>
+                <td className="px-4 py-2 text-center border-gray-300">
+                  {request.email}
+                </td>
+                <td className="px-4 py-2 text-center">
                   <button
-                    onClick={() =>
-                      handleApproveRequest(request.id, request.roomId)
-                    }
+                    onClick={() => handleViewRequest(request)}
                     className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
                   >
                     View
                   </button>
-                  <button
-                    onClick={() => handleNotApproveRequest(request.id)}
-                    className="bg-green-700 hover:bg-green-900 text-white font-bold py-1 px-2 rounded mr-2"
-                  >
-                    Verify
-                  </button>
+                  {request.status === "pending" && (
+                    <button
+                      onClick={() =>
+                        handleApproveRequest(request.id, request.roomId)
+                      }
+                      className="bg-green-700 hover:bg-green-900 text-white font-bold py-1 px-2 rounded mr-2"
+                    >
+                      Approve
+                    </button>
+                  )}
                   <button
                     onClick={() => handleNotApproveRequest(request.id)}
                     className="bg-red-700 hover:bg-red-900 text-white font-bold py-1 px-2 rounded"
@@ -186,6 +217,19 @@ const Students = () => {
           </button>
         </div>
       </div>
+
+      {/* Modals */}
+      <UserDetailsModal
+        showModal={showUserDetails}
+        student={selectedRequest}
+        onClose={() => setShowUserDetails(false)}
+      />
+      <ConfirmationModal
+        showModal={showConfirmationModal}
+        onConfirm={handleConfirmAction}
+        onCancel={handleCancelAction}
+        action={action}
+      />
     </div>
   );
 };
