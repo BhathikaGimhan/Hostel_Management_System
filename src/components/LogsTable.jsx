@@ -9,7 +9,7 @@ const LogsTable = () => {
   const [searchEmail, setSearchEmail] = useState("");
   const [filteredLogs, setFilteredLogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10); // Default rows per page
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -43,28 +43,11 @@ const LogsTable = () => {
         log.email ? log.email.toLowerCase().includes(searchTerm) : false
       );
       setFilteredLogs(filtered);
-      setCurrentPage(1); // Reset to the first page when searching
+      setCurrentPage(1);
     } else {
       setFilteredLogs(logs);
     }
   };
-
-  useEffect(() => {
-    const updateRowsPerPage = () => {
-      const height = window.innerHeight;
-      if (height < 600) {
-        setRowsPerPage(5);
-      } else if (height < 800) {
-        setRowsPerPage(7);
-      } else {
-        setRowsPerPage(10);
-      }
-    };
-
-    updateRowsPerPage();
-    window.addEventListener("resize", updateRowsPerPage);
-    return () => window.removeEventListener("resize", updateRowsPerPage);
-  }, []);
 
   const indexOfLastLog = currentPage * rowsPerPage;
   const indexOfFirstLog = indexOfLastLog - rowsPerPage;
@@ -77,64 +60,75 @@ const LogsTable = () => {
   };
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="overflow-x-auto px-4 py-2 sm:px-6 lg:px-8">
       {loading && <Loading />}
 
-      <div className="flex mb-4">
+      {/* Search Bar */}
+      <div className="mb-4">
         <input
           type="text"
           value={searchEmail}
           onChange={handleSearch}
           placeholder="Search by user email..."
-          className="p-2 border border-gray-300 rounded-lg w-full"
+          className="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2"
         />
       </div>
 
-      {/* Table Container */}
-      <div className="max-w-full">
-        <table className="min-w-full overflow-x-auto min-h-full bg-white rounded-lg">
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white rounded-lg border border-gray-200">
           <thead>
             <tr>
-              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-                Name
-              </th>
-              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-                Email
-              </th>
-              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-                Phone
-              </th>
-              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-                Index Number
-              </th>
-              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-                Type
-              </th>
-              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-                Timestamp
-              </th>
+              {[
+                "Name",
+                "Email",
+                "Phone",
+                "Index Number",
+                "Type",
+                "Timestamp",
+              ].map((header) => (
+                <th
+                  key={header}
+                  className="px-4 py-2 text-center font-semibold text-white bg-[#003366] text-sm sm:text-base"
+                >
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {currentLogs.length > 0 ? (
               currentLogs.map((log) => (
                 <tr
-                  className="border-b bg-[#E6EBF0] border-[#E1E1E1]"
+                  className="border-b bg-[#E6EBF0] border-[#E1E1E1] hover:bg-gray-100"
                   key={log.id}
                 >
-                  <td className="px-4 py-2 text-center">{log.name}</td>
-                  <td className="px-4 py-2 text-center">{log.email}</td>
-                  <td className="px-4 py-2 text-center">{log.phone}</td>
-                  <td className="px-4 py-2 text-center">{log.indexNumber}</td>
-                  <td className="px-4 py-2 text-center">{log.type}</td>
-                  <td className="px-4 py-2 text-center">
+                  <td className="px-4 py-2 text-center text-sm sm:text-base">
+                    {log.name}
+                  </td>
+                  <td className="px-4 py-2 text-center text-sm sm:text-base">
+                    {log.email}
+                  </td>
+                  <td className="px-4 py-2 text-center text-sm sm:text-base">
+                    {log.phone}
+                  </td>
+                  <td className="px-4 py-2 text-center text-sm sm:text-base">
+                    {log.indexNumber}
+                  </td>
+                  <td className="px-4 py-2 text-center text-sm sm:text-base">
+                    {log.type}
+                  </td>
+                  <td className="px-4 py-2 text-center text-sm sm:text-base">
                     {new Date(log.timestamp.toDate()).toLocaleString()}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="text-center p-4 text-gray-500">
+                <td
+                  colSpan="6"
+                  className="text-center p-4 text-gray-500 text-sm"
+                >
                   No logs found.
                 </td>
               </tr>
@@ -143,8 +137,8 @@ const LogsTable = () => {
         </table>
       </div>
 
-      {/* Pagination Controls */}
-      <div className="flex justify-end items-center mt-4">
+      {/* Pagination */}
+      <div className="flex flex-wrap justify-center sm:justify-end items-center mt-4">
         <button
           onClick={() => goToPage(currentPage - 1)}
           disabled={currentPage === 1}

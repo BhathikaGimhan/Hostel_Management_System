@@ -74,7 +74,7 @@ function AdminDashBoard() {
         {/* Responsive Grid Layout */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
           <StatCard
-            title="Available Rooms"
+            title="Rooms"
             value={roomAvailableCount}
             subtitle={`${beds} Beds`}
             className="bg-purple-50"

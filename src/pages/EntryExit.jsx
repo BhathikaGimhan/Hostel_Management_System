@@ -12,7 +12,7 @@ function EntryExit() {
 
   return (
     <div className="flex flex-1 p-2">
-      <div className="w-full">
+      <div className="max-w-fit">
         {/* Tab Navigation */}
         <div className="flex border-b border-gray-200 mb-6">
           <button
@@ -38,7 +38,7 @@ function EntryExit() {
         </div>
 
         {/* Tab Content */}
-        <div>
+        <div className="">
           {activeTab === "logs" && <EntryExitForm />}
           {activeTab === "add" && <LogsTable />}
         </div>
