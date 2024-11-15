@@ -60,7 +60,7 @@ function EntryExitForm() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col justify-center">
       {loading && <Loading />}
       <div className="bg-white rounded-lg shadow-lg p-8 w-1/2 md:w-1/3 lg:w-1/4">
         <div className="flex items-center justify-between mb-4">

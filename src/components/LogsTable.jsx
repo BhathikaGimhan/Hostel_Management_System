@@ -8,6 +8,8 @@ const LogsTable = () => {
   const [loading, setLoading] = useState(true);
   const [searchEmail, setSearchEmail] = useState("");
   const [filteredLogs, setFilteredLogs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10); // Default rows per page
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -41,18 +43,47 @@ const LogsTable = () => {
         log.email ? log.email.toLowerCase().includes(searchTerm) : false
       );
       setFilteredLogs(filtered);
+      setCurrentPage(1); // Reset to the first page when searching
     } else {
       setFilteredLogs(logs);
     }
   };
 
+  // Adjust rows per page based on screen height
+  useEffect(() => {
+    const updateRowsPerPage = () => {
+      const height = window.innerHeight;
+      if (height < 600) {
+        setRowsPerPage(5);
+      } else if (height < 800) {
+        setRowsPerPage(7);
+      } else {
+        setRowsPerPage(10);
+      }
+    };
+
+    updateRowsPerPage();
+    window.addEventListener("resize", updateRowsPerPage);
+    return () => window.removeEventListener("resize", updateRowsPerPage);
+  }, []);
+
+  // Calculate the current page data
+  const indexOfLastLog = currentPage * rowsPerPage;
+  const indexOfFirstLog = indexOfLastLog - rowsPerPage;
+  const currentLogs = filteredLogs.slice(indexOfFirstLog, indexOfLastLog);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredLogs.length / rowsPerPage);
+
+  // Handle page change
+  const goToPage = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
-    <div className="p-4 md:p-8">
+    <div>
       {loading && <Loading />}
-
-      <h1 className="text-2xl font-bold mb-4 text-center">Entry/Exit Logs</h1>
-
-      <div className="flex justify-center mb-4">
+      <div className="flex mb-4">
         <input
           type="text"
           value={searchEmail}
@@ -63,27 +94,42 @@ const LogsTable = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300 rounded-lg">
+        <table className="min-w-full bg-white rounded-lg">
           <thead>
             <tr>
-              <th className="px-4 py-2 border-b">Name</th>
-              <th className="px-4 py-2 border-b">Email</th>
-              <th className="px-4 py-2 border-b">Phone</th>
-              <th className="px-4 py-2 border-b">Index Number</th>
-              <th className="px-4 py-2 border-b">Type</th>
-              <th className="px-4 py-2 border-b">Timestamp</th>
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Name
+              </th>
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Email
+              </th>
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Phone
+              </th>
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Index Number
+              </th>
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Type
+              </th>
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Timestamp
+              </th>
             </tr>
           </thead>
           <tbody>
-            {filteredLogs.length > 0 ? (
-              filteredLogs.map((log) => (
-                <tr key={log.id}>
-                  <td className="px-4 py-2 border-b">{log.name}</td>
-                  <td className="px-4 py-2 border-b">{log.email}</td>
-                  <td className="px-4 py-2 border-b">{log.phone}</td>
-                  <td className="px-4 py-2 border-b">{log.indexNumber}</td>
-                  <td className="px-4 py-2 border-b">{log.type}</td>
-                  <td className="px-4 py-2 border-b">
+            {currentLogs.length > 0 ? (
+              currentLogs.map((log) => (
+                <tr
+                  className="border-b bg-[#E6EBF0] border-[#E1E1E1]"
+                  key={log.id}
+                >
+                  <td className="px-4 py-2 text-center">{log.name}</td>
+                  <td className="px-4 py-2 text-center">{log.email}</td>
+                  <td className="px-4 py-2 text-center">{log.phone}</td>
+                  <td className="px-4 py-2 text-center">{log.indexNumber}</td>
+                  <td className="px-4 py-2 text-center">{log.type}</td>
+                  <td className="px-4 py-2 text-center">
                     {new Date(log.timestamp.toDate()).toLocaleString()}
                   </td>
                 </tr>
@@ -97,6 +143,35 @@ const LogsTable = () => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-end items-center mt-4">
+        <button
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
+        >
+          &lt;
+        </button>
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i + 1}
+            onClick={() => goToPage(i + 1)}
+            className={`px-3 py-1 mx-1 ${
+              i + 1 === currentPage ? "bg-blue-500 text-white" : "bg-gray-300"
+            } rounded`}
+          >
+            {i + 1}
+          </button>
+        ))}
+        <button
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
+        >
+          &gt;
+        </button>
       </div>
     </div>
   );

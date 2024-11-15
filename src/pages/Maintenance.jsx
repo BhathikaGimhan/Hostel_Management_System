@@ -1,16 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import MaintenanceRequestForm from "../components/MaintenanceRequestForm";
 import MaintenanceRequestsView from "../components/MaintenanceRequestsView";
 
 function Maintenance() {
+  const [activeTab, setActiveTab] = useState("logs");
+
+  // Function to handle tab switching
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
+
   return (
-    <div>
-      <div className="flex flex-col md:flex-row p-4 md:p-8 gap-8">
-        <div className="flex-1">
-          <MaintenanceRequestForm />
+    <div className="flex flex-1 p-2">
+      <div className="w-full">
+        {/* Tab Navigation */}
+        <div className="flex border-b border-gray-200 mb-6">
+          <button
+            onClick={() => handleTabClick("logs")}
+            className={`flex-1 py-3 text-center font-semibold ${
+              activeTab === "logs"
+                ? "border-b-2 border-[#003366] text-[#003366]"
+                : "text-gray-600 hover:text-[#2c5093]"
+            }`}
+          >
+            Add Request
+          </button>
+          <button
+            onClick={() => handleTabClick("add")}
+            className={`flex-1 py-3 text-center font-semibold ${
+              activeTab === "add"
+                ? "border-b-2 border-[#003366] text-[#003366]"
+                : "text-gray-600 hover:text-[#2c5093]"
+            }`}
+          >
+            View Request
+          </button>
         </div>
-        <div className="flex-2">
-          <MaintenanceRequestsView />
+
+        {/* Tab Content */}
+        <div>
+          {activeTab === "logs" && <MaintenanceRequestForm />}
+          {activeTab === "add" && <MaintenanceRequestsView />}
         </div>
       </div>
     </div>
