@@ -1,237 +1,254 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { db } from "../firebase/firebase";
 import {
   collection,
-  onSnapshot,
-  updateDoc,
-  doc,
   query,
   where,
+  getDocs,
+  addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
-import { db } from "../firebase/firebase";
-import UserDetailsModal from "../components/UserDetailsModal"; // Import UserDetailsModal
-import ConfirmationModal from "../components/ConfirmationModal"; // Import ConfirmationModal
+import Loading from "../components/Loading";
 
-const Students = () => {
-  const [requests, setRequests] = useState([]);
-  const [rooms, setRooms] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedRequest, setSelectedRequest] = useState(null); // Store selected request for details
-  const [showUserDetails, setShowUserDetails] = useState(false); // Control UserDetailsModal visibility
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false); // Control ConfirmationModal visibility
-  const [action, setAction] = useState(""); // Store the action (Approve/Remove)
-  const rowsPerPage = 10;
+function StudentDashboard() {
+  const [maintenanceRequests, setMaintenanceRequests] = useState([]);
+  const [studentDetails, setStudentDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [roomRequest, setRoomRequest] = useState("");
+  const [message, setMessage] = useState("");
+  const [roomRequests, setRoomRequests] = useState([]);
+  const [requestLoading, setRequestLoading] = useState(false);
 
   useEffect(() => {
-    const requestsQuery = query(
-      collection(db, "requests"),
-      where("request", "==", "pending")
-    );
+    const user = localStorage.getItem("userId");
+    if (user) {
+      const fetchData = async () => {
+        try {
+          setLoading(true);
 
-    const unsubscribeRequests = onSnapshot(requestsQuery, (snapshot) => {
-      const requestsList = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        studentId: doc.data().studentId,
-        roomId: doc.data().roomId,
-        roomName: doc.data().roomName,
-        phone: doc.data().phone, // Assuming phone is stored in the request
-        email: doc.data().email, // Assuming email is stored in the request
-        status: doc.data().request, // Adding request status
-      }));
-      setRequests(requestsList);
-    });
+          // Fetch student details
+          const studentQuery = query(
+            collection(db, "users"),
+            where("uid", "==", user)
+          );
+          const studentSnapshot = await getDocs(studentQuery);
+          if (!studentSnapshot.empty) {
+            setStudentDetails(studentSnapshot.docs[0].data());
+          }
 
-    const unsubscribeRooms = onSnapshot(collection(db, "rooms"), (snapshot) => {
-      const roomsList = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        capacity: doc.data().capacity,
-        occupants: doc.data().occupants,
-      }));
-      setRooms(roomsList);
-    });
+          // Fetch maintenance requests
+          const maintenanceQuery = query(
+            collection(db, "maintenanceRequests"),
+            where("user", "==", user)
+          );
+          const maintenanceSnapshot = await getDocs(maintenanceQuery);
+          const requests = maintenanceSnapshot.docs.map((doc) => {
+            const data = doc.data();
+            const formattedDate = data.timestamp?.toDate().toLocaleString();
+            return {
+              id: doc.id,
+              ...data,
+              formattedDate,
+            };
+          });
+          setMaintenanceRequests(requests);
 
-    return () => {
-      unsubscribeRequests();
-      unsubscribeRooms();
-    };
+          // Fetch room requests
+          const roomRequestQuery = query(
+            collection(db, "roomRequests"),
+            where("user", "==", user)
+          );
+          const roomRequestSnapshot = await getDocs(roomRequestQuery);
+          const roomReqs = roomRequestSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setRoomRequests(roomReqs);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchData();
+    }
   }, []);
 
-  const handleApproveRequest = async (requestId, roomId) => {
-    const roomToUpdate = rooms.find((room) => room.id === roomId);
+  const handleRoomRequestSubmit = async (e) => {
+    e.preventDefault();
+    const user = localStorage.getItem("userId");
+    if (!user) {
+      alert("User not logged in");
+      return;
+    }
 
-    if (roomToUpdate && roomToUpdate.occupants < roomToUpdate.capacity) {
-      const updatedOccupants = roomToUpdate.occupants + 1;
-
-      await updateDoc(doc(db, "rooms", roomId), {
-        occupants: updatedOccupants,
+    try {
+      setRequestLoading(true);
+      await addDoc(collection(db, "roomRequests"), {
+        user,
+        roomRequest,
+        message,
+        timestamp: serverTimestamp(),
       });
-      await updateDoc(doc(db, "requests", requestId), { request: "approved" });
-
-      alert("Request approved successfully!");
-    } else {
-      alert("Room is already full or not found!");
+      alert("Room request submitted successfully!");
+      setRoomRequest("");
+      setMessage("");
+    } catch (error) {
+      console.error("Error submitting room request:", error);
+      alert("Failed to submit room request.");
+    } finally {
+      setRequestLoading(false);
     }
   };
 
-  const handleNotApproveRequest = (requestId) => {
-    setAction("remove"); // Set action as "remove"
-    setSelectedRequest(requestId);
-    setShowConfirmationModal(true); // Show the confirmation modal
-  };
-
-  const handleViewRequest = (request) => {
-    setSelectedRequest(request); // Store selected request details
-    setShowUserDetails(true); // Show UserDetailsModal
-  };
-
-  const handleConfirmAction = async () => {
-    if (action === "remove") {
-      await updateDoc(doc(db, "requests", selectedRequest), {
-        request: "not approved",
-      });
-      alert("Request removed!");
-    }
-    setShowConfirmationModal(false); // Hide confirmation modal after action
-  };
-
-  const handleCancelAction = () => {
-    setShowConfirmationModal(false); // Hide the modal if user cancels
-  };
-
-  const indexOfLastRow = currentPage * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRequests = requests.slice(indexOfFirstRow, indexOfLastRow);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-2xl font-bold text-[#000] mb-6">
-        Students Registration
-      </h2>
-      <table className="min-w-full border-gray-300">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Student Name
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              NIC
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Phone Number
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Email
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Action
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentRequests.length === 0 ? (
-            <tr>
-              <td colSpan="5" className="text-center p-4 text-gray-600">
-                No pending requests
-              </td>
-            </tr>
-          ) : (
-            currentRequests.map((request) => (
-              <tr
-                key={request.id}
-                className="border-b bg-[#E6EBF0] border-[#E1E1E1]"
-              >
-                <td className="px-4 py-2 text-center border-gray-300">
-                  {request.studentId}
-                </td>
-                <td className="px-4 py-2 text-center border-gray-300">
-                  {request.roomName}
-                </td>
-                <td className="px-4 py-2 text-center border-gray-300">
-                  {request.phone}
-                </td>
-                <td className="px-4 py-2 text-center border-gray-300">
-                  {request.email}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  <button
-                    onClick={() => handleViewRequest(request)}
-                    className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
-                  >
-                    View
-                  </button>
-                  {request.status === "pending" && (
-                    <button
-                      onClick={() =>
-                        handleApproveRequest(request.id, request.roomId)
-                      }
-                      className="bg-green-700 hover:bg-green-900 text-white font-bold py-1 px-2 rounded mr-2"
-                    >
-                      Approve
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleNotApproveRequest(request.id)}
-                    className="bg-red-700 hover:bg-red-900 text-white font-bold py-1 px-2 rounded"
-                  >
-                    Remove
-                  </button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 p-6">
+      <h1 className="text-4xl font-extrabold text-gray-800 mb-6 text-center">
+        Student Dashboard
+      </h1>
 
-      {/* Pagination */}
-      <div className="flex justify-end mt-4">
-        <div className="flex items-center space-x-2">
-          {/* Left Arrow */}
-          <button
-            onClick={() => paginate(Math.max(currentPage - 1, 1))}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-1 px-3 rounded-l transition-colors duration-200"
-            disabled={currentPage === 1}
-          >
-            &larr;
-          </button>
+      {/* Student Details & Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        {studentDetails && (
+          <div className="bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-semibold text-blue-700 mb-4">
+              Student Details
+            </h2>
+            <p>
+              <strong>Name:</strong> {studentDetails.name}
+            </p>
+            <p>
+              <strong>Email:</strong> {studentDetails.email}
+            </p>
+            <p>
+              <strong>Phone:</strong> {studentDetails.phone}
+            </p>
+            <p>
+              <strong>Room Number:</strong>{" "}
+              {studentDetails.roomNumber || "Not Assigned"}
+            </p>
+            <p>
+              <strong>Index Number:</strong> {studentDetails.indexNumber}
+            </p>
+          </div>
+        )}
 
-          {/* Page Info */}
-          <span className="px-4 py-2 bg-gray-100 text-gray-800 font-semibold rounded">
-            Page {currentPage} of {Math.ceil(requests.length / rowsPerPage)}
-          </span>
-
-          {/* Right Arrow */}
-          <button
-            onClick={() =>
-              paginate(
-                Math.min(
-                  currentPage + 1,
-                  Math.ceil(requests.length / rowsPerPage)
-                )
-              )
+        <div className="bg-gradient-to-r from-pink-100 to-pink-50 rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-semibold text-pink-700 mb-4">
+            Maintenance Requests
+          </h2>
+          <p>
+            <strong>Total Requests:</strong> {maintenanceRequests.length}
+          </p>
+          <p>
+            <strong>Pending:</strong>{" "}
+            {
+              maintenanceRequests.filter((req) => req.status === "Pending")
+                .length
             }
-            className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-1 px-3 rounded-r transition-colors duration-200"
-            disabled={currentPage === Math.ceil(requests.length / rowsPerPage)}
-          >
-            &rarr;
-          </button>
+          </p>
+          <p>
+            <strong>Approved:</strong>{" "}
+            {
+              maintenanceRequests.filter((req) => req.status === "Approved")
+                .length
+            }
+          </p>
+          <p>
+            <strong>Rejected:</strong>{" "}
+            {
+              maintenanceRequests.filter((req) => req.status === "Rejected")
+                .length
+            }
+          </p>
         </div>
       </div>
 
-      {/* Modals */}
-      <UserDetailsModal
-        showModal={showUserDetails}
-        student={selectedRequest}
-        onClose={() => setShowUserDetails(false)}
-      />
-      <ConfirmationModal
-        showModal={showConfirmationModal}
-        onConfirm={handleConfirmAction}
-        onCancel={handleCancelAction}
-        action={action}
-      />
+      {/* Room Request Form */}
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+          Request Room Details
+        </h2>
+        <form onSubmit={handleRoomRequestSubmit} className="space-y-4">
+          <div>
+            <label
+              htmlFor="roomRequest"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Room Request
+            </label>
+            <input
+              type="text"
+              id="roomRequest"
+              value={roomRequest}
+              onChange={(e) => setRoomRequest(e.target.value)}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="message"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Additional Message (Optional)
+            </label>
+            <textarea
+              id="message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={requestLoading}
+            className="bg-blue-600 text-white font-semibold px-4 py-2 rounded shadow hover:bg-blue-700 disabled:opacity-50"
+          >
+            {requestLoading ? "Submitting..." : "Submit Request"}
+          </button>
+        </form>
+      </div>
+
+      {/* Room Requests Table */}
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+          Room Requests
+        </h2>
+        {roomRequests.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="table-auto w-full text-left border-collapse">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="px-4 py-2">Room</th>
+                  <th className="px-4 py-2">Message</th>
+                  <th className="px-4 py-2">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {roomRequests.map((request) => (
+                  <tr key={request.id} className="border-b">
+                    <td className="px-4 py-2">{request.roomRequest}</td>
+                    <td className="px-4 py-2">{request.message || "N/A"}</td>
+                    <td className="px-4 py-2">
+                      {request.timestamp?.toDate().toLocaleString() || "N/A"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-gray-500">No room requests found.</p>
+        )}
+      </div>
     </div>
   );
-};
+}
 
-export default Students;
+export default StudentDashboard;

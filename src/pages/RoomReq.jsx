@@ -10,6 +10,7 @@ const RoomReq = () => {
   const [studentEmail, setStudentEmail] = useState("");
   const [indexNumber, setIndexNumber] = useState("");
   const [selectedRoomId, setSelectedRoomId] = useState(null);
+  const user = localStorage.getItem("userId");
 
   useEffect(() => {
     const q = query(collection(db, "rooms"));
@@ -71,6 +72,7 @@ const RoomReq = () => {
     }
 
     const newRequest = {
+      uid: user,
       studentId: indexNumber,
       studentName: studentName,
       studentEmail: studentEmail,
