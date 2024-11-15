@@ -33,11 +33,11 @@ const Students = () => {
         studentId: doc.data().studentId,
         roomId: doc.data().roomId,
         roomName: doc.data().roomName,
-        phone: doc.data().phone, // Assuming phone is stored in the request
-        email: doc.data().email, // Assuming email is stored in the request
+        studentEmail: doc.data().studentEmail, // Assuming email is stored in the request
         status: doc.data().request, // Adding request status
       }));
       setRequests(requestsList);
+      console.log(requestsList);
     });
 
     const unsubscribeRooms = onSnapshot(collection(db, "rooms"), (snapshot) => {
@@ -118,9 +118,6 @@ const Students = () => {
               NIC
             </th>
             <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Phone Number
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
               Email
             </th>
             <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
@@ -148,10 +145,7 @@ const Students = () => {
                   {request.roomName}
                 </td>
                 <td className="px-4 py-2 text-center border-gray-300">
-                  {request.phone}
-                </td>
-                <td className="px-4 py-2 text-center border-gray-300">
-                  {request.email}
+                  {request.studentEmail}
                 </td>
                 <td className="px-4 py-2 text-center">
                   <button
