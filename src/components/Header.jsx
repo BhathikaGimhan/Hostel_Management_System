@@ -5,8 +5,8 @@ export default function Header() {
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between flex-wrap">
-        {/* Search bar (hidden on small screens) */}
-        <div className="relative flex-1 max-w-xl mb-4 sm:mb-0 hidden sm:block">
+        {/* Search bar */}
+        <div className="relative flex-1 max-w-xl mb-4 sm:mb-0">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
@@ -15,10 +15,10 @@ export default function Header() {
           />
         </div>
 
-        {/* Right-side icons and profile (hidden on mobile) */}
+        {/* Right-side icons and profile */}
         <div className="flex items-center space-x-4 ml-auto">
-          {/* Hide notification and chat icons on small screens */}
-          <div className="hidden sm:flex items-center space-x-4">
+          {/* Notification and chat icons */}
+          <div className="hidden md:flex items-center space-x-4">
             <button className="p-2 text-gray-400 hover:text-gray-600">
               <Bell className="w-6 h-6" />
             </button>
@@ -27,7 +27,7 @@ export default function Header() {
             </button>
           </div>
 
-          {/* Profile section (always visible) */}
+          {/* Profile section */}
           <div className="flex items-center space-x-3">
             <div className="hidden sm:flex flex-col items-end">
               <span className="font-medium text-sm">Udara Perera</span>
