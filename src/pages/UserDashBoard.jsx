@@ -57,13 +57,11 @@ function StudentDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 p-6">
-      <h1 className="text-4xl font-extrabold text-gray-800 mb-6 text-center">
-        Student Dashboard
-      </h1>
+    <div className="min-h-screen bg-white rounded-lg from-gray-100 to-blue-50 p-6">
+      <h1 className="text-2xl font-bold mb-6">Student Dashboard</h1>
 
       {/* Student Details & Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
         {studentDetails && (
           <div className="bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-semibold text-blue-700 mb-4">

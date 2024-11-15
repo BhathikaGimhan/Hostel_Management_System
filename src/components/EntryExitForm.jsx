@@ -81,7 +81,7 @@ function EntryExitForm() {
           />
           <button
             onClick={handleCheckUser}
-            className="mt-2 p-2 bg-blue-500 text-white rounded-lg w-full"
+            className="mt-2 p-2 bg-[#003366] text-white rounded-lg w-full"
           >
             Check User
           </button>
