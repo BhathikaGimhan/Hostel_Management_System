@@ -86,7 +86,7 @@ const LogsTable = () => {
           value={searchEmail}
           onChange={handleSearch}
           placeholder="Search by user email..."
-          className="p-2 border border-gray-300 rounded-lg w-full"
+          className="p-2 border border-gray-300 rounded-lg w-1/3"
         />
       </div>
 

@@ -79,6 +79,7 @@ function StudentDashboard() {
   }
 
   return (
+
     <div className="min-h-screen bg-gradient-to-r from-purple-50 via-white to-blue-50 p-8">
       <h1 className="text-4xl font-bold text-center text-blue-700 mb-10">
         Student Dashboard
@@ -87,6 +88,7 @@ function StudentDashboard() {
       {/* Main Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
         {/* Student Details */}
+
         {studentDetails && (
           <div className="bg-blue-50 text-black rounded-xl shadow-lg p-6 transform transition hover:-translate-y-1 hover:shadow-2xl">
             <h2 className="text-2xl font-semibold mb-4">Student Details</h2>
