@@ -33,11 +33,14 @@ function App() {
     const storedUserId = localStorage.getItem("userId");
 
     if (storedUserId) {
+      console.log(storedUserId);
       setIsLoggedIn(true);
       setIsRegistered(true);
       setIsLoading(false);
     } else {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
+        console.log(user);
+
         if (user) {
           setIsLoggedIn(true);
           setIsRegistered(false);
@@ -61,7 +64,6 @@ function App() {
   return (
     <Router>
       <div className="flex w-full h-screen bg-gray-50">
-
         {isLoggedIn && <Sidebar />}
         <div className="flex-1">
           {isLoggedIn && <Header />}

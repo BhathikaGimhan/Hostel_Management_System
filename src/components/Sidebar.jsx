@@ -31,7 +31,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex h-full">
+    <div className="flex  h-full">
       {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 flex flex-col h-screen transition-transform transform
@@ -47,7 +47,7 @@ export default function Sidebar() {
         <div className="flex-1 flex flex-col">
           <div className="overflow-y-auto">
             <p className="px-6 py-2 text-xs font-medium text-gray-400 uppercase">
-              Main Menu
+              Main Menus
             </p>
             <nav className="mt-2">
               {menuItems.map((item, index) => (
