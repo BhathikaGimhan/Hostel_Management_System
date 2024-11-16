@@ -25,7 +25,6 @@ const GoogleLogin = () => {
         localStorage.setItem("userId", currentUser.uid);
       } else {
         setUser(null);
-        // Remove user ID from localStorage on logout
         localStorage.removeItem("userId");
       }
     });

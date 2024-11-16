@@ -33,6 +33,8 @@ const RegistrationForm = () => {
         setloading(false);
       } else {
         setUser(null);
+        setloading(false);
+
         localStorage.removeItem("userId");
       }
     });
