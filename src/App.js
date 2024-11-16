@@ -23,6 +23,7 @@ import Students from "./pages/Students.jsx";
 import Maintenance from "./pages/Maintenance.jsx";
 import RequestMaintenace from "./pages/RequestMaintenace.jsx";
 import UserDashBoard from "./pages/UserDashBoard.jsx";
+import TrincomaleeCampusChecker from "./pages/TrincomaleeCampusChecker.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -78,6 +79,10 @@ function App() {
                     <Route path="/student" element={<StudentViewPage />} />
                     <Route path="/students" element={<Students />} />
                     <Route path="/admin" element={<Admin />} />
+                    <Route
+                      path="/location"
+                      element={<TrincomaleeCampusChecker />}
+                    ></Route>
                     <Route path="/entry-exit" element={<EntryExit />} />
                     <Route path="/maintenance" element={<Maintenance />} />
                     <Route
