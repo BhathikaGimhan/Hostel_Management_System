@@ -5,7 +5,6 @@ import {
   updateDoc,
   doc,
   query,
-  where,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
@@ -38,10 +37,7 @@ const ApproveRoomRequests = () => {
   }, []);
 
   useEffect(() => {
-    const requestsQuery = query(
-      collection(db, "requests"),
-      where("request", "==", "pending")
-    );
+    const requestsQuery = query(collection(db, "requests"));
 
     const unsubscribeRequests = onSnapshot(requestsQuery, (snapshot) => {
       const requestsList = snapshot.docs.map((doc) => ({
@@ -50,8 +46,10 @@ const ApproveRoomRequests = () => {
         studentId: doc.data().studentId,
         roomId: doc.data().roomId,
         roomName: doc.data().roomName,
+        status: doc.data().status,
       }));
       setRequests(requestsList);
+      console.log(requestsList);
     });
 
     const unsubscribeRooms = onSnapshot(collection(db, "rooms"), (snapshot) => {
@@ -78,7 +76,7 @@ const ApproveRoomRequests = () => {
       await updateDoc(doc(db, "rooms", roomId), {
         occupants: updatedOccupants,
       });
-      await updateDoc(doc(db, "requests", requestId), { request: "approved" });
+      await updateDoc(doc(db, "requests", requestId), { status: "approved" });
 
       alert("Request approved successfully!");
     } else {
@@ -88,8 +86,9 @@ const ApproveRoomRequests = () => {
 
   const handleNotApproveRequest = async (requestId) => {
     await updateDoc(doc(db, "requests", requestId), {
-      request: "not approved",
+      status: "not approved",
     });
+    console.log(requestId);
     alert("Request not approved!");
   };
 
@@ -156,20 +155,28 @@ const ApproveRoomRequests = () => {
                   {request.roomName}
                 </td>
                 <td className="px-4 py-2 text-center">
-                  <button
-                    onClick={() =>
-                      handleApproveRequest(request.id, request.roomId)
-                    }
-                    className="bg-green-700 hover:bg-green-900 text-white font-bold py-1 px-2 rounded mr-2"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleNotApproveRequest(request.id)}
-                    className="bg-red-700 hover:bg-red-900 text-white font-bold py-1 px-2 rounded"
-                  >
-                    Not Approve
-                  </button>
+                  {request.status === "pending" ? (
+                    <>
+                      <button
+                        onClick={() =>
+                          handleApproveRequest(request.id, request.roomId)
+                        }
+                        className="bg-green-700 hover:bg-green-900 text-white font-bold py-1 px-2 rounded mr-2"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => handleNotApproveRequest(request.id)}
+                        className="bg-red-700 hover:bg-red-900 text-white font-bold py-1 px-2 rounded"
+                      >
+                        Not Approve
+                      </button>
+                    </>
+                  ) : request.status === "approved" ? (
+                    <span className="text-green-700">approved</span>
+                  ) : request.status === "not approved" ? (
+                    <span className="text-red-700">rejected</span>
+                  ) : null}
                 </td>
               </tr>
             ))

@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { collection, query, onSnapshot, addDoc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  onSnapshot,
+  addDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
 const RoomReq = () => {
@@ -10,9 +16,25 @@ const RoomReq = () => {
   const [studentEmail, setStudentEmail] = useState("");
   const [indexNumber, setIndexNumber] = useState("");
   const [selectedRoomId, setSelectedRoomId] = useState(null);
+  const [currentUser, setCurrentUser] = useState([]);
   const user = localStorage.getItem("userId");
 
   useEffect(() => {
+    const requestsQuery = query(
+      collection(db, "users"),
+      where("uid", "==", user)
+    );
+
+    const xcurrentUser = onSnapshot(requestsQuery, (snapshot) => {
+      const requestsList = snapshot.docs.map((doc) => ({
+        email: doc.data().email,
+        name: doc.data().name,
+        indexNumber: doc.data().indexNumber,
+      }));
+      console.log(requestsList);
+      setCurrentUser(requestsList);
+    });
+
     const q = query(collection(db, "rooms"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const availableRooms = snapshot.docs.map((doc) => ({
@@ -24,7 +46,7 @@ const RoomReq = () => {
       setRooms(availableRooms);
     });
 
-    const studentsCol = collection(db, "students");
+    const studentsCol = collection(db, "users");
     const unsubscribeStudents = onSnapshot(studentsCol, (snapshot) => {
       const studentsList = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -40,7 +62,13 @@ const RoomReq = () => {
       const requestsList = snapshot.docs.map((doc) => ({
         studentId: doc.data().studentId,
         roomId: doc.data().roomId,
+        roomName: doc.data().roomName,
+        status: doc.data().status,
+        uid: doc.data().uid,
+        studentName: doc.data().studentName,
+        studentEmail: doc.data().studentEmail,
       }));
+      console.log(requestsList);
       setRequests(requestsList);
     });
 
@@ -51,10 +79,34 @@ const RoomReq = () => {
     };
   }, []);
 
-  const handleApplyForRoom = () => {
-    if (!selectedRoomId || !indexNumber || !studentName || !studentEmail) {
-      alert("Please fill in all fields");
+  const handleApplyForRoom = (e) => {
+    e.preventDefault();
+
+    if (!currentUser || currentUser.length === 0) {
+      alert("User data is not loaded. Please try again.");
       return;
+    }
+
+    if (!selectedRoomId) {
+      alert("Please select a room.");
+      return;
+    }
+    const existingRequest = requests.find((request) => request.uid === user);
+
+    if (existingRequest) {
+      if (existingRequest.status === "pending") {
+        alert("You already have a pending room request.");
+        return;
+      }
+      if (existingRequest.status === "approved") {
+        alert("You already have an approved room assignment.");
+        return;
+      }
+      if (existingRequest.status === "not approved") {
+        alert(
+          "Your previous request was rejected. You can apply for another room."
+        );
+      }
     }
 
     const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
@@ -63,30 +115,31 @@ const RoomReq = () => {
       return;
     }
 
-    const existingRequest = requests.find(
-      (req) => req.studentId === indexNumber
-    );
-    if (existingRequest) {
-      alert("You already have a pending request.");
+    if (
+      !currentUser[0]?.indexNumber ||
+      !currentUser[0]?.name ||
+      !currentUser[0]?.email
+    ) {
+      console.log(currentUser);
+      alert(
+        "Missing user data. Please ensure you are logged in and try again."
+      );
       return;
     }
 
     const newRequest = {
       uid: user,
-      studentId: indexNumber,
-      studentName: studentName,
-      studentEmail: studentEmail,
-      roomId: selectedRoom.id,
+      studentId: currentUser[0]?.indexNumber,
+      studentName: currentUser[0]?.name,
+      studentEmail: currentUser[0]?.email,
+      roomId: selectedRoomId,
       roomName: selectedRoom.room,
-      request: "pending",
+      status: "pending",
     };
 
     addDoc(collection(db, "requests"), newRequest)
       .then(() => {
-        setRequests([...requests, { id: requests.length + 1, ...newRequest }]);
-        setStudentName("");
-        setStudentEmail("");
-        setIndexNumber("");
+        alert("Your room request has been submitted successfully.");
         setSelectedRoomId(null);
       })
       .catch((error) => {
@@ -110,7 +163,7 @@ const RoomReq = () => {
               </label>
               <input
                 type="text"
-                value={indexNumber}
+                value={indexNumber || currentUser[0]?.indexNumber || ""}
                 onChange={(e) => setIndexNumber(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
               />
@@ -121,7 +174,7 @@ const RoomReq = () => {
               </label>
               <input
                 type="text"
-                value={studentName}
+                value={studentName || currentUser[0]?.name || ""}
                 onChange={(e) => setStudentName(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
               />
@@ -132,7 +185,7 @@ const RoomReq = () => {
               </label>
               <input
                 type="email"
-                value={studentEmail}
+                value={studentEmail || currentUser[0]?.email || ""}
                 onChange={(e) => setStudentEmail(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
               />
