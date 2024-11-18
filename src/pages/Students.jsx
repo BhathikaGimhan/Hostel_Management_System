@@ -44,6 +44,7 @@ const ApproveRoomRequests = () => {
         id: doc.id,
         studentName: doc.data().studentName,
         studentId: doc.data().studentId,
+        studentEmail: doc.data().studentEmail,
         roomId: doc.data().roomId,
         roomName: doc.data().roomName,
         status: doc.data().status,
@@ -157,28 +158,7 @@ const ApproveRoomRequests = () => {
                       {request.roomName}
                     </td>
                     <td className="px-4 py-2 text-center">
-                      {request.status === "pending" ? (
-                        <>
-                          <button
-                            onClick={() =>
-                              handleApproveRequest(request.id, request.roomId)
-                            }
-                            className="bg-green-700 hover:bg-green-900 text-white font-bold py-1 px-2 rounded mr-2"
-                          >
-                            Approve
-                          </button>
-                          <button
-                            onClick={() => handleNotApproveRequest(request.id)}
-                            className="bg-red-700 hover:bg-red-900 text-white font-bold py-1 px-2 rounded"
-                          >
-                            Not Approve
-                          </button>
-                        </>
-                      ) : request.status === "approved" ? (
-                        <span className="text-green-700">approved</span>
-                      ) : request.status === "not approved" ? (
-                        <span className="text-red-700">rejected</span>
-                      ) : null}
+                      {request.studentEmail}
                     </td>
                   </tr>
                 ))
