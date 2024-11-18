@@ -1,254 +1,203 @@
-import React, { useEffect, useState } from "react";
-import { db } from "../firebase/firebase";
+import React, { useState, useEffect } from "react";
 import {
   collection,
+  onSnapshot,
+  updateDoc,
+  doc,
   query,
-  where,
-  getDocs,
-  addDoc,
-  serverTimestamp,
 } from "firebase/firestore";
-import Loading from "../components/Loading";
+import { db } from "../firebase/firebase";
 
-function StudentDashboard() {
-  const [maintenanceRequests, setMaintenanceRequests] = useState([]);
-  const [studentDetails, setStudentDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [roomRequest, setRoomRequest] = useState("");
-  const [message, setMessage] = useState("");
-  const [roomRequests, setRoomRequests] = useState([]);
-  const [requestLoading, setRequestLoading] = useState(false);
+const ApproveRoomRequests = () => {
+  const [requests, setRequests] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10); // Default rows per page
 
   useEffect(() => {
-    const user = localStorage.getItem("userId");
-    if (user) {
-      const fetchData = async () => {
-        try {
-          setLoading(true);
+    // Adjust rows per page based on window height
+    const updateRowsPerPage = () => {
+      const height = window.innerHeight;
+      if (height < 600) {
+        setRowsPerPage(4); // Fewer rows for smaller screens
+      } else if (height < 800) {
+        setRowsPerPage(6); // Medium rows for medium screens
+      } else {
+        setRowsPerPage(10); // Default to more rows for larger screens
+      }
+    };
 
-          // Fetch student details
-          const studentQuery = query(
-            collection(db, "users"),
-            where("uid", "==", user)
-          );
-          const studentSnapshot = await getDocs(studentQuery);
-          if (!studentSnapshot.empty) {
-            setStudentDetails(studentSnapshot.docs[0].data());
-          }
+    // Run on component mount and whenever the window is resized
+    updateRowsPerPage();
+    window.addEventListener("resize", updateRowsPerPage);
 
-          // Fetch maintenance requests
-          const maintenanceQuery = query(
-            collection(db, "maintenanceRequests"),
-            where("user", "==", user)
-          );
-          const maintenanceSnapshot = await getDocs(maintenanceQuery);
-          const requests = maintenanceSnapshot.docs.map((doc) => {
-            const data = doc.data();
-            const formattedDate = data.timestamp?.toDate().toLocaleString();
-            return {
-              id: doc.id,
-              ...data,
-              formattedDate,
-            };
-          });
-          setMaintenanceRequests(requests);
-
-          // Fetch room requests
-          const roomRequestQuery = query(
-            collection(db, "roomRequests"),
-            where("user", "==", user)
-          );
-          const roomRequestSnapshot = await getDocs(roomRequestQuery);
-          const roomReqs = roomRequestSnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setRoomRequests(roomReqs);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchData();
-    }
+    return () => {
+      window.removeEventListener("resize", updateRowsPerPage);
+    };
   }, []);
 
-  const handleRoomRequestSubmit = async (e) => {
-    e.preventDefault();
-    const user = localStorage.getItem("userId");
-    if (!user) {
-      alert("User not logged in");
-      return;
-    }
+  useEffect(() => {
+    const requestsQuery = query(collection(db, "requests"));
 
-    try {
-      setRequestLoading(true);
-      await addDoc(collection(db, "roomRequests"), {
-        user,
-        roomRequest,
-        message,
-        timestamp: serverTimestamp(),
+    const unsubscribeRequests = onSnapshot(requestsQuery, (snapshot) => {
+      const requestsList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        studentName: doc.data().studentName,
+        studentId: doc.data().studentId,
+        studentEmail: doc.data().studentEmail,
+        roomId: doc.data().roomId,
+        roomName: doc.data().roomName,
+        status: doc.data().status,
+      }));
+      setRequests(requestsList);
+      console.log(requestsList);
+    });
+
+    const unsubscribeRooms = onSnapshot(collection(db, "rooms"), (snapshot) => {
+      const roomsList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        capacity: doc.data().capacity,
+        occupants: doc.data().occupants,
+      }));
+      setRooms(roomsList);
+    });
+
+    return () => {
+      unsubscribeRequests();
+      unsubscribeRooms();
+    };
+  }, []);
+
+  const handleApproveRequest = async (requestId, roomId) => {
+    const roomToUpdate = rooms.find((room) => room.id === roomId);
+
+    if (roomToUpdate && roomToUpdate.occupants < roomToUpdate.capacity) {
+      const updatedOccupants = roomToUpdate.occupants + 1;
+
+      await updateDoc(doc(db, "rooms", roomId), {
+        occupants: updatedOccupants,
       });
-      alert("Room request submitted successfully!");
-      setRoomRequest("");
-      setMessage("");
-    } catch (error) {
-      console.error("Error submitting room request:", error);
-      alert("Failed to submit room request.");
-    } finally {
-      setRequestLoading(false);
+      await updateDoc(doc(db, "requests", requestId), { status: "approved" });
+
+      alert("Request approved successfully!");
+    } else {
+      alert("Room is already full or not found!");
     }
   };
 
-  if (loading) {
-    return <Loading />;
-  }
+  const handleNotApproveRequest = async (requestId) => {
+    await updateDoc(doc(db, "requests", requestId), {
+      status: "not approved",
+    });
+    console.log(requestId);
+    alert("Request not approved!");
+  };
+
+  // Calculate the requests to display for the current page
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRequests = requests.slice(indexOfFirstRow, indexOfLastRow);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(requests.length / rowsPerPage);
+
+  // Go to specific page
+  const goToPage = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 p-6">
-      <h1 className="text-4xl font-extrabold text-gray-800 mb-6 text-center">
-        Student Dashboard
-      </h1>
-
-      {/* Student Details & Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-        {studentDetails && (
-          <div className="bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-semibold text-blue-700 mb-4">
-              Student Details
-            </h2>
-            <p>
-              <strong>Name:</strong> {studentDetails.name}
-            </p>
-            <p>
-              <strong>Email:</strong> {studentDetails.email}
-            </p>
-            <p>
-              <strong>Phone:</strong> {studentDetails.phone}
-            </p>
-            <p>
-              <strong>Room Number:</strong>{" "}
-              {studentDetails.roomNumber || "Not Assigned"}
-            </p>
-            <p>
-              <strong>Index Number:</strong> {studentDetails.indexNumber}
-            </p>
-          </div>
-        )}
-
-        <div className="bg-gradient-to-r from-pink-100 to-pink-50 rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-semibold text-pink-700 mb-4">
-            Maintenance Requests
-          </h2>
-          <p>
-            <strong>Total Requests:</strong> {maintenanceRequests.length}
-          </p>
-          <p>
-            <strong>Pending:</strong>{" "}
-            {
-              maintenanceRequests.filter((req) => req.status === "Pending")
-                .length
-            }
-          </p>
-          <p>
-            <strong>Approved:</strong>{" "}
-            {
-              maintenanceRequests.filter((req) => req.status === "Approved")
-                .length
-            }
-          </p>
-          <p>
-            <strong>Rejected:</strong>{" "}
-            {
-              maintenanceRequests.filter((req) => req.status === "Rejected")
-                .length
-            }
-          </p>
-        </div>
-      </div>
-
-      {/* Room Request Form */}
-      <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-          Request Room Details
-        </h2>
-        <form onSubmit={handleRoomRequestSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="roomRequest"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Room Request
-            </label>
-            <input
-              type="text"
-              id="roomRequest"
-              value={roomRequest}
-              onChange={(e) => setRoomRequest(e.target.value)}
-              required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="message"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Additional Message (Optional)
-            </label>
-            <textarea
-              id="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={requestLoading}
-            className="bg-blue-600 text-white font-semibold px-4 py-2 rounded shadow hover:bg-blue-700 disabled:opacity-50"
-          >
-            {requestLoading ? "Submitting..." : "Submit Request"}
-          </button>
-        </form>
-      </div>
-
-      {/* Room Requests Table */}
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-          Room Requests
-        </h2>
-        {roomRequests.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="table-auto w-full text-left border-collapse">
-              <thead className="bg-gray-200">
+    <div className="bg-white shadow-md rounded-lg p-8 mb-6">
+      <h2 className="text-2xl font-bold text-[#003366] mb-3">
+        Approve Room Requests
+      </h2>
+      <div className="w-full">
+        <div className="overflow-x-auto ">
+          <table className="w-full border-gray-300 overflow-x-auto">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                  Student Name
+                </th>
+                <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                  Student Reg No
+                </th>
+                <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                  Room Name
+                </th>
+                <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                  Email
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentRequests.length === 0 ? (
                 <tr>
-                  <th className="px-4 py-2">Room</th>
-                  <th className="px-4 py-2">Message</th>
-                  <th className="px-4 py-2">Date</th>
+                  <td colSpan="4" className="text-center p-4 text-gray-600">
+                    No pending requests
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {roomRequests.map((request) => (
-                  <tr key={request.id} className="border-b">
-                    <td className="px-4 py-2">{request.roomRequest}</td>
-                    <td className="px-4 py-2">{request.message || "N/A"}</td>
-                    <td className="px-4 py-2">
-                      {request.timestamp?.toDate().toLocaleString() || "N/A"}
+              ) : (
+                currentRequests.map((request) => (
+                  <tr
+                    key={request.id}
+                    className="border-b bg-[#E6EBF0] border-[#E1E1E1]"
+                  >
+                    <td className="px-4 py-2 text-center border-gray-300">
+                      {request.studentName}
+                    </td>
+                    <td className="px-4 py-2 text-center border-gray-300">
+                      {request.studentId}
+                    </td>
+                    <td className="px-4 py-2 text-center border-gray-300">
+                      {request.roomName}
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      {request.studentEmail}
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-500">No room requests found.</p>
-        )}
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="flex justify-end items-center mt-4 ">
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50 -z-0"
+          >
+            &lt;
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => goToPage(i + 1)}
+              className={`px-3 py-1 mx-1 ${
+                i + 1 === currentPage ? "bg-blue-500 text-white" : "bg-gray-300"
+              } rounded`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50 -z-0"
+          >
+            &gt;
+          </button>
+        </div>
       </div>
     </div>
   );
-}
+};
 
-export default StudentDashboard;
+export default ApproveRoomRequests;
