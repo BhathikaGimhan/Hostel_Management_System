@@ -108,7 +108,6 @@ const RegistrationForm = () => {
       await addDoc(collection(db, "users"), newUser);
       alert("Registration successful");
       localStorage.setItem("userId", user.uid);
-      localStorage.setItem("userRole", "student");
       setIsRegistered(true);
       window.location.reload();
     } catch (error) {
