@@ -25,7 +25,7 @@ const RoomReq = () => {
       where("uid", "==", user)
     );
 
-    const xcurrentUser = onSnapshot(requestsQuery, (snapshot) => {
+    const currentUser = onSnapshot(requestsQuery, (snapshot) => {
       const requestsList = snapshot.docs.map((doc) => ({
         email: doc.data().email,
         name: doc.data().name,

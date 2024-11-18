@@ -103,10 +103,12 @@ const RegistrationForm = () => {
         phone: additionalInfo.phone,
         indexNumber: additionalInfo.indexNumber,
         otherDetail: additionalInfo.otherDetail,
+        userRole: "student",
       };
       await addDoc(collection(db, "users"), newUser);
       alert("Registration successful");
       localStorage.setItem("userId", user.uid);
+      localStorage.setItem("userRole", "student");
       setIsRegistered(true);
       window.location.reload();
     } catch (error) {
