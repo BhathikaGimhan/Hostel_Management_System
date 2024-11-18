@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import RoomReq from "./pages/RoomReq.jsx";
 import Admin from "./pages/Admin.jsx";
@@ -10,7 +9,6 @@ import {
 } from "react-router-dom";
 import Loading from "./components/Loading.jsx";
 import StudentViewPage from "./pages/StudentViewPage.jsx";
-import GoogleLogin from "./pages/GoogleLogin.jsx";
 import RegistrationForm from "./pages/RegistrationForm.jsx";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
