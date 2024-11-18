@@ -101,14 +101,24 @@ function EntryExitForm() {
                 Entry
               </button>
               <button
-                onClick={() => setEntryExitType("Exit")}
+                onClick={() => setEntryExitType("Loang Exit")}
                 className={`p-2 w-1/2 rounded-lg ${
-                  entryExitType === "Exit"
+                  entryExitType === "Loang Exit"
                     ? "bg-red-500 text-white"
                     : "bg-gray-200"
                 }`}
               >
-                Exit
+                Loang Exit
+              </button>
+              <button
+                onClick={() => setEntryExitType("Short Exit")}
+                className={`p-2 w-1/2 rounded-lg ${
+                  entryExitType === "Short Exit"
+                    ? "bg-red-500 text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                Short Exit
               </button>
             </div>
 
