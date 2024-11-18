@@ -47,7 +47,7 @@ const TrincomaleeCampusChecker = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <div className=" flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
         <h1 className="text-2xl font-bold mb-4 text-center text-blue-600">
           Location Checker

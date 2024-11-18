@@ -111,106 +111,110 @@ const ApproveRoomRequests = () => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
+    <div className="bg-white shadow-md rounded-lg p-8 mb-6">
       <h2 className="text-2xl font-bold text-[#003366] mb-3">
         Approve Room Requests
       </h2>
-      <table className="min-w-full border-gray-300">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Student Name
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Student ID
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Room Name
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentRequests.length === 0 ? (
-            <tr>
-              <td colSpan="4" className="text-center p-4 text-gray-600">
-                No pending requests
-              </td>
-            </tr>
-          ) : (
-            currentRequests.map((request) => (
-              <tr
-                key={request.id}
-                className="border-b bg-[#E6EBF0] border-[#E1E1E1]"
-              >
-                <td className="px-4 py-2 text-center border-gray-300">
-                  {request.studentName}
-                </td>
-                <td className="px-4 py-2 text-center border-gray-300">
-                  {request.studentId}
-                </td>
-                <td className="px-4 py-2 text-center border-gray-300">
-                  {request.roomName}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  {request.status === "pending" ? (
-                    <>
-                      <button
-                        onClick={() =>
-                          handleApproveRequest(request.id, request.roomId)
-                        }
-                        className="bg-green-700 hover:bg-green-900 text-white font-bold py-1 px-2 rounded mr-2"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => handleNotApproveRequest(request.id)}
-                        className="bg-red-700 hover:bg-red-900 text-white font-bold py-1 px-2 rounded"
-                      >
-                        Not Approve
-                      </button>
-                    </>
-                  ) : request.status === "approved" ? (
-                    <span className="text-green-700">approved</span>
-                  ) : request.status === "not approved" ? (
-                    <span className="text-red-700">rejected</span>
-                  ) : null}
-                </td>
+      <div className="w-full">
+        <div className="overflow-x-auto ">
+          <table className="w-full border-gray-300 overflow-x-auto">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                  Student Name
+                </th>
+                <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                  Student ID
+                </th>
+                <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                  Room Name
+                </th>
+                <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                  Actions
+                </th>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {currentRequests.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="text-center p-4 text-gray-600">
+                    No pending requests
+                  </td>
+                </tr>
+              ) : (
+                currentRequests.map((request) => (
+                  <tr
+                    key={request.id}
+                    className="border-b bg-[#E6EBF0] border-[#E1E1E1]"
+                  >
+                    <td className="px-4 py-2 text-center border-gray-300">
+                      {request.studentName}
+                    </td>
+                    <td className="px-4 py-2 text-center border-gray-300">
+                      {request.studentId}
+                    </td>
+                    <td className="px-4 py-2 text-center border-gray-300">
+                      {request.roomName}
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      {request.status === "pending" ? (
+                        <>
+                          <button
+                            onClick={() =>
+                              handleApproveRequest(request.id, request.roomId)
+                            }
+                            className="bg-green-700 hover:bg-green-900 text-white font-bold py-1 px-2 rounded mr-2"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => handleNotApproveRequest(request.id)}
+                            className="bg-red-700 hover:bg-red-900 text-white font-bold py-1 px-2 rounded"
+                          >
+                            Not Approve
+                          </button>
+                        </>
+                      ) : request.status === "approved" ? (
+                        <span className="text-green-700">approved</span>
+                      ) : request.status === "not approved" ? (
+                        <span className="text-red-700">rejected</span>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
-      {/* Pagination Controls */}
-      <div className="flex justify-end items-center mt-4">
-        <button
-          onClick={() => goToPage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
-        >
-          &lt;
-        </button>
-        {Array.from({ length: totalPages }, (_, i) => (
+        {/* Pagination Controls */}
+        <div className="flex justify-end items-center mt-4 ">
           <button
-            key={i + 1}
-            onClick={() => goToPage(i + 1)}
-            className={`px-3 py-1 mx-1 ${
-              i + 1 === currentPage ? "bg-blue-500 text-white" : "bg-gray-300"
-            } rounded`}
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50 -z-0"
           >
-            {i + 1}
+            &lt;
           </button>
-        ))}
-        <button
-          onClick={() => goToPage(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
-        >
-          &gt;
-        </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => goToPage(i + 1)}
+              className={`px-3 py-1 mx-1 ${
+                i + 1 === currentPage ? "bg-blue-500 text-white" : "bg-gray-300"
+              } rounded`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50 -z-0"
+          >
+            &gt;
+          </button>
+        </div>
       </div>
     </div>
   );
