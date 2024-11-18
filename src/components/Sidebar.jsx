@@ -68,7 +68,7 @@ export default function Sidebar() {
             </nav>
           </div>
 
-          <div className="p-6 border-t border-gray-200 mt-auto">
+          <div className="p-6 border-t border-gray-200 mt-auto max-sm:pb-24">
             <button
               onClick={handleLogout}
               className="flex items-center text-gray-600 hover:text-gray-800"
