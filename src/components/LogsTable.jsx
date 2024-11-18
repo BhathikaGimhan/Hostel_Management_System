@@ -86,13 +86,13 @@ const LogsTable = () => {
           value={searchEmail}
           onChange={handleSearch}
           placeholder="Search by user email..."
-          className="p-2 border border-gray-300 rounded-lg w-1/3"
+          className="p-2 border border-gray-300 rounded-lg w-full sm:w-2/3 md:w-1/3"
         />
       </div>
 
       {/* Table Container */}
       <div className="w-10">
-        <table className="table-auto w-full overflow-x-auto min-h-full bg-white rounded-lg">
+        <table className="table-auto overflow-x-auto min-h-full bg-white rounded-lg">
           <thead>
             <tr>
               <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">

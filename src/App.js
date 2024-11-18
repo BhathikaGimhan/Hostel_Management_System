@@ -24,6 +24,7 @@ import Maintenance from "./pages/Maintenance.jsx";
 import RequestMaintenace from "./pages/RequestMaintenace.jsx";
 import UserDashBoard from "./pages/UserDashBoard.jsx";
 import TrincomaleeCampusChecker from "./pages/TrincomaleeCampusChecker.jsx";
+import DataTable from "./components/DataTable.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -63,49 +64,56 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="flex w-full h-screen bg-gray-50">
-        {isLoggedIn && <Sidebar />}
-        <div className="flex-1">
-          {isLoggedIn && <Header />}
-          <main className="p-6 ">
-            <Routes>
-              {isLoggedIn ? (
-                isRegistered ? (
-                  <>
-                    <Route path="/" element={<AdminDashBoard />} />
-                    <Route path="/userdashboard" element={<UserDashBoard />} />
-                    <Route path="/roomreq" element={<RoomReq />} />
-                    <Route path="/student" element={<StudentViewPage />} />
-                    <Route path="/students" element={<Students />} />
-                    <Route path="/admin" element={<Admin />} />
-                    <Route
-                      path="/location"
-                      element={<TrincomaleeCampusChecker />}
-                    ></Route>
-                    <Route path="/entry-exit" element={<EntryExit />} />
-                    <Route path="/maintenance" element={<Maintenance />} />
-                    <Route
-                      path="/requestmaintenace"
-                      element={<RequestMaintenace />}
-                    />
-                    <Route
-                      path="/register"
-                      element={<Navigate to="/" replace />}
-                    />
-                    <Route path="/login" element={<RegistrationForm />} />
-                  </>
-                ) : (
-                  <Route path="/*" element={<RegistrationForm />} />
-                )
-              ) : (
-                <Route path="/*" element={<RegistrationForm />} />
-              )}
-            </Routes>
-          </main>
+    <>
+      <Router>
+        <div className="flex fixed h-screen flex-col sm:flex-row w-full">
+          {isLoggedIn && <Sidebar />}
+          <div className="flex-1 flex flex-col">
+            {isLoggedIn && <Header />}
+            <main className="p-6">
+              {
+                <Routes>
+                  {isLoggedIn ? (
+                    isRegistered ? (
+                      <>
+                        <Route path="/" element={<AdminDashBoard />} />
+                        <Route
+                          path="/userdashboard"
+                          element={<UserDashBoard />}
+                        />
+                        <Route path="/roomreq" element={<RoomReq />} />
+                        <Route path="/student" element={<StudentViewPage />} />
+                        <Route path="/students" element={<DataTable />} />
+                        <Route path="/admin" element={<Admin />} />
+                        <Route
+                          path="/location"
+                          element={<TrincomaleeCampusChecker />}
+                        ></Route>
+                        <Route path="/entry-exit" element={<EntryExit />} />
+                        <Route path="/maintenance" element={<Maintenance />} />
+                        <Route
+                          path="/requestmaintenace"
+                          element={<RequestMaintenace />}
+                        />
+                        <Route
+                          path="/register"
+                          element={<Navigate to="/" replace />}
+                        />
+                        <Route path="/login" element={<RegistrationForm />} />
+                      </>
+                    ) : (
+                      <Route path="/*" element={<RegistrationForm />} />
+                    )
+                  ) : (
+                    <Route path="/*" element={<RegistrationForm />} />
+                  )}
+                </Routes>
+              }
+            </main>
+          </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </>
   );
 }
 

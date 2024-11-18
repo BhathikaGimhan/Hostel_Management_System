@@ -117,78 +117,78 @@ const MaintenanceRequestsTable = () => {
           <option value="Rejected">Rejected</option>
         </select>
       </div>
-
-      <table className="min-w-full table-auto border-collapse">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Name
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Email
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Room
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Description
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Status
-            </th>
-            <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentRequests.map((request) => (
-            <tr
-              key={request.id}
-              className="border-b bg-[#E6EBF0] border-[#E1E1E1]"
-            >
-              <td className="text-center px-4 py-2">{request.name}</td>
-              <td className="text-center px-4 py-2">{request.email}</td>
-              <td className="text-center px-4 py-2">{request.room}</td>
-              <td className="text-center px-4 py-2">{request.description}</td>
-              <td className="text-center px-4 py-2">
-                <span
-                  className={`text-center px-2 py-1 rounded-full text-white ${
-                    request.status === "Approved"
-                      ? "bg-green-700"
-                      : request.status === "Rejected"
-                      ? "bg-red-700"
-                      : "bg-yellow-600"
-                  }`}
-                >
-                  {request.status}
-                </span>
-              </td>
-              <td className="text-center px-4 py-2">
-                {request.status === "Pending" ? (
-                  <>
-                    <button
-                      onClick={() => handleApprove(request.id)}
-                      className="bg-green-700 text-white px-4 py-2 rounded-lg mr-2"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => handleReject(request.id)}
-                      className="bg-red-700 text-white px-4 py-2 rounded-lg"
-                    >
-                      Reject
-                    </button>
-                  </>
-                ) : (
-                  <span className="text-gray-700">Action taken</span>
-                )}
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto border-collapse">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Name
+              </th>
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Email
+              </th>
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Room
+              </th>
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Description
+              </th>
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Status
+              </th>
+              <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                Actions
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
+          </thead>
+          <tbody>
+            {currentRequests.map((request) => (
+              <tr
+                key={request.id}
+                className="border-b bg-[#E6EBF0] border-[#E1E1E1]"
+              >
+                <td className="text-center px-4 py-2">{request.name}</td>
+                <td className="text-center px-4 py-2">{request.email}</td>
+                <td className="text-center px-4 py-2">{request.room}</td>
+                <td className="text-center px-4 py-2">{request.description}</td>
+                <td className="text-center px-4 py-2">
+                  <span
+                    className={`text-center px-2 py-1 rounded-full text-white ${
+                      request.status === "Approved"
+                        ? "bg-green-700"
+                        : request.status === "Rejected"
+                        ? "bg-red-700"
+                        : "bg-yellow-600"
+                    }`}
+                  >
+                    {request.status}
+                  </span>
+                </td>
+                <td className="text-center px-4 py-2">
+                  {request.status === "Pending" ? (
+                    <>
+                      <button
+                        onClick={() => handleApprove(request.id)}
+                        className="bg-green-700 text-white px-4 py-2 rounded-lg mr-2"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => handleReject(request.id)}
+                        className="bg-red-700 text-white px-4 py-2 rounded-lg"
+                      >
+                        Reject
+                      </button>
+                    </>
+                  ) : (
+                    <span className="text-gray-700">Action taken</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="flex justify-end items-center mt-4">
         <button
           onClick={() => goToPage(currentPage - 1)}

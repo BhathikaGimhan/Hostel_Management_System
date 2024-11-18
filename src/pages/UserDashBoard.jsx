@@ -79,8 +79,7 @@ function StudentDashboard() {
   }
 
   return (
-
-    <div className="min-h-screen bg-gradient-to-r from-purple-50 via-white to-blue-50 p-8">
+    <div className="min-h-screen bg-gradient-to-r from-purple-50 via-white to-blue-50 p-8 overflow-y-auto">
       <h1 className="text-4xl font-bold text-center text-blue-700 mb-10">
         Student Dashboard
       </h1>
