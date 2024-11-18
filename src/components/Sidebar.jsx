@@ -31,7 +31,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex fixed h-screen">
+    <div className="flex fixed h-screen z-10">
       {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 flex flex-col h-screen transition-transform transform
