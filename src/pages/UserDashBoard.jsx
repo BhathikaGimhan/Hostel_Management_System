@@ -27,7 +27,7 @@ function StudentDashboard() {
           if (!studentSnapshot.empty) {
             setStudentDetails(studentSnapshot.docs[0].data());
           }
-
+          console.log(studentDetails.userRole);
           // Fetch maintenance requests
           const maintenanceQuery = query(
             collection(db, "maintenanceRequests"),
