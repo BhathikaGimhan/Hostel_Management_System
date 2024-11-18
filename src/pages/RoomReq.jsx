@@ -261,7 +261,7 @@ const RoomReq = () => {
             <ul>
               {students.map((student) => (
                 <li key={student.id} className="p-2 border-b border-gray-200">
-                  {student.name} (Room {student.roomId || "Unassigned"})
+                  {student.name}
                 </li>
               ))}
             </ul>
