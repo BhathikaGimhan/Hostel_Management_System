@@ -22,7 +22,6 @@ import Maintenance from "./pages/Maintenance.jsx";
 import RequestMaintenace from "./pages/RequestMaintenace.jsx";
 import UserDashBoard from "./pages/UserDashBoard.jsx";
 import TrincomaleeCampusChecker from "./pages/TrincomaleeCampusChecker.jsx";
-import DataTable from "./components/DataTable.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -81,7 +80,7 @@ function App() {
                         />
                         <Route path="/roomreq" element={<RoomReq />} />
                         <Route path="/student" element={<StudentViewPage />} />
-                        <Route path="/students" element={<DataTable />} />
+                        <Route path="/students" element={<Students />} />
                         <Route path="/admin" element={<Admin />} />
                         <Route
                           path="/location"

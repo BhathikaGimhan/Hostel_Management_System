@@ -170,7 +170,7 @@ const MaintenanceRequestForm = () => {
           {/* Index Number Field */}
           <div>
             <label className="text-lg font-semibold text-gray-600">
-              Index Number
+              Registration number
             </label>
             <input
               type="text"
