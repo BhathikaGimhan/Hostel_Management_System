@@ -66,11 +66,11 @@ function App() {
   return (
     <>
       <Router>
-        <div className="flex fixed h-screen flex-col sm:flex-row w-full">
+        <div className="flex h-screen flex-col sm:flex-row w-full">
           {isLoggedIn && <Sidebar />}
           <div className="flex-1 flex flex-col">
             {isLoggedIn && <Header />}
-            <main className="p-6">
+            <main className="p-6 md:pl-72 ">
               {
                 <Routes>
                   {isLoggedIn ? (

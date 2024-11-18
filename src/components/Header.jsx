@@ -3,8 +3,8 @@ import { Search, Bell, MessageSquare } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4">
-      <div className="flex items-center justify-between flex-wrap">
+    <header className="bg-white border-b border-gray-200 px-6 py-4 pl-64">
+      <div className="flex items-center justify-between flex-wrap ml-10">
         {/* Search bar (hidden on small screens) */}
         <div className="relative flex-1 max-w-xl mb-4 sm:mb-0 hidden sm:block">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
