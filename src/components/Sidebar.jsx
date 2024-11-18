@@ -31,7 +31,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex  h-full">
+    <div className="flex fixed h-screen">
       {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 flex flex-col h-screen transition-transform transform
@@ -84,7 +84,7 @@ export default function Sidebar() {
       <div className="flex-1">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="md:hidden absolute top-6 left-6 p-2 text-gray-800"
+          className="md:hidden absolute top-6 left-6 p-1 text-gray-800"
         >
           <MenuIcon className="w-6 h-6" />
         </button>
