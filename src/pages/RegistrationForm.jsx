@@ -213,13 +213,6 @@ const RegistrationForm = () => {
                 <Loading />
               </>
             )}
-
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white py-2 px-4 rounded mt-4 hover:bg-red-700 transition duration-300"
-            >
-              Log Out
-            </button>
           </div>
         ) : load ? (
           <Loading />
