@@ -28,6 +28,7 @@ export default function CreateMessage({ currentUser }) {
         receiver,
         subject,
         message,
+        read: false,
         timestamp: serverTimestamp(),
       });
 
