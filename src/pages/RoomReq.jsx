@@ -162,6 +162,7 @@ const RoomReq = () => {
                 Index Number
               </label>
               <input
+                disabled
                 type="text"
                 value={indexNumber || currentUser[0]?.indexNumber || ""}
                 onChange={(e) => setIndexNumber(e.target.value)}
@@ -173,6 +174,7 @@ const RoomReq = () => {
                 Student Name
               </label>
               <input
+                disabled
                 type="text"
                 value={studentName || currentUser[0]?.name || ""}
                 onChange={(e) => setStudentName(e.target.value)}
@@ -184,6 +186,7 @@ const RoomReq = () => {
                 Student Email
               </label>
               <input
+                disabled
                 type="email"
                 value={studentEmail || currentUser[0]?.email || ""}
                 onChange={(e) => setStudentEmail(e.target.value)}
