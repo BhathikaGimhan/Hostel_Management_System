@@ -22,6 +22,8 @@ import Maintenance from "./pages/Maintenance.jsx";
 import RequestMaintenace from "./pages/RequestMaintenace.jsx";
 import UserDashBoard from "./pages/UserDashBoard.jsx";
 import TrincomaleeCampusChecker from "./pages/TrincomaleeCampusChecker.jsx";
+import MessagesPage from "./pages/MessageItem.jsx";
+import CreateMessage from "./pages/CreateMessage.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,10 +31,12 @@ function App() {
   const [userRole, setUserRole] = useState(null); // Added userRole state
   const [isLoading, setIsLoading] = useState(true);
 
+  const [currentUser, setCurrentUser] = useState(null);
+
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
     const storedUserRole = localStorage.getItem("userRole"); // Fetch role from localStorage
-
+    setCurrentUser(storedUserId);
     if (storedUserId && storedUserRole) {
       console.log(storedUserId, storedUserRole);
       setIsLoggedIn(true);
@@ -140,6 +144,19 @@ function App() {
                   ) : (
                     <Route path="/*" element={<RegistrationForm />} />
                   )}
+                  <Route
+                    path="/messages"
+                    element={
+                      <MessagesPage
+                        userRole={userRole}
+                        currentUser={currentUser}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/compose"
+                    element={<CreateMessage currentUser={currentUser} />}
+                  />
                   <Route
                     path="/register"
                     element={<Navigate to="/" replace />}
