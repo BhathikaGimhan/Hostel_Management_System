@@ -26,14 +26,17 @@ import TrincomaleeCampusChecker from "./pages/TrincomaleeCampusChecker.jsx";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
+  const [userRole, setUserRole] = useState(null); // Added userRole state
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
+    const storedUserRole = localStorage.getItem("userRole"); // Fetch role from localStorage
 
-    if (storedUserId) {
-      console.log(storedUserId);
+    if (storedUserId && storedUserRole) {
+      console.log(storedUserId, storedUserRole);
       setIsLoggedIn(true);
+      setUserRole(storedUserRole); // Assuming roles are numeric
       setIsRegistered(true);
       setIsLoading(false);
     } else {
@@ -43,12 +46,18 @@ function App() {
         if (user) {
           setIsLoggedIn(true);
           setIsRegistered(false);
+
+          // Simulate fetching the role from Firebase
+          const userRoleFromDB = 2; // Replace this with your logic to fetch the role
+          setUserRole(userRoleFromDB); // Set role dynamically
+          localStorage.setItem("userRole", userRoleFromDB);
         } else {
           setIsLoggedIn(false);
           setIsRegistered(false);
           localStorage.removeItem("userId");
+          localStorage.removeItem("userRole");
         }
-        setIsLoading(false); // Finish loading once auth state is determined
+        setIsLoading(false);
       });
 
       return () => unsubscribe();
@@ -59,6 +68,46 @@ function App() {
   if (isLoading) {
     return <Loading />;
   }
+  console.log("Loading spinner", userRole);
+  // Role-based route filtering
+  const getRoutes = () => {
+    if (userRole === "admin") {
+      // Admin Routes
+      return (
+        <>
+          <Route path="/" element={<AdminDashBoard />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/students" element={<Students />} />
+          <Route path="/entry-exit" element={<EntryExit />} />
+          <Route path="/maintenance" element={<Maintenance />} />
+          <Route
+            path="/location"
+            element={<TrincomaleeCampusChecker />}
+          ></Route>
+        </>
+      );
+    } else if (userRole === "student") {
+      // Student Routes
+      return (
+        <>
+          <Route path="/" element={<UserDashBoard />} />
+          <Route path="/roomreq" element={<RoomReq />} />
+          <Route path="/student" element={<StudentViewPage />} />
+          <Route path="/entry-exit" element={<EntryExit />} />
+          <Route path="/maintenance" element={<Maintenance />} />
+
+          <Route path="/requestmaintenace" element={<RequestMaintenace />} />
+          <Route
+            path="/location"
+            element={<TrincomaleeCampusChecker />}
+          ></Route>
+        </>
+      );
+    } else {
+      // Default to login if role is unknown
+      return <Route path="/*" element={<RegistrationForm />} />;
+    }
+  };
 
   return (
     <>
@@ -72,38 +121,18 @@ function App() {
                 <Routes>
                   {isLoggedIn ? (
                     isRegistered ? (
-                      <>
-                        <Route path="/" element={<AdminDashBoard />} />
-                        <Route
-                          path="/userdashboard"
-                          element={<UserDashBoard />}
-                        />
-                        <Route path="/roomreq" element={<RoomReq />} />
-                        <Route path="/student" element={<StudentViewPage />} />
-                        <Route path="/students" element={<Students />} />
-                        <Route path="/admin" element={<Admin />} />
-                        <Route
-                          path="/location"
-                          element={<TrincomaleeCampusChecker />}
-                        ></Route>
-                        <Route path="/entry-exit" element={<EntryExit />} />
-                        <Route path="/maintenance" element={<Maintenance />} />
-                        <Route
-                          path="/requestmaintenace"
-                          element={<RequestMaintenace />}
-                        />
-                        <Route
-                          path="/register"
-                          element={<Navigate to="/" replace />}
-                        />
-                        <Route path="/login" element={<RegistrationForm />} />
-                      </>
+                      getRoutes() // Role-based routes
                     ) : (
                       <Route path="/*" element={<RegistrationForm />} />
                     )
                   ) : (
                     <Route path="/*" element={<RegistrationForm />} />
                   )}
+                  <Route
+                    path="/register"
+                    element={<Navigate to="/" replace />}
+                  />
+                  <Route path="/login" element={<RegistrationForm />} />
                 </Routes>
               }
             </main>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   BedDouble,
@@ -10,25 +10,71 @@ import {
   Menu as MenuIcon,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 
+// Menu items with roles
 const menuItems = [
-  { icon: LayoutDashboard, text: "Dashboard", path: "/" },
-  { icon: BedDouble, text: "Room Requests", path: "/admin" },
-  { icon: DoorOpen, text: "Entry/Exit", path: "/entry-exit" },
-  { icon: Users, text: "Students", path: "/students" },
-  { icon: Wrench, text: "Maintenance", path: "/maintenance" },
-  { icon: School, text: "Request Room", path: "/roomreq" },
-  { icon: LayoutDashboard, text: "User DashBoard", path: "/userdashboard" },
+  { icon: LayoutDashboard, text: "Dashboard", path: "/", roles: [1] }, // Accessible to both admin and student
+  {
+    icon: LayoutDashboard,
+    text: "User Dashboard",
+    path: "/",
+    roles: [2],
+  },
+  { icon: BedDouble, text: "Room Requests", path: "/admin", roles: [1] }, // Admin only
+  { icon: DoorOpen, text: "Entry/Exit", path: "/entry-exit", roles: [1, 2] }, // Admin only
+  { icon: Users, text: "Students", path: "/students", roles: [1] }, // Admin only
+  { icon: Wrench, text: "Maintenance", path: "/maintenance", roles: [1, 2] }, // Admin only
+  { icon: School, text: "Request Room", path: "/roomreq", roles: [2] }, // Student only
 ];
 
 export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
     navigate("/login");
   };
+
+  useEffect(() => {
+    const uid = localStorage.getItem("userId");
+    localStorage.removeItem("userRole");
+
+    if (uid) {
+      const studentsCol = collection(db, "users");
+      const q = query(studentsCol, where("uid", "==", uid)); // Assuming 'uid' is a field in the 'users' collection
+
+      const unsubscribeStudents = onSnapshot(q, (snapshot) => {
+        const studentsList = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          userRole: doc.data().userRole,
+        }));
+
+        // Update role based on retrieved data
+        const user = studentsList[0]; // Assuming one document per user
+        if (user) {
+          if (user.userRole === "admin") {
+            setUserRole(1); // Admin role
+            localStorage.setItem("userRole", "admin");
+          } else if (user.userRole === "student") {
+            setUserRole(2); // Student role
+            localStorage.setItem("userRole", "student");
+          }
+        }
+      });
+
+      // Cleanup the listener
+      return () => unsubscribeStudents();
+    }
+  }, []);
+
+  // Filter menu items based on user role
+  const filteredMenuItems = menuItems.filter((item) =>
+    item.roles.includes(userRole)
+  );
 
   return (
     <div className="flex fixed h-screen z-10">
@@ -50,7 +96,7 @@ export default function Sidebar() {
               Main Menus
             </p>
             <nav className="mt-2">
-              {menuItems.map((item, index) => (
+              {filteredMenuItems.map((item, index) => (
                 <Link
                   key={index}
                   to={item.path}
