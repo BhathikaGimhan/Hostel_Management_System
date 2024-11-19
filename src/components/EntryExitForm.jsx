@@ -103,7 +103,7 @@ function EntryExitForm() {
                 onClick={() => setEntryExitType("Short Exit")}
                 className={`p-2 w-full mb-2 rounded-lg ${
                   entryExitType === "Short Exit"
-                    ? "bg-red-500 text-white"
+                    ? "bg-orange-400 text-white"
                     : "bg-gray-200"
                 }`}
               >
