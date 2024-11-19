@@ -60,11 +60,9 @@ function EntryExitForm() {
   };
 
   return (
-    <div className="flex justify-center">
-      {loading && <Loading />}
-
+    <div className="flex justify-center flex-col md:flex-row">
       {/* Input Section */}
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full md:w-1/2 flex flex-col items-center">
+      <div className="bg-white rounded-lg shadow-lg p-10 mb-10 w-full md:w-1/2 flex flex-col items-center">
         <Fingerprint className="w-24 h-24 text-gray-600 mx-auto mb-4" />
         <div className="flex items-center justify-center mb-4 w-full">
           <h2 className="text-lg font-bold">Fingerprint Entry/Exit </h2>
@@ -89,10 +87,10 @@ function EntryExitForm() {
 
         {userData && (
           <div className="mt-4">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex-row items-center mb-4">
               <button
                 onClick={() => setEntryExitType("Entry")}
-                className={`p-2 w-1/2 rounded-lg ${
+                className={`p-2 w-full mb-2 rounded-lg ${
                   entryExitType === "Entry"
                     ? "bg-blue-500 text-white"
                     : "bg-gray-200"
@@ -100,25 +98,26 @@ function EntryExitForm() {
               >
                 Entry
               </button>
-              <button
-                onClick={() => setEntryExitType("Loang Exit")}
-                className={`p-2 w-1/2 rounded-lg ${
-                  entryExitType === "Loang Exit"
-                    ? "bg-red-500 text-white"
-                    : "bg-gray-200"
-                }`}
-              >
-                Loang Exit
-              </button>
+
               <button
                 onClick={() => setEntryExitType("Short Exit")}
-                className={`p-2 w-1/2 rounded-lg ${
+                className={`p-2 w-full mb-2 rounded-lg ${
                   entryExitType === "Short Exit"
                     ? "bg-red-500 text-white"
                     : "bg-gray-200"
                 }`}
               >
                 Short Exit
+              </button>
+              <button
+                onClick={() => setEntryExitType("Loang Exit")}
+                className={`p-2 w-full mb-2 rounded-lg ${
+                  entryExitType === "Loang Exit"
+                    ? "bg-red-500 text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                Loang Exit
               </button>
             </div>
 
@@ -135,8 +134,8 @@ function EntryExitForm() {
 
       {/* User Details Section */}
       {userData && (
-        <div className="bg-white text-center rounded-lg p-4 shadow-lg w-full md:w-1/3">
-          <div className="flex items-center mb-2">
+        <div className="bg-white justify-center text-center rounded-lg shadow-lg w-full md:w-1/2 mb-10 md:ml-10 max-sm:h-80">
+          <div className="flex items-center mb-2 justify-center p-6">
             <User className="text-gray-600 mr-2" />
             <span className="text-lg font-bold">{userData.name}</span>
           </div>
@@ -151,7 +150,7 @@ function EntryExitForm() {
             {userData.indexNumber}
           </div>
           <div className="mb-1">
-            <span className="font-semibold">Other Details:</span>{" "}
+            <span className="font-semibold">Gender:</span>{" "}
             {userData.otherDetail}
           </div>
         </div>

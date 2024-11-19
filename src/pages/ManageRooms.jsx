@@ -132,7 +132,9 @@ const ManageRooms = () => {
               key={i + 1}
               onClick={() => goToPage(i + 1)}
               className={`px-3 py-1 mx-1 ${
-                i + 1 === currentPage ? "bg-blue-500 text-white" : "bg-gray-300"
+                i + 1 === currentPage
+                  ? "bg-[#003366] text-white"
+                  : "bg-gray-300"
               } rounded`}
             >
               {i + 1}
