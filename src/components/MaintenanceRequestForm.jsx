@@ -8,6 +8,8 @@ import {
   onSnapshot,
   Timestamp,
 } from "firebase/firestore";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const validateEmail = (email) => {
   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -103,7 +105,7 @@ const MaintenanceRequestForm = () => {
         status: "Pending",
         timestamp: Timestamp.now(),
       });
-      alert("Request submitted successfully!");
+      toast.success("Request submitted successfully!");
       setName("");
       setEmail("");
       setPhone("");
@@ -113,7 +115,7 @@ const MaintenanceRequestForm = () => {
       setPage(1); // Reset to the first page
     } catch (error) {
       console.error("Error submitting request:", error);
-      alert("Failed to submit request.");
+      toast.error("Failed to submit request.");
     }
     setLoading(false);
   };
@@ -186,7 +188,6 @@ const MaintenanceRequestForm = () => {
 
       {page === 2 && (
         <form className="space-y-6">
-          {/* Index Number Field */}
           <div>
             <label className="text-lg font-semibold text-gray-600">
               Registration Number
@@ -203,7 +204,6 @@ const MaintenanceRequestForm = () => {
             )}
           </div>
 
-          {/* Room Number Field */}
           <div>
             <label className="text-lg font-semibold text-gray-600">
               Room Number
@@ -220,7 +220,6 @@ const MaintenanceRequestForm = () => {
             )}
           </div>
 
-          {/* Description Field */}
           <div>
             <label className="text-lg font-semibold text-gray-600">
               Description
@@ -237,7 +236,6 @@ const MaintenanceRequestForm = () => {
             )}
           </div>
 
-          {/* Back and Submit Buttons */}
           <div className="flex justify-between">
             <button
               type="button"
@@ -257,6 +255,17 @@ const MaintenanceRequestForm = () => {
           </div>
         </form>
       )}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

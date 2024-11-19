@@ -51,9 +51,16 @@ const ApproveRoomRequests = () => {
   }, []);
 
   // Pagination Logic
+  const totalPages = Math.ceil(requests.length / rowsPerPage);
+
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRequests = requests.slice(indexOfFirstRow, indexOfLastRow); // Ensure this is before JSX usage.
+  const currentRequests = requests.slice(indexOfFirstRow, indexOfLastRow);
+
+  const goToPage = (pageNumber) => {
+    if (pageNumber < 1 || pageNumber > totalPages) return;
+    setCurrentPage(pageNumber);
+  };
 
   const openModal = (action, request) => {
     setModalAction(action);
@@ -102,8 +109,6 @@ const ApproveRoomRequests = () => {
     });
     toast.warn("Request not approved!");
   };
-
-  // Pagination logic...
 
   return (
     <>
@@ -180,8 +185,35 @@ const ApproveRoomRequests = () => {
               </tbody>
             </table>
           </div>
-          {/* Pagination Controls */}
-          {/* Existing pagination logic */}
+          <div className="flex justify-end items-center mt-4">
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
+            >
+              &lt;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => goToPage(i + 1)}
+                className={`px-3 py-1 mx-1 ${
+                  i + 1 === currentPage
+                    ? "bg-[#003366] text-white"
+                    : "bg-gray-300"
+                } rounded`}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
+            >
+              &gt;
+            </button>
+          </div>
         </div>
 
         {/* Modal */}

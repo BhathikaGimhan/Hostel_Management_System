@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase/firebase";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import Modal from "../components/Modal.jsx";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const MaintenanceRequestsTable = () => {
   const [requests, setRequests] = useState([]);
@@ -9,67 +12,106 @@ const MaintenanceRequestsTable = () => {
   const [filter, setFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [showModal, setShowModal] = useState(false);
+  const [modalAction, setModalAction] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+
+  const fetchRequests = async () => {
+    try {
+      const querySnapshot = await getDocs(
+        collection(db, "maintenanceRequests")
+      );
+      const requestsList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      // Sort the requests so that 'Pending' is on top
+      const sortedRequests = requestsList.sort((a, b) => {
+        if (a.status === "Pending" && b.status !== "Pending") {
+          return -1; // 'Pending' should come first
+        }
+        if (a.status !== "Pending" && b.status === "Pending") {
+          return 1; // 'Pending' should come first
+        }
+        return 0; // Keep other statuses in their current order
+      });
+
+      setRequests(sortedRequests);
+      setFilteredRequests(
+        filter === "All"
+          ? sortedRequests
+          : sortedRequests.filter((req) => req.status === filter)
+      );
+    } catch (error) {
+      console.error("Error fetching maintenance requests: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const querySnapshot = await getDocs(
-          collection(db, "maintenanceRequests")
-        );
-        const requestsList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setRequests(requestsList);
-        setFilteredRequests(requestsList);
-      } catch (error) {
-        console.error("Error fetching maintenance requests: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchRequests();
   }, []);
 
+  const openModal = (action, request) => {
+    setModalAction(action);
+    setSelectedRequest(request);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setModalAction(null);
+    setSelectedRequest(null);
+  };
+
+  const confirmAction = async () => {
+    if (modalAction && selectedRequest) {
+      const { id } = selectedRequest;
+      if (modalAction === "approve") {
+        await handleApprove(id);
+      } else if (modalAction === "reject") {
+        await handleReject(id);
+      }
+    }
+    closeModal();
+  };
+
   const handleApprove = async (id) => {
-    const requestRef = doc(db, "maintenanceRequests", id);
     try {
-      await updateDoc(requestRef, { status: "Approved" });
-      setRequests((prevRequests) =>
-        prevRequests.map((request) =>
-          request.id === id ? { ...request, status: "Approved" } : request
-        )
-      );
+      await updateDoc(doc(db, "maintenanceRequests", id), {
+        status: "Approved",
+      });
+      toast.success("Request approved successfully!");
+      await fetchRequests(); // Refresh the table
     } catch (error) {
       console.error("Error approving request: ", error);
+      toast.error("Failed to approve request!");
     }
   };
 
   const handleReject = async (id) => {
-    const requestRef = doc(db, "maintenanceRequests", id);
     try {
-      await updateDoc(requestRef, { status: "Rejected" });
-      setRequests((prevRequests) =>
-        prevRequests.map((request) =>
-          request.id === id ? { ...request, status: "Rejected" } : request
-        )
-      );
+      await updateDoc(doc(db, "maintenanceRequests", id), {
+        status: "Rejected",
+      });
+      toast.warn("Request rejected!");
+      await fetchRequests(); // Refresh the table
     } catch (error) {
       console.error("Error rejecting request: ", error);
+      toast.error("Failed to reject request!");
     }
   };
 
   const handleFilterChange = (e) => {
     const selectedFilter = e.target.value;
     setFilter(selectedFilter);
-
-    if (selectedFilter === "All") {
-      setFilteredRequests(requests);
-    } else {
-      setFilteredRequests(
-        requests.filter((request) => request.status === selectedFilter)
-      );
-    }
+    setFilteredRequests(
+      selectedFilter === "All"
+        ? requests
+        : requests.filter((req) => req.status === selectedFilter)
+    );
     setCurrentPage(1);
   };
 
@@ -101,7 +143,6 @@ const MaintenanceRequestsTable = () => {
       <h2 className="text-lg font-bold mb-4 text-center">
         Maintenance Requests
       </h2>
-
       <div className="mb-4 flex items-center">
         <label htmlFor="status-filter" className="text-lg font-semibold mr-2">
           Filter by Status:
@@ -168,13 +209,13 @@ const MaintenanceRequestsTable = () => {
                   {request.status === "Pending" ? (
                     <>
                       <button
-                        onClick={() => handleApprove(request.id)}
+                        onClick={() => openModal("approve", request)}
                         className="bg-green-700 text-white px-4 py-2 rounded-lg mr-2"
                       >
                         Approve
                       </button>
                       <button
-                        onClick={() => handleReject(request.id)}
+                        onClick={() => openModal("reject", request)}
                         className="bg-red-700 text-white px-4 py-2 rounded-lg"
                       >
                         Reject
@@ -216,6 +257,29 @@ const MaintenanceRequestsTable = () => {
           &gt;
         </button>
       </div>
+      {showModal && (
+        <Modal
+          title={`Confirm ${
+            modalAction === "approve" ? "Approval" : "Rejection"
+          }`}
+          message={`Are you sure you want to ${
+            modalAction === "approve" ? "approve" : "reject"
+          } this request?`}
+          onConfirm={confirmAction}
+          onCancel={closeModal}
+        />
+      )}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
