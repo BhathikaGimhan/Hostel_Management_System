@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Search, Bell, MessageSquare } from "lucide-react";
+import { Search, MapPinHouse, MessageSquare } from "lucide-react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
@@ -42,11 +42,26 @@ export default function Header() {
     // Cleanup authentication subscription
     return () => unsubscribeAuth();
   }, [uid]);
+
   const userhandle = () => {
     navigate("/login");
   };
+
+  // Handle navigation to pages
+  const navigateToLocation = () => {
+    navigate("/location"); // Assuming the location page route is /location
+  };
+
+  const navigateToMessages = () => {
+    navigate("/messages"); // Assuming the messages page route is /messages
+  };
+
+  const navigateToProfile = () => {
+    navigate("/profile"); // Assuming the profile page route is /profile
+  };
+
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4 pl-64">
+    <header className="fixed w-full bg-white border-b border-gray-200 px-6 py-4 pl-64">
       <div className="flex items-center justify-between flex-wrap ml-10">
         {/* Search bar (hidden on small screens) */}
         <div className="relative flex-1 max-w-xl mb-4 sm:mb-0 hidden sm:block">
@@ -62,16 +77,25 @@ export default function Header() {
         <div className="flex items-center space-x-4 ml-auto">
           {/* Hide notification and chat icons on small screens */}
           <div className="hidden sm:flex items-center space-x-4">
-            <button className="p-2 text-gray-400 hover:text-gray-600">
-              <Bell className="w-6 h-6" />
+            <button
+              className="p-2 text-gray-400 hover:text-gray-600"
+              onClick={navigateToLocation} // Navigate to location page
+            >
+              <MapPinHouse className="w-6 h-6" />
             </button>
-            <button className="p-2 text-gray-400 hover:text-gray-600">
+            <button
+              className="p-2 text-gray-400 hover:text-gray-600"
+              onClick={navigateToMessages} // Navigate to message page
+            >
               <MessageSquare className="w-6 h-6" />
             </button>
           </div>
 
           {/* Profile section (always visible) */}
-          <button className="flex items-center space-x-3" onClick={userhandle}>
+          <button
+            className="flex items-center space-x-3"
+            onClick={navigateToProfile}
+          >
             <div className="hidden sm:flex flex-col items-end">
               <span className="font-medium text-sm">
                 {currentUser ? currentUser.displayName : "Guest"}

@@ -132,7 +132,7 @@ function App() {
           {isLoggedIn && <Sidebar />}
           <div className="flex-1 flex flex-col">
             {isLoggedIn && <Header />}
-            <main className="p-6 md:pl-72 ">
+            <main className="p-6 md:pl-72 md:pt-24 max-sm:pt-24 ">
               {
                 <Routes>
                   {isLoggedIn ? (
