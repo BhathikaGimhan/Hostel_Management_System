@@ -24,7 +24,9 @@ import UserDashBoard from "./pages/UserDashBoard.jsx";
 import TrincomaleeCampusChecker from "./pages/TrincomaleeCampusChecker.jsx";
 import MessagesPage from "./pages/MessageItem.jsx";
 import CreateMessage from "./pages/CreateMessage.jsx";
+import MessageView from "./pages/MessageView.jsx";
 import UserDetailsModal from "./components/UserDetailsModal.jsx";
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -145,6 +147,7 @@ function App() {
                   ) : (
                     <Route path="/*" element={<RegistrationForm />} />
                   )}
+                  <Route path="/messages" element={<MessageView />} />
                   <Route
                     path="/messages"
                     element={
