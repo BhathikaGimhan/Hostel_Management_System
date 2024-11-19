@@ -57,7 +57,7 @@ export default function Header() {
   };
 
   const navigateToProfile = () => {
-    navigate("/profile"); // Assuming the profile page route is /profile
+    navigate("/login"); // Assuming the profile page route is /profile
   };
 
   return (

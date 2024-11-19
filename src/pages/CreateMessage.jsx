@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function CreateMessage({ currentUser }) {
   const [receiver, setReceiver] = useState("");
