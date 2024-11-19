@@ -3,24 +3,41 @@ import { useNavigate } from "react-router-dom";
 import { MapPinHouse } from "lucide-react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 
+// Haversine formula for distance calculation
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // Earth's radius in kilometers
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in kilometers
+};
+
 const TrincomaleeCampusChecker = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [isNearby, setIsNearby] = useState(null);
   const [locationAccessDenied, setLocationAccessDenied] = useState(false);
   const navigate = useNavigate();
 
-  const TRINCOMALEE_COORDS = { lat: 7.64177, lng: 80.586 };
-  const PROXIMITY_THRESHOLD = 0.05;
+  const TRINCOMALEE_COORDS = { lat: 8.576441, lng: 81.231232 }; // Trincomalee Campus coordinates
+  const PROXIMITY_THRESHOLD_KM = 5; // 5 kilometers
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyDvAUWtuIlFr51K9KLHYk9ojs9QwJzUhQM", // Replace with your API key
   });
 
   const checkProximity = (latitude, longitude) => {
-    const isWithinProximity =
-      Math.abs(latitude - TRINCOMALEE_COORDS.lat) <= PROXIMITY_THRESHOLD &&
-      Math.abs(longitude - TRINCOMALEE_COORDS.lng) <= PROXIMITY_THRESHOLD;
-    setIsNearby(isWithinProximity);
+    const distance = calculateDistance(
+      latitude,
+      longitude,
+      TRINCOMALEE_COORDS.lat,
+      TRINCOMALEE_COORDS.lng
+    );
+    setIsNearby(distance <= PROXIMITY_THRESHOLD_KM);
   };
 
   useEffect(() => {
