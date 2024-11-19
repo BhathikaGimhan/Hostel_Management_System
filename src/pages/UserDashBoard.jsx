@@ -100,7 +100,7 @@ function StudentDashboard() {
             </p>
             <p className="mb-2">
               <strong className="block">Room Number:</strong>{" "}
-              {studentDetails.roomNumber || "Not Assigned"}
+              {roomRequest.roomName || "Not Assigned"}
             </p>
             <p>
               <strong className="block">Index Number:</strong>{" "}

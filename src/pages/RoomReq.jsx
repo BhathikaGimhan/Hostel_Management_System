@@ -254,18 +254,6 @@ const RoomReq = () => {
               </tbody>
             </table>
           </div>
-
-          {/* Students */}
-          <div className="bg-white shadow-md rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-[#003366] mb-4">Students</h2>
-            <ul>
-              {students.map((student) => (
-                <li key={student.id} className="p-2 border-b border-gray-200">
-                  {student.name}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </div>
     </>

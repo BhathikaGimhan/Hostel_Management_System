@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import MaintenanceRequestForm from "../components/MaintenanceRequestForm";
 import MaintenanceRequestsView from "../components/MaintenanceRequestsView";
 
-function Maintenance() {
+function Maintenance({ userRole }) {
   const [activeTab, setActiveTab] = useState("logs");
 
   // Function to handle tab switching
@@ -10,6 +10,18 @@ function Maintenance() {
     setActiveTab(tab);
   };
 
+  // Show only the form if the user is a student
+  if (userRole === "student") {
+    return (
+      <div className="flex flex-1 p-2">
+        <div className="w-full">
+          <MaintenanceRequestForm />
+        </div>
+      </div>
+    );
+  }
+
+  // Default rendering for other roles
   return (
     <div className="flex flex-1 p-2">
       <div className="w-full">

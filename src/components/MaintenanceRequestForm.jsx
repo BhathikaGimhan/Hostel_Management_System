@@ -1,6 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { db } from "../firebase/firebase";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  onSnapshot,
+  Timestamp,
+} from "firebase/firestore";
 
 const validateEmail = (email) => {
   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -30,8 +37,24 @@ const MaintenanceRequestForm = () => {
     description: "",
   });
 
+  useEffect(() => {
+    if (user) {
+      const q = query(collection(db, "users"), where("uid", "==", user));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+          const userData = snapshot.docs[0].data();
+          setName(userData.name || "");
+          setEmail(userData.email || "");
+          setPhone(userData.phone || "");
+          setIndexNumber(userData.indexNumber || "");
+          setRoom(userData.room || "");
+        }
+      });
+      return () => unsubscribe();
+    }
+  }, [user]);
+
   const handleSubmit = async () => {
-    // Validate fields
     let isValid = true;
     let newErrors = {};
 
@@ -105,7 +128,6 @@ const MaintenanceRequestForm = () => {
       </h3>
       {page === 1 && (
         <form className="space-y-6">
-          {/* Name Field */}
           <div>
             <label className="text-lg font-semibold text-gray-600">
               Student Name
@@ -122,7 +144,6 @@ const MaintenanceRequestForm = () => {
             )}
           </div>
 
-          {/* Email Field */}
           <div>
             <label className="text-lg font-semibold text-gray-600">Email</label>
             <input
@@ -137,7 +158,6 @@ const MaintenanceRequestForm = () => {
             )}
           </div>
 
-          {/* Phone Field */}
           <div>
             <label className="text-lg font-semibold text-gray-600">
               Phone (10 digits)
@@ -154,7 +174,6 @@ const MaintenanceRequestForm = () => {
             )}
           </div>
 
-          {/* Next Button */}
           <button
             type="button"
             onClick={nextPage}
@@ -170,7 +189,7 @@ const MaintenanceRequestForm = () => {
           {/* Index Number Field */}
           <div>
             <label className="text-lg font-semibold text-gray-600">
-              Registration number
+              Registration Number
             </label>
             <input
               type="text"

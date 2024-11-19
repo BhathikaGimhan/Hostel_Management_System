@@ -93,8 +93,20 @@ function App() {
           <Route path="/" element={<UserDashBoard />} />
           <Route path="/roomreq" element={<RoomReq />} />
           <Route path="/student" element={<StudentViewPage />} />
-          <Route path="/entry-exit" element={<EntryExit />} />
-          <Route path="/maintenance" element={<Maintenance />} />
+          <Route
+            path="/entry-exit"
+            element={
+              <EntryExit
+                userRole={userRole}
+                userEmail={auth.currentUser?.email}
+              />
+            }
+          />
+
+          <Route
+            path="/maintenance"
+            element={<Maintenance userRole={userRole} />}
+          />
 
           <Route path="/requestmaintenace" element={<RequestMaintenace />} />
           <Route
