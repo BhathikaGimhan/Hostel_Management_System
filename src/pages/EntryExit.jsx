@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import EntryExitForm from "../components/EntryExitForm";
 import LogsTable from "../components/LogsTable";
 
-function EntryExit() {
+function EntryExit({ userRole, userEmail }) {
   const [activeTab, setActiveTab] = useState("logs");
 
   // Function to handle tab switching
@@ -37,9 +37,11 @@ function EntryExit() {
           </button>
         </div>
 
-        <div className=" overflow-x-auto">
+        <div className="overflow-x-auto">
           {activeTab === "logs" && <EntryExitForm />}
-          {activeTab === "add" && <LogsTable />}
+          {activeTab === "add" && (
+            <LogsTable userRole={userRole} userEmail={userEmail} />
+          )}
         </div>
       </div>
     </div>

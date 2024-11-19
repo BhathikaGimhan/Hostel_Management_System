@@ -3,13 +3,13 @@ import { db } from "../firebase/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import Loading from "../components/Loading";
 
-const LogsTable = () => {
+const LogsTable = ({ userRole, userEmail }) => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchEmail, setSearchEmail] = useState("");
   const [filteredLogs, setFilteredLogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10); // Default rows per page
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -23,8 +23,15 @@ const LogsTable = () => {
           id: doc.id,
           ...doc.data(),
         }));
-        setLogs(logsData);
-        setFilteredLogs(logsData);
+
+        // Filter logs for student role
+        const filteredData =
+          userRole === "student"
+            ? logsData.filter((log) => log.email === userEmail)
+            : logsData;
+
+        setLogs(filteredData);
+        setFilteredLogs(filteredData);
       } catch (error) {
         console.error("Error fetching logs:", error);
         alert("Failed to fetch logs.");
@@ -33,7 +40,7 @@ const LogsTable = () => {
     };
 
     fetchLogs();
-  }, []);
+  }, [userRole, userEmail]);
 
   const handleSearch = (e) => {
     const searchTerm = e.target.value.toLowerCase();
@@ -43,38 +50,20 @@ const LogsTable = () => {
         log.email ? log.email.toLowerCase().includes(searchTerm) : false
       );
       setFilteredLogs(filtered);
-      setCurrentPage(1); // Reset to the first page when searching
+      setCurrentPage(1);
     } else {
       setFilteredLogs(logs);
     }
   };
 
-  useEffect(() => {
-    const updateRowsPerPage = () => {
-      const height = window.innerHeight;
-      if (height < 600) {
-        setRowsPerPage(5);
-      } else if (height < 800) {
-        setRowsPerPage(7);
-      } else {
-        setRowsPerPage(10);
-      }
-    };
-
-    updateRowsPerPage();
-    window.addEventListener("resize", updateRowsPerPage);
-    return () => window.removeEventListener("resize", updateRowsPerPage);
-  }, []);
-
+  // Pagination logic
   const indexOfLastLog = currentPage * rowsPerPage;
   const indexOfFirstLog = indexOfLastLog - rowsPerPage;
   const currentLogs = filteredLogs.slice(indexOfFirstLog, indexOfLastLog);
 
   const totalPages = Math.ceil(filteredLogs.length / rowsPerPage);
 
-  const goToPage = (page) => {
-    setCurrentPage(page);
-  };
+  const goToPage = (page) => setCurrentPage(page);
 
   return (
     <div className=" mx-auto px-4">
@@ -91,8 +80,8 @@ const LogsTable = () => {
       </div>
 
       {/* Table Container */}
-      <div className="w-10">
-        <table className="table-auto overflow-x-auto min-h-full bg-white rounded-lg">
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto border-collapse">
           <thead>
             <tr>
               <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
