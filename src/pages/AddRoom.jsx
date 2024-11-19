@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddRoom = () => {
   const [capacity, setCapacity] = useState("");
@@ -11,7 +13,7 @@ const AddRoom = () => {
     e.preventDefault();
 
     if (!roomName || !capacity || !occupants) {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields");
       return;
     }
 
@@ -23,12 +25,13 @@ const AddRoom = () => {
 
     try {
       await addDoc(collection(db, "rooms"), newRoom);
-      alert("Room added successfully");
+      toast.success("Room added successfully");
       setRoomName("");
       setCapacity("");
       setOccupants("");
     } catch (error) {
       console.error("Error adding room:", error);
+      toast.error("Failed to add room. Please try again.");
     }
   };
 
@@ -79,6 +82,17 @@ const AddRoom = () => {
           Add Room
         </button>
       </form>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
