@@ -69,6 +69,7 @@ const RegistrationForm = () => {
       const user = result.user;
       setUser(user);
       await checkRegistration(user.uid);
+      window.location.reload();
     } catch (error) {
       console.error("Error during Google Sign-In:", error);
     }

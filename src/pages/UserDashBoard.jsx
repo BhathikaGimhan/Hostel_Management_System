@@ -59,7 +59,6 @@ function StudentDashboard() {
               ...requestData,
               timestamp: requestData.timestamp?.toDate().toLocaleString(),
             });
-            console.log(roomRequest);
           } else {
             setRoomRequest(null); // No room request found
           }
@@ -100,7 +99,7 @@ function StudentDashboard() {
             </p>
             <p className="mb-2">
               <strong className="block">Room Number:</strong>{" "}
-              {roomRequest.roomName || "Not Assigned"}
+              {roomRequest?.roomName || "Not Assigned"}
             </p>
             <p>
               <strong className="block">Index Number:</strong>{" "}
@@ -152,7 +151,7 @@ function StudentDashboard() {
             <div>
               <p className="mb-2">
                 <strong className="block">Requested Room:</strong>{" "}
-                {roomRequest.roomName || "N/A"}
+                {roomRequest?.roomName || "N/A"}
               </p>
               <p className="mb-2">
                 <strong className="block">Status:</strong>{" "}
