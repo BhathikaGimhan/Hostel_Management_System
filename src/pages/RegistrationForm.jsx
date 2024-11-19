@@ -94,6 +94,20 @@ const RegistrationForm = () => {
   };
 
   const handleRegistration = async () => {
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(additionalInfo.phone)) {
+      alert("Phone number must be exactly 10 digits and contain only numbers.");
+      return;
+    }
+
+    // Validate other fields if necessary
+    if (
+      !additionalInfo.indexNumber.trim() ||
+      !additionalInfo.otherDetail.trim()
+    ) {
+      alert("All fields are required. Please fill in all the details.");
+      return;
+    }
     setLoading(true);
     try {
       const newUser = {
@@ -144,28 +158,30 @@ const RegistrationForm = () => {
                       name="phone"
                       value={additionalInfo.phone}
                       onChange={handleInputChange}
+                      pattern="[0-9]{10}"
+                      title="Please enter a valid 10-digit phone number"
                       className="w-full p-2 border border-gray-300 rounded mb-4"
                       placeholder="Enter your phone number"
                       required
                     />
-                    <label className="block mb-2">Index Number:</label>
+                    <label className="block mb-2">Reg Number:</label>
                     <input
                       type="text"
                       name="indexNumber"
                       value={additionalInfo.indexNumber}
                       onChange={handleInputChange}
                       className="w-full p-2 border border-gray-300 rounded mb-4"
-                      placeholder="Enter your index number"
+                      placeholder="Enter your register number"
                       required
                     />
-                    <label className="block mb-2">Other Details:</label>
+                    <label className="block mb-2">Sex:</label>
                     <input
                       type="text"
                       name="otherDetail"
                       value={additionalInfo.otherDetail}
                       onChange={handleInputChange}
                       className="w-full p-2 border border-gray-300 rounded mb-4"
-                      placeholder="Enter additional details"
+                      placeholder="Enter your sex"
                     />
                   </div>
                 )}

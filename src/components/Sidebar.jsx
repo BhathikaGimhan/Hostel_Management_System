@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { auth, db } from "../firebase/firebase";
+import { signOut } from "firebase/auth";
 
 // Menu items with roles
 const menuItems = [
@@ -30,14 +31,22 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+      signOut(auth)
+        .then(() => {
+          localStorage.removeItem("userId");
+          window.location.reload();
+        })
+        .catch((error) => console.error("Error during logout:", error));
+    }
+  };
+
   const location = useLocation();
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const handleLogout = () => {
-    navigate("/login");
-  };
 
   useEffect(() => {
     const uid = localStorage.getItem("userId");

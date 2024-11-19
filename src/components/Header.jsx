@@ -3,28 +3,48 @@ import { Search, Bell, MessageSquare } from "lucide-react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
-  const [curentUser, setCurrentUser] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
+  const [userRole, setUserRole] = useState("");
   const uid = localStorage.getItem("userId");
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log(currentUser.displayName);
-      setCurrentUser(currentUser);
-    });
-    const studentsCol = collection(db, "users");
-    const q = query(studentsCol, where("uid", "==", uid)); // Assuming 'uid' is a field in the 'users' collection
+  const navigate = useNavigate();
 
-    const unsubscribeStudents = onSnapshot(q, (snapshot) => {
-      const studentsList = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        userRole: doc.data().userRole,
-      }));
-      setUser(studentsList[0].userRole);
+  useEffect(() => {
+    // Listen to authentication state
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        console.log(currentUser.displayName);
+        setCurrentUser(currentUser);
+      }
     });
-    return () => unsubscribe();
-  }, []);
+
+    // Query user role from Firestore
+    if (uid) {
+      const studentsCol = collection(db, "users");
+      const q = query(studentsCol, where("uid", "==", uid));
+
+      const unsubscribeStudents = onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+          const userData = snapshot.docs[0].data(); // Get the first matching document
+          setUserRole(userData.userRole || ""); // Safely set user role
+        } else {
+          console.warn("No user data found for the given UID.");
+          setUserRole(""); // Reset to avoid stale data
+        }
+      });
+
+      // Cleanup Firestore subscription
+      return () => unsubscribeStudents();
+    }
+
+    // Cleanup authentication subscription
+    return () => unsubscribeAuth();
+  }, [uid]);
+  const userhandle = () => {
+    navigate("/login");
+  };
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4 pl-64">
       <div className="flex items-center justify-between flex-wrap ml-10">
@@ -51,19 +71,21 @@ export default function Header() {
           </div>
 
           {/* Profile section (always visible) */}
-          <div className="flex items-center space-x-3">
+          <button className="flex items-center space-x-3" onClick={userhandle}>
             <div className="hidden sm:flex flex-col items-end">
               <span className="font-medium text-sm">
-                {curentUser.displayName}
+                {currentUser ? currentUser.displayName : "Guest"}
               </span>
-              <span className="text-xs text-gray-500">{user}</span>
+              <span className="text-xs text-gray-500">
+                {userRole ? `Role: ${userRole}` : "Role not assigned"}
+              </span>
             </div>
             <img
-              src={curentUser.photoURL}
+              src={currentUser ? currentUser.photoURL : "/default-avatar.png"}
               alt="Profile"
               className="w-10 h-10 rounded-full border-2 border-gray-200"
             />
-          </div>
+          </button>
         </div>
       </div>
     </header>
