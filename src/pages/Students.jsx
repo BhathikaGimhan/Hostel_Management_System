@@ -11,6 +11,8 @@ import { db } from "../firebase/firebase";
 const ApproveRoomRequests = () => {
   const [requests, setRequests] = useState([]);
   const [rooms, setRooms] = useState([]);
+  const [filteredRequests, setFilteredRequests] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10); // Default rows per page
 
@@ -19,15 +21,14 @@ const ApproveRoomRequests = () => {
     const updateRowsPerPage = () => {
       const height = window.innerHeight;
       if (height < 600) {
-        setRowsPerPage(4); // Fewer rows for smaller screens
+        setRowsPerPage(4);
       } else if (height < 800) {
-        setRowsPerPage(6); // Medium rows for medium screens
+        setRowsPerPage(6);
       } else {
-        setRowsPerPage(10); // Default to more rows for larger screens
+        setRowsPerPage(10);
       }
     };
 
-    // Run on component mount and whenever the window is resized
     updateRowsPerPage();
     window.addEventListener("resize", updateRowsPerPage);
 
@@ -40,24 +41,25 @@ const ApproveRoomRequests = () => {
     const requestsQuery = query(collection(db, "requests"));
 
     const unsubscribeRequests = onSnapshot(requestsQuery, (snapshot) => {
-      const requestsList = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        studentName: doc.data().studentName,
-        studentId: doc.data().studentId,
-        studentEmail: doc.data().studentEmail,
-        roomId: doc.data().roomId,
-        roomName: doc.data().roomName,
-        status: doc.data().status,
-      }));
+      const requestsList = snapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          studentName: doc.data().studentName,
+          studentId: doc.data().studentId,
+          studentEmail: doc.data().studentEmail,
+          roomId: doc.data().roomId,
+          roomName: doc.data().roomName,
+          status: doc.data().status,
+        }))
+        .filter((request) => request.status === "approved"); // Only approved requests
       setRequests(requestsList);
-      console.log(requestsList);
+      setFilteredRequests(requestsList); // Initialize filtered list with approved requests
     });
 
     const unsubscribeRooms = onSnapshot(collection(db, "rooms"), (snapshot) => {
       const roomsList = snapshot.docs.map((doc) => ({
         id: doc.id,
-        capacity: doc.data().capacity,
-        occupants: doc.data().occupants,
+        name: doc.data().name, // Assuming room has a name property
       }));
       setRooms(roomsList);
     });
@@ -68,43 +70,31 @@ const ApproveRoomRequests = () => {
     };
   }, []);
 
-  const handleApproveRequest = async (requestId, roomId) => {
-    const roomToUpdate = rooms.find((room) => room.id === roomId);
+  const handleRoomFilterChange = (e) => {
+    const roomId = e.target.value;
+    setSelectedRoom(roomId);
 
-    if (roomToUpdate && roomToUpdate.occupants < roomToUpdate.capacity) {
-      const updatedOccupants = roomToUpdate.occupants + 1;
-
-      await updateDoc(doc(db, "rooms", roomId), {
-        occupants: updatedOccupants,
-      });
-      await updateDoc(doc(db, "requests", requestId), { status: "approved" });
-
-      alert("Request approved successfully!");
+    if (roomId === "all") {
+      setFilteredRequests(requests);
     } else {
-      alert("Room is already full or not found!");
+      const filtered = requests.filter((request) => request.roomId === roomId);
+      setFilteredRequests(filtered);
     }
-  };
 
-  const handleNotApproveRequest = async (requestId) => {
-    await updateDoc(doc(db, "requests", requestId), {
-      status: "not approved",
-    });
-    console.log(requestId);
-    alert("Request not approved!");
+    setCurrentPage(1); // Reset to the first page when filtering
   };
 
   // Calculate the requests to display for the current page
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRequests = requests.slice(indexOfFirstRow, indexOfLastRow);
-
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const currentRequests = filteredRequests.slice(
+    indexOfFirstRow,
+    indexOfLastRow
+  );
 
   // Calculate total pages
-  const totalPages = Math.ceil(requests.length / rowsPerPage);
+  const totalPages = Math.ceil(filteredRequests.length / rowsPerPage);
 
-  // Go to specific page
   const goToPage = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
@@ -114,10 +104,36 @@ const ApproveRoomRequests = () => {
   return (
     <div className="bg-white shadow-md rounded-lg p-8 mb-6">
       <h2 className="text-2xl font-bold text-[#003366] mb-3">
-        Approve Room Requests
+        Approved Room Requests
       </h2>
+
+      {/* Room Filter Dropdown */}
+      <div className="mb-4">
+        <label className="block font-semibold text-gray-700 mb-2">
+          Filter by Room:
+        </label>
+        <select
+          value={selectedRoom}
+          onChange={handleRoomFilterChange}
+          className="p-2 border border-gray-300 rounded-lg w-full sm:w-2/3 md:w-1/3 text-white bg-[#003366]"
+        >
+          <option value="all" className="text-white bg-[#003366]">
+            All Rooms
+          </option>
+          {rooms.map((room) => (
+            <option
+              className="text-white bg-[#003366]"
+              key={room.id}
+              value={room.id}
+            >
+              {room.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="w-full">
-        <div className="overflow-x-auto ">
+        <div className="overflow-x-auto">
           <table className="w-full border-gray-300 overflow-x-auto">
             <thead>
               <tr>
@@ -139,7 +155,7 @@ const ApproveRoomRequests = () => {
               {currentRequests.length === 0 ? (
                 <tr>
                   <td colSpan="4" className="text-center p-4 text-gray-600">
-                    No pending requests
+                    No approved requests found for the selected room.
                   </td>
                 </tr>
               ) : (
@@ -168,11 +184,11 @@ const ApproveRoomRequests = () => {
         </div>
 
         {/* Pagination Controls */}
-        <div className="flex justify-end items-center mt-4 ">
+        <div className="flex justify-end items-center mt-4">
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50 -z-0"
+            className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
           >
             &lt;
           </button>
@@ -190,7 +206,7 @@ const ApproveRoomRequests = () => {
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50 -z-0"
+            className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
           >
             &gt;
           </button>
