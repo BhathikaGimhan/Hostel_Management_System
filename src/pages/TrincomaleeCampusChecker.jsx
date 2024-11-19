@@ -48,6 +48,7 @@ const TrincomaleeCampusChecker = () => {
           setUserLocation({ lat: latitude, lng: longitude });
           checkProximity(latitude, longitude);
           setLocationAccessDenied(false);
+          console.log(position);
         },
         (error) => {
           console.error("Error fetching location:", error);
