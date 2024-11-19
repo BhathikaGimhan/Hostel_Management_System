@@ -27,12 +27,12 @@ import CreateMessage from "./pages/CreateMessage.jsx";
 import MessageView from "./pages/MessageView.jsx";
 import UserDetailsModal from "./components/UserDetailsModal.jsx";
 
-
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [userRole, setUserRole] = useState(null); // Added userRole state
   const [isLoading, setIsLoading] = useState(true);
+  const [userDetails, setUserDetails] = useState("");
 
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -46,10 +46,13 @@ function App() {
       setUserRole(storedUserRole); // Assuming roles are numeric
       setIsRegistered(true);
       setIsLoading(false);
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setUserDetails(user.displayName);
+        }
+      });
     } else {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
-        console.log(user);
-
         if (user) {
           setIsLoggedIn(true);
           setIsRegistered(false);
@@ -75,6 +78,7 @@ function App() {
   if (isLoading) {
     return <Loading />;
   }
+
   console.log("Loading spinner", userRole);
   // Role-based route filtering
   const getRoutes = () => {
@@ -159,12 +163,7 @@ function App() {
                   />
                   <Route
                     path="/profile"
-                    element={
-                      <UserDetailsModal
-                        userRole={userRole}
-                        currentUser={currentUser}
-                      />
-                    }
+                    element={<UserDetailsModal userDetails={userDetails} />}
                   />
                   <Route
                     path="/compose"

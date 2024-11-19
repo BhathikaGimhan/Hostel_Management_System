@@ -62,7 +62,6 @@ const GoogleLogin = () => {
         });
     }
   };
-
   return (
     <div className="flex flex-col md:ml-64 max-md:top-0 max-md:left-0 max-md:right-0 max-md:absolute items-center justify-center min-h-screen">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-center">
