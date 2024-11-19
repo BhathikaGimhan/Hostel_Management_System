@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { MapPinHouse } from "lucide-react";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 
 const TrincomaleeCampusChecker = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [isNearby, setIsNearby] = useState(null);
   const [locationAccessDenied, setLocationAccessDenied] = useState(false);
-  const navigate = useNavigate(); // Initialize React Router navigation
+  const navigate = useNavigate();
 
   const TRINCOMALEE_COORDS = { lat: 7.64177, lng: 80.586 };
   const PROXIMITY_THRESHOLD = 0.05;
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: "YOUR_GOOGLE_MAPS_API_KEY", // Replace with your API key
+  });
 
   const checkProximity = (latitude, longitude) => {
     const isWithinProximity =
@@ -24,7 +30,7 @@ const TrincomaleeCampusChecker = () => {
           const { latitude, longitude } = position.coords;
           setUserLocation({ lat: latitude, lng: longitude });
           checkProximity(latitude, longitude);
-          setLocationAccessDenied(false); // Reset denial state
+          setLocationAccessDenied(false);
         },
         (error) => {
           console.error("Error fetching location:", error);
@@ -42,13 +48,14 @@ const TrincomaleeCampusChecker = () => {
     if (locationAccessDenied) {
       alert("Location access is required to proceed.");
     } else {
-      navigate("/entry-exit"); // Navigate to EntryExit page
+      navigate("/entry-exit");
     }
   };
 
   return (
-    <div className=" flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
+    <div className="flex items-center justify-center bg-white p-4">
+      <div className="bg-white shadow-lg rounded-lg p-6 w-full">
+        <MapPinHouse className="w-24 h-24 text-gray-600 mx-auto mb-4" />
         <h1 className="text-2xl font-bold mb-4 text-center text-blue-600">
           Location Checker
         </h1>
@@ -94,6 +101,25 @@ const TrincomaleeCampusChecker = () => {
             </button>
           </div>
         )}
+        {/* Add Google Map */}
+        {isLoaded && (
+          <div className="mt-6">
+            <GoogleMap
+              mapContainerStyle={{ width: "100%", height: "300px" }}
+              center={userLocation || TRINCOMALEE_COORDS}
+              zoom={14}
+            >
+              <Marker
+                position={TRINCOMALEE_COORDS}
+                label="Trincomalee Campus"
+              />
+              {userLocation && (
+                <Marker position={userLocation} label="Your Location" />
+              )}
+            </GoogleMap>
+          </div>
+        )}
+        {!isLoaded && <p>Loading map...</p>}
       </div>
     </div>
   );
