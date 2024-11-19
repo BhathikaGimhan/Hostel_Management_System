@@ -59,7 +59,7 @@ const ApproveRoomRequests = () => {
     const unsubscribeRooms = onSnapshot(collection(db, "rooms"), (snapshot) => {
       const roomsList = snapshot.docs.map((doc) => ({
         id: doc.id,
-        name: doc.data().name, // Assuming room has a name property
+        name: doc.data().room, // Assuming room has a name property
       }));
       setRooms(roomsList);
     });
