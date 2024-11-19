@@ -49,7 +49,14 @@ const MaintenanceRequestForm = () => {
           setEmail(userData.email || "");
           setPhone(userData.phone || "");
           setIndexNumber(userData.indexNumber || "");
-          setRoom(userData.room || "");
+        }
+      });
+
+      const j = query(collection(db, "requests"), where("uid", "==", user));
+      const unsubscribeed = onSnapshot(j, (snapshot) => {
+        if (!snapshot.empty) {
+          const userDat = snapshot.docs[0].data();
+          setRoom(userDat.roomName || "");
         }
       });
       return () => unsubscribe();
@@ -135,6 +142,7 @@ const MaintenanceRequestForm = () => {
               Student Name
             </label>
             <input
+              disabled
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -149,6 +157,7 @@ const MaintenanceRequestForm = () => {
           <div>
             <label className="text-lg font-semibold text-gray-600">Email</label>
             <input
+              disabled
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -165,6 +174,7 @@ const MaintenanceRequestForm = () => {
               Phone (10 digits)
             </label>
             <input
+              disabled
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
@@ -193,6 +203,7 @@ const MaintenanceRequestForm = () => {
               Registration Number
             </label>
             <input
+              disabled
               type="text"
               value={indexNumber}
               onChange={(e) => setIndexNumber(e.target.value)}
@@ -209,6 +220,7 @@ const MaintenanceRequestForm = () => {
               Room Number
             </label>
             <input
+              disabled
               type="text"
               value={room}
               onChange={(e) => setRoom(e.target.value)}

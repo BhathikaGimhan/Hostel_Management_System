@@ -110,14 +110,14 @@ function EntryExitForm() {
                 Short Exit
               </button>
               <button
-                onClick={() => setEntryExitType("Loang Exit")}
+                onClick={() => setEntryExitType("Long Exit")}
                 className={`p-2 w-full mb-2 rounded-lg ${
                   entryExitType === "Loang Exit"
                     ? "bg-red-500 text-white"
                     : "bg-gray-200"
                 }`}
               >
-                Loang Exit
+                Long Exit
               </button>
             </div>
 
