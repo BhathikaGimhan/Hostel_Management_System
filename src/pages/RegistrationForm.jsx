@@ -9,6 +9,7 @@ import {
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import Loading from "../components/Loading";
+import UserDetailsModal from "../components/UserDetailsModal";
 
 const RegistrationForm = () => {
   const [user, setUser] = useState(null);
@@ -46,7 +47,7 @@ const RegistrationForm = () => {
       setloading(true);
       const userQuery = query(collection(db, "users"), where("uid", "==", uid));
       const querySnapshot = await getDocs(userQuery);
-      console.log(querySnapshot.empty);
+      console.log(querySnapshot);
       if (!querySnapshot.empty) {
         setIsRegistered(true);
         localStorage.setItem("userId", uid);
@@ -236,6 +237,7 @@ const RegistrationForm = () => {
             </button>
           </div>
         )}
+        <UserDetailsModal />
       </div>
     </div>
   );
