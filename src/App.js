@@ -15,6 +15,17 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebase.js";
 import Header from "./components/Header.jsx";
 import Sidebar from "./components/Sidebar.jsx";
+import AdminDashBoard from "./pages/AdminDashBoard.jsx";
+import EntryExit from "./pages/EntryExit.jsx";
+import Students from "./pages/Students.jsx";
+import Maintenance from "./pages/Maintenance.jsx";
+import RequestMaintenace from "./pages/RequestMaintenace.jsx";
+import UserDashBoard from "./pages/UserDashBoard.jsx";
+import TrincomaleeCampusChecker from "./pages/TrincomaleeCampusChecker.jsx";
+import MessagesPage from "./pages/MessageItem.jsx";
+import CreateMessage from "./pages/CreateMessage.jsx";
+import MessageView from "./pages/MessageView.jsx";
+import UserDetailsModal from "./components/UserDetailsModal.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
