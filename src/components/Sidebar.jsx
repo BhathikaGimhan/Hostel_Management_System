@@ -19,7 +19,7 @@ const menuItems = [
   {
     icon: LayoutDashboard,
     text: "User Dashboard",
-    path: "/userdashboard",
+    path: "/",
     roles: [2],
   },
   { icon: BedDouble, text: "Room Requests", path: "/admin", roles: [1] }, // Admin only
