@@ -56,13 +56,15 @@ function UserDetailsModal() {
 
   return (
     <div className="">
-      <div className="bg-white w-96 p-6 rounded-lg shadow-lg relative">
+      <div className="bg-white p-6 relative">
         <h2 className="text-xl font-bold mb-4">User Details</h2>
         <div className="mb-4">
           {isEditing ? (
             <>
               <div>
-                <label className="block text-gray-600 mb-2">Name:</label>
+                <label className="text-lg font-semibold text-gray-600">
+                  Name:
+                </label>
                 <input
                   type="text"
                   value={updatedDetails.name || ""}
@@ -72,11 +74,13 @@ function UserDetailsModal() {
                       name: e.target.value,
                     })
                   }
-                  className="w-full border-gray-200 rounded-lg p-2"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
                 />
               </div>
               <div>
-                <label className="block text-gray-600 mb-2">Reg Number:</label>
+                <label className="text-lg font-semibold text-gray-600">
+                  Reg Number:
+                </label>
                 <input
                   type="text"
                   value={updatedDetails.indexNumber || ""}
@@ -86,11 +90,11 @@ function UserDetailsModal() {
                       indexNumber: e.target.value,
                     })
                   }
-                  className="w-full border-gray-200 rounded-lg p-2"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
                 />
               </div>
               <div>
-                <label className="block text-gray-600 mb-2">
+                <label className="text-lg font-semibold text-gray-600">
                   Phone Number:
                 </label>
                 <input
@@ -102,14 +106,14 @@ function UserDetailsModal() {
                       phone: e.target.value,
                     })
                   }
-                  className="w-full border-gray-200 rounded-lg p-2"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
                 />
               </div>
               <div>
-                <label className="block text-gray-600 mb-2">
-                  Other Details:
+                <label className="text-lg font-semibold text-gray-600">
+                  Gender:
                 </label>
-                <textarea
+                <input
                   value={updatedDetails.otherDetail || ""}
                   onChange={(e) =>
                     setUpdatedDetails({
@@ -117,7 +121,7 @@ function UserDetailsModal() {
                       otherDetail: e.target.value,
                     })
                   }
-                  className="w-full border-gray-200 rounded-lg p-2"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
                 />
               </div>
             </>
@@ -133,8 +137,7 @@ function UserDetailsModal() {
                 <strong>Phone Number:</strong> {currentUser.phone || "N/A"}
               </p>
               <p>
-                <strong>Other Details:</strong>{" "}
-                {currentUser.otherDetail || "N/A"}
+                <strong>Gender:</strong> {currentUser.otherDetail || "N/A"}
               </p>
             </>
           )}
@@ -150,14 +153,14 @@ function UserDetailsModal() {
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+              className="bg-[#003366] text-white px-4 py-2 rounded-lg"
             >
               Edit
             </button>
           )}
           <button
             onClick={() => setIsEditing(false)}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg"
+            className="bg-gray-400 text-white px-4 py-2 rounded-lg"
           >
             Close
           </button>
