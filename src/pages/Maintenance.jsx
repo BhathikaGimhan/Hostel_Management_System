@@ -21,6 +21,17 @@ function Maintenance({ userRole }) {
     );
   }
 
+  // Show only the form if the user is a student
+  if (userRole === "admin") {
+    return (
+      <div className="flex flex-1 p-2">
+        <div className="w-full">
+          <MaintenanceRequestsView />
+        </div>
+      </div>
+    );
+  }
+
   // Default rendering for other roles
   return (
     <div className="flex flex-1 p-2">

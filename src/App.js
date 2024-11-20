@@ -90,7 +90,10 @@ function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/students" element={<Students />} />
           <Route path="/entry-exit" element={<EntryExit />} />
-          <Route path="/maintenance" element={<Maintenance />} />
+          <Route
+            path="/maintenance"
+            element={<Maintenance userRole={userRole} />}
+          />
           <Route
             path="/location"
             element={<TrincomaleeCampusChecker />}
