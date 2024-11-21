@@ -10,6 +10,17 @@ function EntryExit({ userRole, userEmail }) {
     setActiveTab(tab);
   };
 
+  // Show only the form if the user is a admin
+  // if (userRole === "admin") {
+  //   return (
+  //     <div className="flex flex-1 p-2">
+  //       <div className="w-full">
+  //         <LogsTable />
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   return (
     <div className="flex w-full flex-1 p-2">
       <div className="w-full">

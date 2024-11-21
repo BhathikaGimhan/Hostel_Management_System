@@ -13,13 +13,14 @@ export default function MessageItem({
     <div
       onClick={onClick}
       className={`p-4 mb-4 border rounded-lg cursor-pointer ${
-        isRead ? "bg-blue-500" : "bg-red-500"
+        isRead ? "bg-white" : "bg-[#70b0f0]"
       }`}
     >
-      <h3 className="text-lg font-semibold">{subject}</h3>
-      <p className="text-gray-700">{message}</p>
-      <div className="mt-2 text-sm text-gray-500">
-        <span>From: {sender}</span> | <span>{formattedTime}</span>
+      <h3 className="text-xl font-semibold">Subject : {subject}</h3>
+      <p className="text-gray-700 mb-5 mt-5">{message}</p>
+      <div className="mt-2 text-sm text-black">
+        <span>From: {sender}</span> <br></br>
+        <span>{formattedTime}</span>
       </div>
     </div>
   );

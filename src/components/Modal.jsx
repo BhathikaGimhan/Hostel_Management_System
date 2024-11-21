@@ -15,7 +15,7 @@ const Modal = ({ title, message, onConfirm, onCancel }) => {
           </button>
           <button
             onClick={onConfirm}
-            className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
+            className="bg-[#003366] hover:bg-[#2c5093] text-white font-bold py-2 px-4 rounded"
           >
             Confirm
           </button>

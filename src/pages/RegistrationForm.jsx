@@ -10,6 +10,8 @@ import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import Loading from "../components/Loading";
 import UserDetailsModal from "../components/UserDetailsModal";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RegistrationForm = () => {
   const [user, setUser] = useState(null);
@@ -98,7 +100,9 @@ const RegistrationForm = () => {
   const handleRegistration = async () => {
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(additionalInfo.phone)) {
-      alert("Phone number must be exactly 10 digits and contain only numbers.");
+      toast.warn(
+        "Phone number must be exactly 10 digits and contain only numbers."
+      );
       return;
     }
 
@@ -107,7 +111,7 @@ const RegistrationForm = () => {
       !additionalInfo.indexNumber.trim() ||
       !additionalInfo.otherDetail.trim()
     ) {
-      alert("All fields are required. Please fill in all the details.");
+      toast.warn("All fields are required. Please fill in all the details.");
       return;
     }
     setLoading(true);
@@ -122,13 +126,13 @@ const RegistrationForm = () => {
         userRole: "student",
       };
       await addDoc(collection(db, "users"), newUser);
-      alert("Registration successful");
+      toast.success("Registration successful");
       localStorage.setItem("userId", user.uid);
       setIsRegistered(true);
       window.location.reload();
     } catch (error) {
       console.error("Error registering user:", error);
-      alert("Registration failed, please try again.");
+      toast.error("Registration failed, please try again.");
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase/firebase";
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import Modal from "../components/Modal.jsx";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -80,10 +87,23 @@ const MaintenanceRequestsTable = () => {
 
   const handleApprove = async (id) => {
     try {
+      // Update status in the current collection
       await updateDoc(doc(db, "maintenanceRequests", id), {
         status: "Approved",
       });
-      toast.success("Request approved successfully!");
+
+      // Get the approved request's details
+      const requestDoc = await getDoc(doc(db, "maintenanceRequests", id));
+      const requestData = requestDoc.data();
+
+      // Add to ongoingMaintenance collection
+      await addDoc(collection(db, "ongoingMaintenance"), {
+        ...requestData,
+        status: "Pending", // Initial stage
+        approvedAt: new Date(),
+      });
+
+      toast.success("Request approved and added to ongoing maintenance!");
       await fetchRequests(); // Refresh the table
     } catch (error) {
       console.error("Error approving request: ", error);

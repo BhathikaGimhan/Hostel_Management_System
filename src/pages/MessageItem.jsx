@@ -9,9 +9,12 @@ import {
 import { db } from "../firebase/firebase";
 import { useEffect, useState } from "react";
 import MessageItem from "../components/MessageItem";
+import MessageModal from "../components/MessageModal"; // Import a custom Modal component
 
 export default function MessagesPage({ userRole, currentUser }) {
   const [messages, setMessages] = useState([]);
+  const [selectedMessage, setSelectedMessage] = useState(null); // State for selected message
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
 
   useEffect(() => {
     // Reference to the Firestore collection
@@ -49,6 +52,21 @@ export default function MessagesPage({ userRole, currentUser }) {
     }
   };
 
+  // Handle message click to open modal
+  const handleMessageClick = (message) => {
+    setSelectedMessage(message);
+    setIsModalOpen(true); // Show modal
+    if (!message.read) {
+      handleMarkAsRead(message.id); // Mark as read
+    }
+  };
+
+  // Close modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedMessage(null);
+  };
+
   return (
     <div className="p-6">
       <h2 className="text-xl font-bold mb-6">Inbox</h2>
@@ -61,11 +79,28 @@ export default function MessagesPage({ userRole, currentUser }) {
             sender={msg.sender}
             timestamp={msg.timestamp}
             isRead={msg.read}
-            onClick={() => handleMarkAsRead(msg.id)} // Mark message as read on click
+            onClick={() => handleMessageClick(msg)} // Open modal on click
           />
         ))
       ) : (
         <p>No messages to display.</p>
+      )}
+
+      {/* Modal for displaying message details */}
+      {isModalOpen && selectedMessage && (
+        <MessageModal onClose={handleCloseModal}>
+          <div className="p-6">
+            <h3 className="text-xl font-bold">
+              Subject : {selectedMessage.subject}
+            </h3>
+            <p className="mt-4 border rounded-lg p-3">
+              {selectedMessage.message}
+            </p>
+            <p className="text-sm text-gray-600 mb-5 mt-5">
+              From: {selectedMessage.sender}
+            </p>
+          </div>
+        </MessageModal>
       )}
     </div>
   );

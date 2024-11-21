@@ -80,8 +80,10 @@ function App() {
   }
 
   console.log("Loading spinner", userRole);
+
   // Role-based route filtering
   const getRoutes = () => {
+    const userId = currentUser; // Use the userId stored in currentUser
     if (userRole === "admin") {
       // Admin Routes
       return (
@@ -89,8 +91,14 @@ function App() {
           <Route path="/" element={<AdminDashBoard />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/students" element={<Students />} />
-          <Route path="/entry-exit" element={<EntryExit />} />
-          <Route path="/maintenance" element={<Maintenance />} />
+          <Route
+            path="/entry-exit"
+            element={<EntryExit userRole={userRole} />}
+          />
+          <Route
+            path="/maintenance"
+            element={<Maintenance userRole={userRole} userId={userId} />} // Pass userId here
+          />
           <Route
             path="/location"
             element={<TrincomaleeCampusChecker />}
@@ -116,7 +124,7 @@ function App() {
 
           <Route
             path="/maintenance"
-            element={<Maintenance userRole={userRole} />}
+            element={<Maintenance userRole={userRole} userId={userId} />}
           />
 
           <Route path="/requestmaintenace" element={<RequestMaintenace />} />

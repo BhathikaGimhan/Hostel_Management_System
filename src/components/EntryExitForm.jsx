@@ -9,13 +9,16 @@ import {
   addDoc,
   Timestamp,
 } from "firebase/firestore";
-import Loading from "../components/Loading";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 
 function EntryExitForm() {
   const [uid, setUid] = useState("");
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [entryExitType, setEntryExitType] = useState("Entry");
+  const navigate = useNavigate();
 
   const handleCheckUser = async () => {
     setLoading(true);
@@ -26,18 +29,20 @@ function EntryExitForm() {
       if (!querySnapshot.empty) {
         const userDoc = querySnapshot.docs[0];
         setUserData(userDoc.data());
+        toast.success("User found successfully!");
       } else {
-        alert("User not found");
+        toast.error("User not found");
       }
     } catch (error) {
       console.error("Error fetching user:", error);
-      alert("Failed to fetch user data. Please try again.");
+      toast.error("Failed to fetch user data. Please try again.");
     }
     setLoading(false);
   };
 
   const handleEntryExitSubmit = async () => {
-    if (!userData) return alert("No user data found. Please check UID first.");
+    if (!userData)
+      return toast.error("No user data found. Please check UID first.");
     setLoading(true);
     try {
       const logData = {
@@ -51,10 +56,10 @@ function EntryExitForm() {
         otherDetail: userData.otherDetail,
       };
       await addDoc(collection(db, "entryExitLogs"), logData);
-      alert(`${entryExitType} recorded successfully.`);
+      toast.success(`${entryExitType} recorded successfully.`);
     } catch (error) {
       console.error("Error logging entry/exit:", error);
-      alert("Failed to record entry/exit. Please try again.");
+      toast.error("Failed to record entry/exit. Please try again.");
     }
     setLoading(false);
   };
@@ -112,7 +117,7 @@ function EntryExitForm() {
               <button
                 onClick={() => setEntryExitType("Long Exit")}
                 className={`p-2 w-full mb-2 rounded-lg ${
-                  entryExitType === "Loang Exit"
+                  entryExitType === "Long Exit"
                     ? "bg-red-500 text-white"
                     : "bg-gray-200"
                 }`}

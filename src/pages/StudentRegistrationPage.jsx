@@ -5,6 +5,9 @@ import { auth } from "../firebase/firebase"; // Firestore instance
 
 import { doc, setDoc } from "firebase/firestore";
 
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const StudentRegistrationPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +35,7 @@ const StudentRegistrationPage = () => {
         studentId: user.uid,
       });
 
-      alert("Registration successful");
+      toast("Registration successful");
     } catch (error) {
       setError(error.message);
     } finally {

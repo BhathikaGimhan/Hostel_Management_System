@@ -11,7 +11,7 @@ function MessageView() {
       <div className="flex mb-6">
         <button
           className={`mr-4 px-4 py-2 rounded-lg ${
-            view === "inbox" ? "bg-blue-500 text-white" : "bg-gray-200"
+            view === "inbox" ? "bg-[#003366] text-white" : "bg-gray-200"
           }`}
           onClick={() => setView("inbox")}
         >
@@ -19,7 +19,7 @@ function MessageView() {
         </button>
         <button
           className={`px-4 py-2 rounded-lg ${
-            view === "compose" ? "bg-blue-500 text-white" : "bg-gray-200"
+            view === "compose" ? "bg-[#003366] text-white" : "bg-gray-200"
           }`}
           onClick={() => setView("compose")}
         >

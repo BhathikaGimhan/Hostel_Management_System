@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MaintenanceRequestForm from "../components/MaintenanceRequestForm";
 import MaintenanceRequestsView from "../components/MaintenanceRequestsView";
+import OnGoingMaintenanceView from "../components/OnGoingMaintenanceView";
 
-function Maintenance({ userRole }) {
-  const [activeTab, setActiveTab] = useState("logs");
+function Maintenance({ userRole, userId }) {
+  const [activeTab, setActiveTab] = useState("add");
+
+  useEffect(() => {
+    if (userRole === "admin") {
+      setActiveTab("logs"); // Default tab for admin
+    }
+  }, [userRole]);
 
   // Function to handle tab switching
   const handleTabClick = (tab) => {
@@ -15,7 +22,78 @@ function Maintenance({ userRole }) {
     return (
       <div className="flex flex-1 p-2">
         <div className="w-full">
-          <MaintenanceRequestForm />
+          {/* Tab Navigation */}
+          <div className="flex border-b border-gray-200 mb-6">
+            <button
+              onClick={() => handleTabClick("add")}
+              className={`flex-1 py-3 text-center font-semibold ${
+                activeTab === "add"
+                  ? "border-b-2 border-[#003366] text-[#003366]"
+                  : "text-gray-600 hover:text-[#2c5093]"
+              }`}
+            >
+              Add Request
+            </button>
+            <button
+              onClick={() => handleTabClick("ongoing")}
+              className={`flex-1 py-3 text-center font-semibold ${
+                activeTab === "ongoing"
+                  ? "border-b-2 border-[#003366] text-[#003366]"
+                  : "text-gray-600 hover:text-[#2c5093]"
+              }`}
+            >
+              On Going Maintenance
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <div>
+            {activeTab === "add" && <MaintenanceRequestForm />}
+            {activeTab === "ongoing" && (
+              <OnGoingMaintenanceView userRole={userRole} userId={userId} />
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show only the form if the user is an admin
+  if (userRole === "admin") {
+    return (
+      <div className="flex flex-1 p-2">
+        <div className="w-full">
+          {/* Tab Navigation */}
+          <div className="flex border-b border-gray-200 mb-6">
+            <button
+              onClick={() => handleTabClick("logs")}
+              className={`flex-1 py-3 text-center font-semibold ${
+                activeTab === "logs"
+                  ? "border-b-2 border-[#003366] text-[#003366]"
+                  : "text-gray-600 hover:text-[#2c5093]"
+              }`}
+            >
+              View Request
+            </button>
+            <button
+              onClick={() => handleTabClick("ongoing")}
+              className={`flex-1 py-3 text-center font-semibold ${
+                activeTab === "ongoing"
+                  ? "border-b-2 border-[#003366] text-[#003366]"
+                  : "text-gray-600 hover:text-[#2c5093]"
+              }`}
+            >
+              On Going Maintenance
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <div>
+            {activeTab === "logs" && <MaintenanceRequestsView />}
+            {activeTab === "ongoing" && (
+              <OnGoingMaintenanceView userRole={userRole} />
+            )}
+          </div>
         </div>
       </div>
     );
@@ -28,9 +106,9 @@ function Maintenance({ userRole }) {
         {/* Tab Navigation */}
         <div className="flex border-b border-gray-200 mb-6">
           <button
-            onClick={() => handleTabClick("logs")}
+            onClick={() => handleTabClick("add")}
             className={`flex-1 py-3 text-center font-semibold ${
-              activeTab === "logs"
+              activeTab === "add"
                 ? "border-b-2 border-[#003366] text-[#003366]"
                 : "text-gray-600 hover:text-[#2c5093]"
             }`}
@@ -38,9 +116,9 @@ function Maintenance({ userRole }) {
             Add Request
           </button>
           <button
-            onClick={() => handleTabClick("add")}
+            onClick={() => handleTabClick("logs")}
             className={`flex-1 py-3 text-center font-semibold ${
-              activeTab === "add"
+              activeTab === "logs"
                 ? "border-b-2 border-[#003366] text-[#003366]"
                 : "text-gray-600 hover:text-[#2c5093]"
             }`}
@@ -51,8 +129,8 @@ function Maintenance({ userRole }) {
 
         {/* Tab Content */}
         <div>
-          {activeTab === "logs" && <MaintenanceRequestForm />}
-          {activeTab === "add" && <MaintenanceRequestsView />}
+          {activeTab === "add" && <MaintenanceRequestForm />}
+          {activeTab === "logs" && <MaintenanceRequestsView />}
         </div>
       </div>
     </div>
