@@ -8,9 +8,11 @@ function AdminDashBoard() {
   const [repairingCount, setRepairingCount] = useState(0);
   const [roomRequestsCount, setRoomRequestsCount] = useState(0);
   const [roomAvailableCount, setRoomAvailableCount] = useState(0);
-  const [beds, setBeds] = useState(0);
+  const [totalBeds, setTotalBeds] = useState(0);
+  const [availableBeds, setAvailableBeds] = useState(0);
+  const [bookedBeds, setBookedBeds] = useState(0);
+  const [bedBookingPercentage, setBedBookingPercentage] = useState(0);
 
-  // Fetch maintenance requests count from Firestore
   useEffect(() => {
     const fetchMaintenanceRequests = async () => {
       try {
@@ -29,10 +31,10 @@ function AdminDashBoard() {
     const fetchRepairingRequests = async () => {
       try {
         const querySnapshot = await getDocs(
-          collection(db, "maintenanceRequests")
+          collection(db, "ongoingMaintenance")
         );
         const repairingRequests = querySnapshot.docs.filter(
-          (doc) => doc.data().status === "Approved"
+          (doc) => doc.data().status === "Pending"
         );
         setRepairingCount(repairingRequests.length);
       } catch (error) {
@@ -43,19 +45,41 @@ function AdminDashBoard() {
     const fetchRoomRequests = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "requests"));
-        setRoomRequestsCount(querySnapshot.size); // Assuming each document is a request
+        const pendingRequests = querySnapshot.docs.filter(
+          (doc) => doc.data().status === "Pending"
+        );
+        setRoomRequestsCount(pendingRequests.length);
       } catch (error) {
         console.error("Error fetching room requests: ", error);
       }
     };
 
-    const fetchRoomAvailable = async () => {
+    const fetchRoomData = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "rooms"));
-        setRoomAvailableCount(querySnapshot.size); // Assuming each document is a request
-        setBeds(querySnapshot.size * 4);
+        let totalBedsCount = 0;
+        let availableBedsCount = 0;
+        let bookedBedsCount = 0;
+
+        querySnapshot.docs.forEach((doc) => {
+          const roomData = doc.data();
+          const roomCapacity = roomData.capacity || 0; // Total beds in the room
+          const occupants = roomData.occupants || 0; // Current occupants in the room
+
+          totalBedsCount += roomCapacity;
+          bookedBedsCount += occupants; // Beds currently occupied
+          availableBedsCount += roomCapacity - occupants; // Remaining beds
+        });
+
+        setRoomAvailableCount(querySnapshot.size);
+        setTotalBeds(totalBedsCount);
+        setAvailableBeds(availableBedsCount);
+        setBookedBeds(bookedBedsCount);
+        setBedBookingPercentage(
+          ((bookedBedsCount / totalBedsCount) * 100).toFixed(2)
+        );
       } catch (error) {
-        console.error("Error fetching room requests: ", error);
+        console.error("Error fetching room data: ", error);
       }
     };
 
@@ -63,7 +87,7 @@ function AdminDashBoard() {
     fetchMaintenanceRequests();
     fetchRepairingRequests();
     fetchRoomRequests();
-    fetchRoomAvailable();
+    fetchRoomData();
   }, []);
 
   return (
@@ -76,13 +100,13 @@ function AdminDashBoard() {
           <StatCard
             title="Rooms"
             value={roomAvailableCount}
-            subtitle={`${beds} Beds`}
+            subtitle={`${totalBeds} Beds`}
             className="bg-purple-50"
           />
           <StatCard
             title="Room Requests"
             value={roomRequestsCount}
-            subtitle="Requests"
+            subtitle="Pending"
             className="bg-blue-50"
           />
           <StatCard
@@ -99,10 +123,41 @@ function AdminDashBoard() {
           />
         </div>
 
-        {/* Additional charts or content can go here */}
-        {/* <div className="grid grid-cols-2 gap-6">
-          <RoomsChart />
-        </div> */}
+        {/* Bed Booking Percentage Card */}
+        <div className="bg-gray-100 shadow-md rounded-lg p-6 mb-6">
+          <h3 className="text-xl font-semibold mb-4">
+            Percentage of Rooms Booked
+          </h3>
+          <div className="flex items-center mb-10">
+            <div>
+              <div className="flex items-center space-x-2 mr-14 max-sm:mr-7">
+                <div className="w-10 h-3 bg-[#003366] rounded-e-3xl"></div>
+                <div className="grid mt-4">
+                  <span className="text-gray-600">Booked</span>
+                  <p className="text-sm text-gray-800">{bookedBeds} beds</p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <div className="w-10 h-3 bg-gray-300 rounded-e-3xl"></div>
+                <div className="grid mt-4">
+                  <span className="text-gray-600">Available</span>
+                  <p className="text-sm text-gray-800">{availableBeds} beds</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-4">
+            <div
+              className="bg-[#003366] h-4 rounded-full"
+              style={{ width: `${bedBookingPercentage}%` }}
+            ></div>
+          </div>
+          <p className="text-right mt-2 text-sm text-gray-600">
+            {bedBookingPercentage}% of beds are booked
+          </p>
+        </div>
       </div>
     </>
   );

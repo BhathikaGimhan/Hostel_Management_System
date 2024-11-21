@@ -8,6 +8,8 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase/firebase";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function UserDetailsModal() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -39,7 +41,7 @@ function UserDetailsModal() {
       try {
         const userRef = doc(db, "users", currentUser.id);
         await updateDoc(userRef, updatedDetails);
-        alert("User details updated successfully!");
+        toast.success("User details updated successfully!");
         setIsEditing(false);
         fetchData(); // Refresh data
       } catch (error) {
