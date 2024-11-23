@@ -104,7 +104,7 @@ export default function Sidebar() {
         />
       )}
 
-      <div className="flex fixed h-screen z-10">
+      <div className="flex fixed h-screen z-20">
         <div
           className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 flex flex-col h-screen transition-transform transform
             ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
