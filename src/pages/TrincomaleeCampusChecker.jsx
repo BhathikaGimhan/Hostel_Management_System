@@ -27,7 +27,7 @@ const TrincomaleeCampusChecker = () => {
   const PROXIMITY_THRESHOLD_KM = 5; // 5 kilometers
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyDvAUWtuIlFr51K9KLHYk9ojs9QwJzUhQM", // Replace with your API key
+    googleMapsApiKey: "", // Replace with your API key
   });
 
   const checkProximity = (latitude, longitude) => {
