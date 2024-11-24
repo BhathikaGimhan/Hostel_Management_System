@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  collection,
-  onSnapshot,
-  updateDoc,
-  doc,
-  query,
-} from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 
 const ApproveRoomRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -14,10 +10,9 @@ const ApproveRoomRequests = () => {
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10); // Default rows per page
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
-    // Adjust rows per page based on window height
     const updateRowsPerPage = () => {
       const height = window.innerHeight;
       if (height < 600) {
@@ -84,6 +79,63 @@ const ApproveRoomRequests = () => {
     setCurrentPage(1); // Reset to the first page when filtering
   };
 
+  const handleExport = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Approved Requests");
+
+    // Title: Merge cells for the title
+    worksheet.mergeCells("A1:D3");
+    const titleCell = worksheet.getCell("A1");
+    titleCell.value = "Approved Room Requests Report";
+    titleCell.font = { size: 18, bold: true, color: { argb: "FFFFFFFF" } };
+    titleCell.alignment = { horizontal: "center", vertical: "middle" };
+    titleCell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "003366" },
+    };
+
+    // Table Headers
+    const headers = ["Student Name", "Student Reg No", "Room Name", "Email"];
+    const headerRow = worksheet.addRow(headers);
+    headerRow.eachCell((cell, colNumber) => {
+      cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF003366" },
+      };
+      worksheet.getColumn(colNumber).width = 25; // Adjust column width
+      headerRow.height = 30;
+    });
+
+    // Table Data
+    filteredRequests.forEach((request, index) => {
+      const row = worksheet.addRow([
+        request.studentName,
+        request.studentId,
+        request.roomName,
+        request.studentEmail,
+      ]);
+
+      // Alternate row colors for readability
+      const bgColor = index % 2 === 0 ? "FFE6EBF0" : "FFFFFFFF";
+      row.eachCell((cell) => {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: bgColor },
+        };
+        cell.alignment = { vertical: "middle" };
+      });
+    });
+
+    // Save the file
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), "Approved_Room_Requests_Report.xlsx");
+  };
+
   // Calculate the requests to display for the current page
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -112,24 +164,32 @@ const ApproveRoomRequests = () => {
         <label className="block font-semibold text-gray-700 mb-2">
           Filter by Room:
         </label>
-        <select
-          value={selectedRoom}
-          onChange={handleRoomFilterChange}
-          className="p-2 border border-gray-300 rounded-lg w-full sm:w-2/3 md:w-1/3 text-white bg-[#003366]"
-        >
-          <option value="all" className="text-white bg-[#003366]">
-            All Rooms
-          </option>
-          {rooms.map((room) => (
-            <option
-              className="text-white bg-[#003366]"
-              key={room.id}
-              value={room.id}
-            >
-              {room.name}
+        <div className="flex justify-between">
+          <select
+            value={selectedRoom}
+            onChange={handleRoomFilterChange}
+            className="p-2 border border-gray-300 rounded-lg w-full sm:w-2/3 md:w-1/3 text-white bg-[#003366]"
+          >
+            <option value="all" className="text-white bg-[#003366]">
+              All Rooms
             </option>
-          ))}
-        </select>
+            {rooms.map((room) => (
+              <option
+                className="text-white bg-[#003366]"
+                key={room.id}
+                value={room.id}
+              >
+                {room.name}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={handleExport}
+            className="px-4 py-2 bg-[#003366] text-white rounded-lg"
+          >
+            Export to Excel
+          </button>
+        </div>
       </div>
 
       <div className="w-full">
@@ -138,13 +198,13 @@ const ApproveRoomRequests = () => {
             <thead>
               <tr>
                 <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
+                  Room Name
+                </th>
+                <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
                   Student Name
                 </th>
                 <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
                   Student Reg No
-                </th>
-                <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
-                  Room Name
                 </th>
                 <th className="px-4 py-2 text-center font-semibold text-white bg-[#003366]">
                   Email
@@ -165,13 +225,13 @@ const ApproveRoomRequests = () => {
                     className="border-b bg-[#E6EBF0] border-[#E1E1E1]"
                   >
                     <td className="px-4 py-2 text-center border-gray-300">
+                      {request.roomName}
+                    </td>
+                    <td className="px-4 py-2 text-center border-gray-300">
                       {request.studentName}
                     </td>
                     <td className="px-4 py-2 text-center border-gray-300">
                       {request.studentId}
-                    </td>
-                    <td className="px-4 py-2 text-center border-gray-300">
-                      {request.roomName}
                     </td>
                     <td className="px-4 py-2 text-center">
                       {request.studentEmail}
@@ -182,37 +242,35 @@ const ApproveRoomRequests = () => {
             </tbody>
           </table>
         </div>
+      </div>
 
-        {/* Pagination Controls */}
-        <div className="flex justify-end items-center mt-4">
+      {/* Pagination Controls */}
+      <div className="flex justify-end items-center mt-4">
+        <button
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
+        >
+          &lt;
+        </button>
+        {Array.from({ length: totalPages }, (_, i) => (
           <button
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
+            key={i + 1}
+            onClick={() => goToPage(i + 1)}
+            className={`px-3 py-1 mx-1 ${
+              i + 1 === currentPage ? "bg-[#003366] text-white" : "bg-gray-300"
+            } rounded`}
           >
-            &lt;
+            {i + 1}
           </button>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i + 1}
-              onClick={() => goToPage(i + 1)}
-              className={`px-3 py-1 mx-1 ${
-                i + 1 === currentPage
-                  ? "bg-[#003366] text-white"
-                  : "bg-gray-300"
-              } rounded`}
-            >
-              {i + 1}
-            </button>
-          ))}
-          <button
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
-          >
-            &gt;
-          </button>
-        </div>
+        ))}
+        <button
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
+        >
+          &gt;
+        </button>
       </div>
     </div>
   );

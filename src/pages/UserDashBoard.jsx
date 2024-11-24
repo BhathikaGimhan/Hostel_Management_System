@@ -23,9 +23,11 @@ function StudentDashboard() {
             collection(db, "users"),
             where("uid", "==", user)
           );
+
           const studentSnapshot = await getDocs(studentQuery);
           if (!studentSnapshot.empty) {
-            setStudentDetails(studentSnapshot.docs[0].data());
+            const studentData = studentSnapshot.docs[0].data();
+            setStudentDetails(studentData);
           }
 
           // Fetch maintenance requests
