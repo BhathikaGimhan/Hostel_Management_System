@@ -23,9 +23,11 @@ function StudentDashboard() {
             collection(db, "users"),
             where("uid", "==", user)
           );
+
           const studentSnapshot = await getDocs(studentQuery);
           if (!studentSnapshot.empty) {
-            setStudentDetails(studentSnapshot.docs[0].data());
+            const studentData = studentSnapshot.docs[0].data();
+            setStudentDetails(studentData);
           }
 
           // Fetch maintenance requests
@@ -82,7 +84,7 @@ function StudentDashboard() {
       <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
 
       {/* Main Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 w-full justify-center">
         {/* Student Details */}
 
         {studentDetails && (
@@ -107,42 +109,6 @@ function StudentDashboard() {
             </p>
           </div>
         )}
-
-        {/* Maintenance Requests Summary */}
-        <div className="bg-white text-black rounded-xl shadow-lg p-6 transform transition hover:-translate-y-1 hover:shadow-2xl">
-          <h2 className="text-2xl font-semibold mb-4">Maintenance Requests</h2>
-          <p className="mb-2">
-            <span className="block text-lg">Total Requests:</span>
-            <span className="font-bold">{maintenanceRequests.length}</span>
-          </p>
-          <p className="mb-2">
-            <span className="block text-lg">Pending:</span>
-            <span className="font-bold">
-              {
-                maintenanceRequests.filter((req) => req.status === "Pending")
-                  .length
-              }
-            </span>
-          </p>
-          <p className="mb-2">
-            <span className="block text-lg">Approved:</span>
-            <span className="font-bold">
-              {
-                maintenanceRequests.filter((req) => req.status === "Approved")
-                  .length
-              }
-            </span>
-          </p>
-          <p>
-            <span className="block text-lg">Rejected:</span>
-            <span className="font-bold">
-              {
-                maintenanceRequests.filter((req) => req.status === "Rejected")
-                  .length
-              }
-            </span>
-          </p>
-        </div>
 
         {/* Room Request Status */}
         <div className="bg-white text-black rounded-xl shadow-lg p-6 transform transition hover:-translate-y-1 hover:shadow-2xl">

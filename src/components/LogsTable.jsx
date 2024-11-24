@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 import Loading from "../components/Loading";
 
 const LogsTable = ({ userRole, userEmail }) => {
@@ -56,6 +58,84 @@ const LogsTable = ({ userRole, userEmail }) => {
     }
   };
 
+  const handleExport = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Logs Report");
+
+    // Title: Merge cells for the title
+    worksheet.mergeCells("A1:F3");
+    const titleCell = worksheet.getCell("A1");
+    titleCell.value = "Entry and Exit Logs Report";
+    titleCell.font = { size: 18, bold: true, color: { argb: "FFFFFFFF" } };
+    titleCell.alignment = { horizontal: "center", vertical: "middle" };
+    titleCell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "003366" },
+    };
+
+    // Description: Merge cells for the description
+    worksheet.mergeCells("A4:F5");
+    const descCell = worksheet.getCell("A4");
+    descCell.value = "This report contains details about entry and exit logs.";
+    descCell.font = { size: 12, italic: true };
+    descCell.alignment = { horizontal: "center", vertical: "middle" };
+    descCell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FFD9E1F2" },
+    };
+
+    // Table Headers
+    const headers = [
+      "Name",
+      "Email",
+      "Phone",
+      "Index Number",
+      "Type",
+      "Timestamp",
+    ];
+    const headerRow = worksheet.addRow(headers);
+    headerRow.eachCell((cell, colNumber) => {
+      cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF003366" },
+      };
+      worksheet.getColumn(colNumber).width = 25; // Adjust column width
+      headerRow.height = 30;
+    });
+
+    // Table Data
+    filteredLogs.forEach((log, index) => {
+      const row = worksheet.addRow([
+        log.name,
+        log.email,
+        log.phone,
+        log.indexNumber,
+        log.type,
+        new Date(log.timestamp.toDate()).toLocaleString(),
+      ]);
+
+      // Alternate row colors for readability
+      const bgColor = index % 2 === 0 ? "FFE6EBF0" : "FFFFFFFF";
+      row.eachCell((cell) => {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: bgColor },
+        };
+        cell.alignment = { vertical: "middle" };
+      });
+    });
+
+    // Save the file
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), "Logs_Report.xlsx");
+  };
+
   // Pagination logic
   const indexOfLastLog = currentPage * rowsPerPage;
   const indexOfFirstLog = indexOfLastLog - rowsPerPage;
@@ -69,7 +149,7 @@ const LogsTable = ({ userRole, userEmail }) => {
     <div className=" mx-auto px-4">
       {loading && <Loading />}
 
-      <div className="flex mb-4">
+      <div className="flex mb-4 items-center justify-between">
         <input
           type="text"
           value={searchEmail}
@@ -77,6 +157,14 @@ const LogsTable = ({ userRole, userEmail }) => {
           placeholder="Search by user email..."
           className="p-2 border border-gray-300 rounded-lg w-full sm:w-2/3 md:w-1/3"
         />
+        {userRole === "admin" && (
+          <button
+            onClick={handleExport}
+            className="ml-4 px-4 py-2 bg-[#003366] text-white rounded-lg"
+          >
+            Export to Excel
+          </button>
+        )}
       </div>
 
       {/* Table Container */}

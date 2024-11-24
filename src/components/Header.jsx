@@ -61,7 +61,7 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed w-full bg-white border-b border-gray-200 px-6 py-4 pl-64">
+    <header className="fixed w-full bg-white border-b border-gray-200 px-6 py-4 pl-64 z-10">
       <div className="flex items-center justify-between flex-wrap ml-10">
         {/* Search bar (hidden on small screens) */}
         <div className="relative flex-1 max-w-xl mb-4 sm:mb-0 hidden sm:block">
