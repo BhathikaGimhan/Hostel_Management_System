@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 const AddRoom = () => {
   const [capacity, setCapacity] = useState("");
   const [roomName, setRoomName] = useState("");
-  const [occupants, setOccupants] = useState("");
+  const [occupants, setOccupants] = useState("0");
 
   const handleAddRoom = async (e) => {
     e.preventDefault();
@@ -61,18 +61,6 @@ const AddRoom = () => {
             onChange={(e) => setCapacity(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
             placeholder="Enter room capacity"
-          />
-        </div>
-        <div>
-          <label className="text-lg font-semibold text-gray-600">
-            Occupants:
-          </label>
-          <input
-            type="number"
-            value={occupants}
-            onChange={(e) => setOccupants(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003366]"
-            placeholder="Enter current number of occupants"
           />
         </div>
         <button
