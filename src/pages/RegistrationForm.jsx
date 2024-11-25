@@ -152,7 +152,7 @@ const RegistrationForm = () => {
               className="rounded-full w-24 h-24 my-4 mx-auto shadow"
             />
             <p className="text-gray-700 mb-2">Email: {user.email}</p>
-            <p className="text-gray-700 mb-4">User ID: {user.uid}</p>
+            <p className="text-gray-700 mb-4">Finger print Hash: {user.uid}</p>
 
             {!load ? (
               <>
