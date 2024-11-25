@@ -63,8 +63,8 @@ function AdminDashBoard() {
 
         querySnapshot.docs.forEach((doc) => {
           const roomData = doc.data();
-          const roomCapacity = roomData.capacity || 0; // Total beds in the room
-          const occupants = roomData.occupants || 0; // Current occupants in the room
+          const roomCapacity = Number(roomData.capacity) || 0; // Total beds in the room
+          const occupants = Number(roomData.occupants) || 0; // Current occupants in the room
 
           totalBedsCount += roomCapacity;
           bookedBedsCount += occupants; // Beds currently occupied
@@ -73,6 +73,7 @@ function AdminDashBoard() {
 
         setRoomAvailableCount(querySnapshot.size);
         setTotalBeds(totalBedsCount);
+        console.log(totalBedsCount);
         setAvailableBeds(availableBedsCount);
         setBookedBeds(bookedBedsCount);
         setBedBookingPercentage(
