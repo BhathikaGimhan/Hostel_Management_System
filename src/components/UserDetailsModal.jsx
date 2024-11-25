@@ -54,7 +54,7 @@ function UserDetailsModal() {
     fetchData();
   }, []);
 
-  if (!currentUser) return <p>Loading...</p>;
+  if (!currentUser) return;
 
   return (
     <div className="">

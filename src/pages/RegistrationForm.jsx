@@ -32,7 +32,6 @@ const RegistrationForm = () => {
         setUser(currentUser);
 
         await checkRegistration(currentUser.uid);
-        console.log("zzz");
         setloading(false);
       } else {
         setUser(null);
@@ -53,12 +52,11 @@ const RegistrationForm = () => {
       if (!querySnapshot.empty) {
         setIsRegistered(true);
         localStorage.setItem("userId", uid);
-        console.log("dddd");
         setloading(false);
+        // window.location.reload();
       } else {
         setIsRegistered(false);
         setloading(false);
-        console.log("ttt");
         localStorage.removeItem("userId");
       }
     } catch (error) {
