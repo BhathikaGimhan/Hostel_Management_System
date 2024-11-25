@@ -76,7 +76,7 @@ const GoogleLogin = () => {
               className="rounded-full w-24 h-24 my-4 mx-auto shadow"
             />
             <p className="text-gray-700 mb-2">Email: {user.email}</p>
-            <p className="text-gray-700 mb-4">User ID: {user.uid}</p>
+            <p className="text-gray-700 mb-4">Fingerprint Hash: {user.uid}</p>
             <button
               onClick={handleLogout}
               className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition duration-300"
