@@ -156,7 +156,7 @@ const ApproveRoomRequests = () => {
   return (
     <div className="bg-white shadow-md rounded-lg p-8 mb-6">
       <h2 className="text-2xl font-bold text-[#003366] mb-3">
-        Approved Room Requests
+        Students Details
       </h2>
 
       {/* Room Filter Dropdown */}
