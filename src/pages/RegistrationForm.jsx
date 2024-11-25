@@ -32,7 +32,6 @@ const RegistrationForm = () => {
         setUser(currentUser);
 
         await checkRegistration(currentUser.uid);
-        console.log("zzz");
         setloading(false);
       } else {
         setUser(null);
@@ -53,12 +52,11 @@ const RegistrationForm = () => {
       if (!querySnapshot.empty) {
         setIsRegistered(true);
         localStorage.setItem("userId", uid);
-        console.log("dddd");
         setloading(false);
+        // window.location.reload();
       } else {
         setIsRegistered(false);
         setloading(false);
-        console.log("ttt");
         localStorage.removeItem("userId");
       }
     } catch (error) {
@@ -139,7 +137,7 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex absolute top-0 right-0 left-0 bottom-0 items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
         {user ? (
           <div>
