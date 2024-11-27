@@ -24,14 +24,20 @@ const ApproveRoomRequests = () => {
     // Load data logic
     const requestsQuery = query(collection(db, "requests"));
     const unsubscribeRequests = onSnapshot(requestsQuery, (snapshot) => {
-      const requestsList = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        studentName: doc.data().studentName,
-        studentId: doc.data().studentId,
-        roomId: doc.data().roomId,
-        roomName: doc.data().roomName,
-        status: doc.data().status,
-      }));
+      const requestsList = snapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          studentName: doc.data().studentName,
+          studentId: doc.data().studentId,
+          roomId: doc.data().roomId,
+          roomName: doc.data().roomName,
+          status: doc.data().status,
+        }))
+        .sort((a, b) => {
+          if (a.status === "pending" && b.status !== "pending") return -1;
+          if (a.status !== "pending" && b.status === "pending") return 1;
+          return 0;
+        });
       setRequests(requestsList);
     });
 

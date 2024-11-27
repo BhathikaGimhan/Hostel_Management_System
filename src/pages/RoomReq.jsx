@@ -9,6 +9,7 @@ import {
 import { db } from "../firebase/firebase";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { serverTimestamp } from "firebase/firestore";
 
 const RoomReq = () => {
   const [rooms, setRooms] = useState([]);
@@ -85,15 +86,11 @@ const RoomReq = () => {
     e.preventDefault();
 
     if (!currentUser || currentUser.length === 0) {
-      alert("User data is not loaded. Please try again.");
-
       toast.error("User data is not loaded. Please try again.");
       return;
     }
 
     if (!selectedRoomId) {
-      alert("Please select a room.");
-
       toast.warn("Please select a room.");
 
       return;
@@ -102,21 +99,15 @@ const RoomReq = () => {
 
     if (existingRequest) {
       if (existingRequest.status === "pending") {
-        alert("You already have a pending room request.");
         toast.info("You already have a pending room request.");
 
         return;
       }
       if (existingRequest.status === "approved") {
-        alert("You already have an approved room assignment.");
         toast.info("You already have an approved room assignment.");
         return;
       }
       if (existingRequest.status === "not approved") {
-        alert(
-          "Your previous request was rejected. You can apply for another room."
-        );
-
         toast.warn(
           "Your previous request was rejected. You can apply for another room."
         );
@@ -125,8 +116,6 @@ const RoomReq = () => {
 
     const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
     if (!selectedRoom) {
-      alert("Selected room not found.");
-
       toast.error("Selected room not found.");
       return;
     }
@@ -137,7 +126,6 @@ const RoomReq = () => {
       !currentUser[0]?.email
     ) {
       console.log(currentUser);
-      alert();
 
       toast.error(
         "Missing user data. Please ensure you are logged in and try again."
@@ -153,6 +141,7 @@ const RoomReq = () => {
       roomId: selectedRoomId,
       roomName: selectedRoom.room,
       status: "pending",
+      timestamp: serverTimestamp(),
     };
 
     addDoc(collection(db, "requests"), newRequest)
