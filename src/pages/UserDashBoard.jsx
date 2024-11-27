@@ -55,12 +55,26 @@ function StudentDashboard() {
           );
           const roomRequestSnapshot = await getDocs(roomRequestQuery);
           if (!roomRequestSnapshot.empty) {
-            setReqLength(roomRequestSnapshot.size);
-            const requestData = roomRequestSnapshot.docs[0].data();
-            setRoomRequest({
-              ...requestData,
-              timestamp: requestData.timestamp?.toDate().toLocaleString(),
+            const requests = roomRequestSnapshot.docs.map((doc) => {
+              const data = doc.data();
+              return {
+                id: doc.id,
+                ...data,
+                timestamp: data.timestamp?.toDate(),
+              };
             });
+
+            // Sort requests by timestamp (latest first) and pick the first one
+            const sortedRequests = requests.sort(
+              (a, b) => b.timestamp - a.timestamp
+            );
+
+            const latestRequest = sortedRequests[0];
+            setRoomRequest({
+              ...latestRequest,
+              timestamp: latestRequest.timestamp?.toLocaleString(),
+            });
+            setReqLength(requests.length);
           } else {
             setRoomRequest(null); // No room request found
           }

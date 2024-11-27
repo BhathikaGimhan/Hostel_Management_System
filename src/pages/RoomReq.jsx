@@ -9,6 +9,7 @@ import {
 import { db } from "../firebase/firebase";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { serverTimestamp } from "firebase/firestore";
 
 const RoomReq = () => {
   const [rooms, setRooms] = useState([]);
@@ -137,6 +138,7 @@ const RoomReq = () => {
       roomId: selectedRoomId,
       roomName: selectedRoom.room,
       status: "pending",
+      timestamp: serverTimestamp(),
     };
 
     addDoc(collection(db, "requests"), newRequest)

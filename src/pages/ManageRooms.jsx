@@ -31,6 +31,7 @@ const ManageRooms = () => {
         ...doc.data(),
       }));
       setRooms(roomsList);
+      console.log(roomsList);
     };
 
     fetchRooms();
@@ -112,7 +113,6 @@ const ManageRooms = () => {
         const roomRef = doc(db, "rooms", currentRoomDetails.id);
         await updateDoc(roomRef, {
           capacity: currentRoomDetails.capacity,
-          occupants: currentRoomDetails.occupants,
         });
         toast.success("Room updated successfully!", { position: "top-right" });
         setShowViewModal(false);
