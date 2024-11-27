@@ -96,6 +96,7 @@ const RegistrationForm = () => {
   };
 
   const handleRegistration = async () => {
+    console.log(additionalInfo.fingerprintHash);
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(additionalInfo.phone)) {
       toast.warn(
@@ -121,6 +122,7 @@ const RegistrationForm = () => {
         phone: additionalInfo.phone,
         indexNumber: additionalInfo.indexNumber,
         otherDetail: additionalInfo.otherDetail,
+        fingerprintHash: additionalInfo.fingerprintHash,
         userRole: "student",
       };
       await addDoc(collection(db, "users"), newUser);
@@ -150,7 +152,6 @@ const RegistrationForm = () => {
               className="rounded-full w-24 h-24 my-4 mx-auto shadow"
             />
             <p className="text-gray-700 mb-2">Email: {user.email}</p>
-            <p className="text-gray-700 mb-4">Finger print Hash: {user.uid}</p>
 
             {!load ? (
               <>
@@ -186,6 +187,15 @@ const RegistrationForm = () => {
                       onChange={handleInputChange}
                       className="w-full p-2 border border-gray-300 rounded mb-4"
                       placeholder="Enter your sex"
+                    />
+                    <label className="block mb-2">Finger Print Hash:</label>
+                    <input
+                      type="text"
+                      name="fingerprintHash"
+                      value={additionalInfo.fingerprintHash}
+                      onChange={handleInputChange}
+                      className="w-full p-2 border border-gray-300 rounded mb-4"
+                      placeholder="Finger print hash.."
                     />
                   </div>
                 )}

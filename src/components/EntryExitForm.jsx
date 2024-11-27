@@ -24,7 +24,10 @@ function EntryExitForm() {
     setLoading(true);
     setUserData(null); // Clear previous data
     try {
-      const userQuery = query(collection(db, "users"), where("uid", "==", uid));
+      const userQuery = query(
+        collection(db, "users"),
+        where("fingerprintHash", "==", uid)
+      );
       const querySnapshot = await getDocs(userQuery);
       if (!querySnapshot.empty) {
         const userDoc = querySnapshot.docs[0];
@@ -52,6 +55,7 @@ function EntryExitForm() {
         timestamp: Timestamp.now(),
         indexNumber: userData.indexNumber,
         phone: userData.phone,
+        fingerprintHash: userData.fingerprintHash,
         email: userData.email,
         otherDetail: userData.otherDetail,
       };
